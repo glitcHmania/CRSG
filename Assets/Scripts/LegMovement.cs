@@ -53,7 +53,7 @@ public class LegMovement : MonoBehaviour
         {
             MoveRight();
         }
-        else if (Input.GetKeyDown(KeyCode.Space))
+        else if (Input.GetKey(KeyCode.Space))
         {
             float t = Mathf.PingPong(Time.time * speed, 1);
             float angle = Mathf.Lerp(0, maxAngle, t);
@@ -77,9 +77,9 @@ public class LegMovement : MonoBehaviour
         float t = Mathf.PingPong(Time.time * speed, 1);
         float angle = Mathf.Lerp(-maxAngle, maxAngle, t);
         leftUpLegJoint.targetRotation = Quaternion.Euler(angle, 0f, 0f);
-        leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle * 1.5f, 0f), 0f, 0f);
+        leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle, 0f), 0f, 0f);
         rightUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
-        rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle * 1.5f, 0f), 0f, 0f);
+        rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
     }
 
     private void MoveBackward()
@@ -87,25 +87,40 @@ public class LegMovement : MonoBehaviour
         float t = Mathf.PingPong(Time.time * speed, 1);
         float angle = Mathf.Lerp(-maxAngle, maxAngle, t);
         leftUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle * 0.5f, 0f), 0f, 0f);
-        leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle * 1.5f, 0f), 0f, 0f);
+        leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
         rightUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle * 0.5f, 0f), 0f, 0f);
-        rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle * 1.5f, 0f), 0f, 0f);
+        rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle, 0f), 0f, 0f);
     }
 
     private void MoveLeft()
     {
         float t = Mathf.PingPong(Time.time * speed, 1);
         float angle = Mathf.Lerp(-maxAngle, maxAngle, t);
-        leftUpLegJoint.targetRotation = Quaternion.Euler(0f, 0f, angle);
-        leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle * 1.5f, 0f), 0f, 0f);
+        if (angle >= 0)
+        {
+            leftUpLegJoint.targetRotation = Quaternion.Euler(0f, 0f, angle * 0.5f);
+            leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
+        }
+        else
+        {
+            rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle, 0f), 0f, 0f);
+        }
     }
 
     private void MoveRight()
     {
         float t = Mathf.PingPong(Time.time * speed, 1);
         float angle = Mathf.Lerp(-maxAngle, maxAngle, t);
-        rightUpLegJoint.targetRotation = Quaternion.Euler(0f, 0f, angle);
-        rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle * 1.5f, 0f), 0f, 0f);
+        if (angle >= 0)
+        {
+            rightUpLegJoint.targetRotation = Quaternion.Euler(0f, 0f, -angle * 0.5f);
+            rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
+        }
+        else
+        {
+            leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle * 1.5f, 0f), 0f, 0f);
+        }
+
     }
 
     private BalanceState CheckBalance()

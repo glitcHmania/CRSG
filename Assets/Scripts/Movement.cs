@@ -23,7 +23,7 @@ public class Movement : MonoBehaviour
         float moveZ = Input.GetAxis("Vertical");
 
         // Convert input to movement direction
-        moveDirection = transform.right * moveX + transform.forward * moveZ;
+        moveDirection = transform.right * moveX * 0.3f + transform.forward * moveZ;
         float mouseX = Input.GetAxis("Mouse X");
         transform.Rotate(Vector3.up, mouseX);
 
