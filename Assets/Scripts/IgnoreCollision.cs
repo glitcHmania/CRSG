@@ -1,8 +1,9 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IgnoreCollision : MonoBehaviour
+public class IgnoreCollision : NetworkBehaviour
 {
     [SerializeField]
     Collider ThisCollider;

@@ -1,17 +1,34 @@
+using Mirror;
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+public class Movement : NetworkBehaviour
 {
     private Rigidbody rb;
     public float moveSpeed = 5f;
     public float jumpForce = 50f;
-    private Vector3 moveDirection;
+    private Vector3 moveDirection; 
+    public Camera shoulderCamera;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
 
+        //lock cursor
+        Cursor.lockState = CursorLockMode.Locked;
+
+        if (!isLocalPlayer)
+        {
+            // Disable the camera for other players
+            shoulderCamera.gameObject.SetActive(false);
+            shoulderCamera.GetComponent<AudioListener>().enabled = false;
+        }
+        else
+        {
+            // Enable the camera only for the local player
+            shoulderCamera.gameObject.SetActive(true);
+            shoulderCamera.tag = "MainCamera"; // Dynamically set this for the local player
+        }
 
     }
 

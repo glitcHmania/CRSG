@@ -1,6 +1,7 @@
+using Mirror;
 using UnityEngine;
 
-public class LegMovement : MonoBehaviour
+public class LegMovement : NetworkBehaviour
 {
     enum BalanceState
     {
@@ -37,38 +38,42 @@ public class LegMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.W))
+        if (isLocalPlayer)
         {
-            MoveForward();
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            MoveBackward();
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            MoveLeft();
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            MoveRight();
-        }
-        else if (Input.GetKey(KeyCode.Space))
-        {
-            float t = Mathf.PingPong(Time.time * speed, 1);
-            float angle = Mathf.Lerp(0, maxAngle, t);
-            leftUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
-            leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
-            rightUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
-            rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
-        }
-        else
-        {
-            leftUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
-            rightUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
-            rightLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
-            leftLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
 
+            if (Input.GetKey(KeyCode.W))
+            {
+                MoveForward();
+            }
+            else if (Input.GetKey(KeyCode.S))
+            {
+                MoveBackward();
+            }
+            else if (Input.GetKey(KeyCode.A))
+            {
+                MoveLeft();
+            }
+            else if (Input.GetKey(KeyCode.D))
+            {
+                MoveRight();
+            }
+            else if (Input.GetKey(KeyCode.Space))
+            {
+                float t = Mathf.PingPong(Time.time * speed, 1);
+                float angle = Mathf.Lerp(0, maxAngle, t);
+                leftUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
+                leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
+                rightUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
+                rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
+            }
+            else
+            {
+                leftUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
+                rightUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
+                rightLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
+                leftLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
+
+            }
         }
     }
 
