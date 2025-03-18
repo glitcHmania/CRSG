@@ -13,6 +13,7 @@ public class Movement : NetworkBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        shoulderCamera = GetComponentInChildren<Camera>();
 
         //lock cursor
         Cursor.lockState = CursorLockMode.Locked;

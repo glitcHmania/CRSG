@@ -4,5 +4,17 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/OfflineScene.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/PersistentScene.unity
+    guid: 286b2609125f570478976e4f3d76021a
+  - enabled: 1
+    path: Assets/Scenes/Room1.unity
+    guid: bc62d1a06f02b064789e5d401c6f6e22
+  - enabled: 1
+    path: Assets/Scenes/Room2.unity
+    guid: 094837fbf6d108f469d1cce0847a9c07
   m_configObjects: {}
