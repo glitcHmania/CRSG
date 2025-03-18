@@ -645,7 +645,8 @@ PlayerSettings:
   webGLMemoryGeometricGrowthStep: 0.2
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Standalone: EDGEGAP_PLUGIN_SERVERS;MIRROR;MIRROR_89_OR_NEWER;MIRROR_90_OR_NEWER;MIRROR_93_OR_NEWER;MIRROR_96_OR_NEWER;STEAMWORKS_NET
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
@@ -757,7 +758,7 @@ PlayerSettings:
   cloudProjectId: 4883eaab-d73a-4b38-93c5-2a94b75a460e
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: PushinP
+  projectName: CRSG
   organizationId: glitch5807
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
