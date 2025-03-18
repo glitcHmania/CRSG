@@ -54,7 +54,7 @@ public class Movement : NetworkBehaviour
     void FixedUpdate()
     {
         // Move the character smoothly
-        rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * moveDirection);
 
     }
 }
