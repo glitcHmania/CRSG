@@ -172,6 +172,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1892964022222702720}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3791481913542137232}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4419815717529161684}
@@ -1929,6 +1932,32 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &3791481913542137232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8415338635620679260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ee0d6038c54d3345ac4964a76539df0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ragdollActive: 0
+  hipJoint: {fileID: 7853641215190033015}
+  mainJoint: {fileID: 8962293283625902973}
+  otherJoints:
+  - {fileID: 4972469590395821077}
+  - {fileID: 2251790151858933668}
+  - {fileID: 6889533636252730622}
+  - {fileID: 4435855779518955221}
+  - {fileID: 277685062306828632}
+  - {fileID: 1380890681972881484}
+  - {fileID: 7538621294356234979}
+  - {fileID: 5653926879502385173}
+  - {fileID: 8699569115064483695}
+  - {fileID: 8214332939447216057}
 --- !u!1 &8578548780879289607 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
