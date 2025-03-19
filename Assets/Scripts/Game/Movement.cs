@@ -1,60 +1,141 @@
-using Mirror;
+﻿using Mirror;
 using UnityEngine;
 
 public class Movement : NetworkBehaviour
 {
     private Rigidbody rb;
-    public float moveSpeed = 5f;
-    public float jumpForce = 50f;
-    private Vector3 moveDirection; 
+
     public Camera shoulderCamera;
 
-    // Start is called before the first frame update
-    void Start()
+    public float jumpForce = 50f;
+
+    public float initialMoveSpeed;
+    public float moveSpeedMultiplier;
+    private float moveSpeed;
+
+    private Vector3 moveDirection;
+
+    private float lastMoveX;
+    private float lastMoveZ;
+
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+    }
 
-        //lock cursor
-        Cursor.lockState = CursorLockMode.Locked;
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
 
-        if (!isLocalPlayer)
+        if (rb == null)
         {
-            // Disable the camera for other players
-            shoulderCamera.gameObject.SetActive(false);
-            shoulderCamera.GetComponent<AudioListener>().enabled = false;
+            Debug.LogError("Rigidbody is missing on " + gameObject.name);
+            return;
+        }
+
+        if (isLocalPlayer)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            shoulderCamera.gameObject.SetActive(true);
+            shoulderCamera.tag = "MainCamera";
         }
         else
         {
-            // Enable the camera only for the local player
-            shoulderCamera.gameObject.SetActive(true);
-            shoulderCamera.tag = "MainCamera"; // Dynamically set this for the local player
+            shoulderCamera.gameObject.SetActive(false);
+            shoulderCamera.GetComponent<AudioListener>().enabled = false;
         }
-
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        // Get input
+        if (!isLocalPlayer) return;
+
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
+        moveDirection = transform.right * moveX * 0.6f + transform.forward * moveZ;
 
-        // Convert input to movement direction
-        moveDirection = transform.right * moveX * 0.3f + transform.forward * moveZ;
         float mouseX = Input.GetAxis("Mouse X");
         transform.Rotate(Vector3.up, mouseX);
 
-        // Jump
+        if (moveX != lastMoveX || moveZ != lastMoveZ)
+        {
+            lastMoveX = moveX;
+            lastMoveZ = moveZ;
+            CmdMove(moveX, moveZ);
+        }
+
         if (Input.GetButtonDown("Jump"))
+        {
+            JumpLocally(); // apply jump immediately for responsiveness
+            CmdJump();     // tell the server to replicate
+        }
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            moveSpeed = initialMoveSpeed * 2f;
+        }
+        else
+        {
+            moveSpeed = initialMoveSpeed;
+        }
+    }
+
+    [Command]
+    private void CmdMove(float moveX, float moveZ)
+    {
+        moveDirection = transform.right * moveX * 0.3f + transform.forward * moveZ;
+        RpcMove(moveX, moveZ);
+    }
+
+    [ClientRpc]
+    private void RpcMove(float moveX, float moveZ)
+    {
+        if (!isLocalPlayer)
+        {
+            moveDirection = transform.right * moveX * 0.3f + transform.forward * moveZ;
+        }
+    }
+
+    private void JumpLocally()
+    {
+        if (rb == null) return;
+
+        if (Mathf.Abs(rb.velocity.y) < 0.1f) // check if the player is on the ground
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 
-    void FixedUpdate()
+    [Command]
+    private void CmdJump()
     {
-        // Move the character smoothly
-        rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * moveDirection);
+        if (Mathf.Abs(rb.velocity.y) < 0.1f) // ensure server-side jump validation
+        {
+            RpcJump();
+        }
+    }
 
+    [ClientRpc]
+    private void RpcJump()
+    {
+        if (!isLocalPlayer) // only apply force for non-local clients
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+    }
+
+
+    private void FixedUpdate()
+    {
+        if (rb == null) return;
+
+        if (isLocalPlayer)
+        {
+            rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * moveDirection);
+        }
+        else if (isServer)
+        {
+            rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * moveDirection);
+        }
     }
 }

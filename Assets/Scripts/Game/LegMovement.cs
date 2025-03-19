@@ -3,17 +3,9 @@ using UnityEngine;
 
 public class LegMovement : NetworkBehaviour
 {
-    enum BalanceState
-    {
-        Behind,
-        Front,
-        Balanced
-    }
-
-    [SerializeField]
-    float speed = 1.0f;
-    [SerializeField]
-    float maxAngle = 90.0f;
+    public float speed;
+    public float maxAngle;
+    public float angleMultiplier = 1.0f;
 
     public GameObject leftUpLeg;
     public GameObject leftLeg;
@@ -25,55 +17,81 @@ public class LegMovement : NetworkBehaviour
     private ConfigurableJoint rightLegJoint;
     private ConfigurableJoint leftLegJoint;
 
-    // Start is called before the first frame update
-    void Start()
+    public override void OnStartClient()
     {
-        leftUpLegJoint = leftUpLeg.GetComponent<ConfigurableJoint>();
-        rightUpLegJoint = rightUpLeg.GetComponent<ConfigurableJoint>();
-        rightLegJoint = rightLeg.GetComponent<ConfigurableJoint>();
-        leftLegJoint = leftLeg.GetComponent<ConfigurableJoint>();
-
+        base.OnStartClient();
+        InitializeJoints();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void InitializeJoints()
     {
-        if (isLocalPlayer)
+        if (leftUpLeg != null) leftUpLegJoint = leftUpLeg.GetComponent<ConfigurableJoint>();
+        if (rightUpLeg != null) rightUpLegJoint = rightUpLeg.GetComponent<ConfigurableJoint>();
+        if (rightLeg != null) rightLegJoint = rightLeg.GetComponent<ConfigurableJoint>();
+        if (leftLeg != null) leftLegJoint = leftLeg.GetComponent<ConfigurableJoint>();
+
+        if (leftUpLegJoint == null || rightUpLegJoint == null || rightLegJoint == null || leftLegJoint == null)
         {
+            Debug.LogError("One or more ConfigurableJoint components are missing!", this);
+        }
+    }
 
-            if (Input.GetKey(KeyCode.W))
-            {
+    private void Update()
+    {
+        if (!isLocalPlayer) return; // only the local player processes input
+
+        if (Input.GetKey(KeyCode.W))
+            CmdMove("Forward");
+        else if (Input.GetKey(KeyCode.S))
+            CmdMove("Backward");
+        else if (Input.GetKey(KeyCode.A))
+            CmdMove("Left");
+        else if (Input.GetKey(KeyCode.D))
+            CmdMove("Right");
+        else if (Input.GetKey(KeyCode.Space))
+            CmdMove("Jump");
+        else
+            CmdMove("Idle");
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            angleMultiplier = 1.4f;
+        }
+        else
+        {
+            angleMultiplier = 1.0f;
+        }
+    }
+
+    [Command]
+    private void CmdMove(string direction)
+    {
+        RpcMove(direction);
+    }
+
+    [ClientRpc]
+    private void RpcMove(string direction)
+    {
+        switch (direction)
+        {
+            case "Forward":
                 MoveForward();
-            }
-            else if (Input.GetKey(KeyCode.S))
-            {
+                break;
+            case "Backward":
                 MoveBackward();
-            }
-            else if (Input.GetKey(KeyCode.A))
-            {
+                break;
+            case "Left":
                 MoveLeft();
-            }
-            else if (Input.GetKey(KeyCode.D))
-            {
+                break;
+            case "Right":
                 MoveRight();
-            }
-            else if (Input.GetKey(KeyCode.Space))
-            {
-                float t = Mathf.PingPong(Time.time * speed, 1);
-                float angle = Mathf.Lerp(0, maxAngle, t);
-                leftUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
-                leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
-                rightUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
-                rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
-            }
-            else
-            {
-                leftUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
-                rightUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
-                rightLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
-                leftLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
-
-            }
+                break;
+            case "Jump":
+                Jump();
+                break;
+            case "Idle":
+                ResetLegs();
+                break;
         }
     }
 
@@ -81,9 +99,9 @@ public class LegMovement : NetworkBehaviour
     {
         float t = Mathf.PingPong(Time.time * speed, 1);
         float angle = Mathf.Lerp(-maxAngle, maxAngle, t);
-        leftUpLegJoint.targetRotation = Quaternion.Euler(angle, 0f, 0f);
+        leftUpLegJoint.targetRotation = Quaternion.Euler(angle * angleMultiplier, 0f, 0f);
         leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle, 0f), 0f, 0f);
-        rightUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
+        rightUpLegJoint.targetRotation = Quaternion.Euler(-angle * angleMultiplier, 0f, 0f);
         rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
     }
 
@@ -91,9 +109,9 @@ public class LegMovement : NetworkBehaviour
     {
         float t = Mathf.PingPong(Time.time * speed, 1);
         float angle = Mathf.Lerp(-maxAngle, maxAngle, t);
-        leftUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle * 0.5f, 0f), 0f, 0f);
+        leftUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle * 0.5f * angleMultiplier, 0f), 0f, 0f);
         leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
-        rightUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle * 0.5f, 0f), 0f, 0f);
+        rightUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle * 0.5f * angleMultiplier, 0f), 0f, 0f);
         rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle, 0f), 0f, 0f);
     }
 
@@ -103,7 +121,7 @@ public class LegMovement : NetworkBehaviour
         float angle = Mathf.Lerp(-maxAngle, maxAngle, t);
         if (angle >= 0)
         {
-            leftUpLegJoint.targetRotation = Quaternion.Euler(0f, 0f, angle * 0.5f);
+            leftUpLegJoint.targetRotation = Quaternion.Euler(0f, 0f, angle * 0.5f * angleMultiplier);
             leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
         }
         else
@@ -118,51 +136,30 @@ public class LegMovement : NetworkBehaviour
         float angle = Mathf.Lerp(-maxAngle, maxAngle, t);
         if (angle >= 0)
         {
-            rightUpLegJoint.targetRotation = Quaternion.Euler(0f, 0f, -angle * 0.5f);
+            rightUpLegJoint.targetRotation = Quaternion.Euler(0f, 0f, -angle * 0.5f * angleMultiplier);
             rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
         }
         else
         {
             leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle * 1.5f, 0f), 0f, 0f);
         }
-
     }
 
-    private BalanceState CheckBalance()
+    private void Jump()
     {
-        var hipPosition = transform.position;
-        var leftLegPosition = leftLeg.transform.position;
-        var rightLegPosition = rightLeg.transform.position;
-        var faceDirection = transform.forward;
-        var hipRotation = transform.rotation;
+        float t = Mathf.PingPong(Time.time * speed, 1);
+        float angle = Mathf.Lerp(0, maxAngle, t);
+        leftUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
+        leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
+        rightUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
+        rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
+    }
 
-        //direction vector from hip to left leg
-        var leftLegDirection = leftLegPosition - hipPosition;
-        //direction vector from hip to right leg
-        var rightLegDirection = rightLegPosition - hipPosition;
-
-        //dot product between face direction and left leg direction
-        var leftLegDot = Vector3.Dot(faceDirection, leftLegDirection);
-
-        //dot product between face direction and right leg direction
-        var rightLegDot = Vector3.Dot(faceDirection, rightLegDirection);
-
-        //if both dot products are negative not balanced
-        if (leftLegDot < 0 && rightLegDot < 0)
-        {
-            Debug.Log("LEGS ARE BEHIND THE HIP");
-            return BalanceState.Behind;
-        }
-        else if (leftLegDot > 0 && rightLegDot > 0)
-        {
-            Debug.Log("LEGS ARE IN FRONT OF THE HIP");
-            return BalanceState.Front;
-        }
-        else
-        {
-            Debug.Log("+");
-            return BalanceState.Balanced;
-        }
-
+    private void ResetLegs()
+    {
+        leftUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
+        rightUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
+        rightLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
+        leftLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
     }
 }
