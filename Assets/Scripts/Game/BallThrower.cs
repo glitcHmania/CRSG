@@ -19,7 +19,7 @@ public class BallThrower : MonoBehaviour
     {
         if (ballPrefab == null)
         {
-            Debug.LogError("Ball prefab is not assigned!");
+            //Debug.LogError("Ball prefab is not assigned!");
             return;
         }
 
