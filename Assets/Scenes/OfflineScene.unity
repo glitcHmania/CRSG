@@ -557,6 +557,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa4b7651f2cb2b6489c88a0f337645f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rayDistance: 50
+  pushForce: 10
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  pushKey: 102
 --- !u!65 &413648958
 BoxCollider:
   m_ObjectHideFlags: 0

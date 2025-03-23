@@ -1,51 +1,43 @@
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Movement : NetworkBehaviour
 {
-    private Rigidbody rb;
-    public float moveSpeed = 5f;
-    public float jumpForce = 50f;
-    private Vector3 moveDirection; 
-    public Camera shoulderCamera;
+    [Header("Movement Settings")]
+    public float walkSpeed = 5f;
+    public float runMultiplier = 1.5f;
+    public float jumpForce = 5f;
 
-    // Start is called before the first frame update
+    [Header("Ground Check")]
+    public float groundCheckDistance = 1.1f; // Adjust depending on your model's height
+    public LayerMask groundMask;
+
+    private Rigidbody rb;
+    private Vector3 movementInput;
+    private bool isGrounded;
+    private bool isRunning;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-
-        //lock cursor
-        Cursor.lockState = CursorLockMode.Locked;
-
-        if (!isLocalPlayer)
-        {
-            // Disable the camera for other players
-            shoulderCamera.gameObject.SetActive(false);
-            shoulderCamera.GetComponent<AudioListener>().enabled = false;
-        }
-        else
-        {
-            // Enable the camera only for the local player
-            shoulderCamera.gameObject.SetActive(true);
-            shoulderCamera.tag = "MainCamera"; // Dynamically set this for the local player
-        }
-
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // Get input
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
+        // Movement input
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+        movementInput = (transform.forward * vertical + transform.right * horizontal).normalized;
 
-        // Convert input to movement direction
-        moveDirection = transform.right * moveX * 0.3f + transform.forward * moveZ;
-        float mouseX = Input.GetAxis("Mouse X");
-        transform.Rotate(Vector3.up, mouseX);
+        // Check if running key is held
+        isRunning = Input.GetKey(KeyCode.LeftShift);
 
-        // Jump
-        if (Input.GetButtonDown("Jump"))
+        // Ground check using Raycast
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance, groundMask);
+
+        // Jump input
+        if (Input.GetKeyUp(KeyCode.Space) && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
@@ -53,8 +45,22 @@ public class Movement : NetworkBehaviour
 
     void FixedUpdate()
     {
-        // Move the character smoothly
-        rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * moveDirection);
+        if (!isLocalPlayer) return; // Only the local player should control physics
 
+        // Calculate movement speed
+        float currentSpeed = isRunning ? walkSpeed * runMultiplier : walkSpeed;
+
+        // Maintain existing vertical velocity (important for jumping/falling)
+        Vector3 move = movementInput * currentSpeed;
+        Vector3 velocity = new Vector3(move.x, rb.velocity.y, move.z);
+        rb.velocity = velocity;
+    }
+
+
+    // Optional: Visualize raycast in Scene view
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
     }
 }

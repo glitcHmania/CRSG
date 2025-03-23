@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using UnityEngine;
 
 public class LegMovement : NetworkBehaviour
@@ -14,6 +14,8 @@ public class LegMovement : NetworkBehaviour
     float speed = 1.0f;
     [SerializeField]
     float maxAngle = 90.0f;
+    [SerializeField]
+    float lowerLegAngleMultiplier = 0.6f;
 
     public GameObject leftUpLeg;
     public GameObject leftLeg;
@@ -24,6 +26,9 @@ public class LegMovement : NetworkBehaviour
     private ConfigurableJoint rightUpLegJoint;
     private ConfigurableJoint rightLegJoint;
     private ConfigurableJoint leftLegJoint;
+
+    private float jumpAngle = 0f;
+    public float jumpSpeed = 60f;
 
     // Start is called before the first frame update
     void Start()
@@ -59,12 +64,16 @@ public class LegMovement : NetworkBehaviour
             }
             else if (Input.GetKey(KeyCode.Space))
             {
-                float t = Mathf.PingPong(Time.time * speed, 1);
-                float angle = Mathf.Lerp(0, maxAngle, t);
-                leftUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
-                leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
-                rightUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
-                rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
+                jumpAngle = Mathf.MoveTowards(jumpAngle, maxAngle, Time.deltaTime * jumpSpeed);
+                Debug.Log(jumpAngle);
+
+                float upperLegAngle = -jumpAngle;
+                float lowerLegAngle = Mathf.Max(jumpAngle, 0f) * 2f;
+
+                leftUpLegJoint.targetRotation = Quaternion.Euler(upperLegAngle, 0f, 0f);
+                leftLegJoint.targetRotation = Quaternion.Euler(lowerLegAngle, 0f, 0f);
+                rightUpLegJoint.targetRotation = Quaternion.Euler(upperLegAngle, 0f, 0f);
+                rightLegJoint.targetRotation = Quaternion.Euler(lowerLegAngle, 0f, 0f);
             }
             else
             {
@@ -72,19 +81,39 @@ public class LegMovement : NetworkBehaviour
                 rightUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
                 rightLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
                 leftLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
-
+                jumpAngle = 0f;
             }
         }
     }
 
     private void MoveForward()
     {
-        float t = Mathf.PingPong(Time.time * speed, 1);
-        float angle = Mathf.Lerp(-maxAngle, maxAngle, t);
-        leftUpLegJoint.targetRotation = Quaternion.Euler(angle, 0f, 0f);
-        leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle, 0f), 0f, 0f);
-        rightUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
-        rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
+        float stepDuration = 1f / speed;
+        float cycleTime = Time.time % (stepDuration * 2f);
+        bool isRightLegMoving = cycleTime < stepDuration;
+
+        float t = Mathf.Clamp01((cycleTime % stepDuration) / stepDuration);
+        float easedT = Mathf.Sin(t * Mathf.PI);
+        float angle = easedT * maxAngle;
+        float lowerLegAngle = Mathf.Max(angle * lowerLegAngleMultiplier, 0f);
+
+        // Reset both legs to default position
+        leftUpLegJoint.targetRotation = Quaternion.identity;
+        leftLegJoint.targetRotation = Quaternion.identity;
+        rightUpLegJoint.targetRotation = Quaternion.identity;
+        rightLegJoint.targetRotation = Quaternion.identity;
+
+        // Apply movement to the active leg
+        if (isRightLegMoving)
+        {
+            rightUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
+            rightLegJoint.targetRotation = Quaternion.Euler(lowerLegAngle, 0f, 0f);
+        }
+        else
+        {
+            leftUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
+            leftLegJoint.targetRotation = Quaternion.Euler(lowerLegAngle, 0f, 0f);
+        }
     }
 
     private void MoveBackward()
@@ -92,10 +121,11 @@ public class LegMovement : NetworkBehaviour
         float t = Mathf.PingPong(Time.time * speed, 1);
         float angle = Mathf.Lerp(-maxAngle, maxAngle, t);
         leftUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle * 0.5f, 0f), 0f, 0f);
-        leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
+        leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f) * 0.5f, 0f, 0f);
         rightUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle * 0.5f, 0f), 0f, 0f);
-        rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle, 0f), 0f, 0f);
+        rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle, 0f) * 0.5f, 0f, 0f);
     }
+
 
     private void MoveLeft()
     {
