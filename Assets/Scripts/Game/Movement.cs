@@ -39,11 +39,48 @@ public class Movement : NetworkBehaviour
         // Jump input
         if (Input.GetKeyUp(KeyCode.Space) && isGrounded)
         {
+            JumpLocally(); // apply jump immediately for responsiveness
+            CmdJump();     // tell the server to replicate
+        }
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            moveSpeed = initialMoveSpeed * 2f;
+        }
+        else
+        {
+            moveSpeed = initialMoveSpeed;
+        }
+    }
+
+    [Command]
+    private void CmdMove(float moveX, float moveZ)
+    {
+        moveDirection = transform.right * moveX * 0.3f + transform.forward * moveZ;
+        RpcMove(moveX, moveZ);
+    }
+
+    [ClientRpc]
+    private void RpcMove(float moveX, float moveZ)
+    {
+        if (!isLocalPlayer)
+        {
+            moveDirection = transform.right * moveX * 0.3f + transform.forward * moveZ;
+        }
+    }
+
+    private void JumpLocally()
+    {
+        if (rb == null) return;
+
+        if (Mathf.Abs(rb.velocity.y) < 0.1f) // check if the player is on the ground
+        {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 
-    void FixedUpdate()
+    [Command]
+    private void CmdJump()
     {
         if (!isLocalPlayer) return; // Only the local player should control physics
 
