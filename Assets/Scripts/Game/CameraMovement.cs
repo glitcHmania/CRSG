@@ -1,37 +1,28 @@
 using Mirror;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraMovement : MonoBehaviour
+public class CameraMovement : NetworkBehaviour
 {
-    // Start is called before the first frame update
+    public Camera shoulderCamera;
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+
+        if (!isLocalPlayer)
+        {
+            shoulderCamera.gameObject.SetActive(false);
+            shoulderCamera.GetComponent<AudioListener>().enabled = false;
+        }
+        else
+        {
+            shoulderCamera.gameObject.SetActive(true);
+            shoulderCamera.tag = "MainCamera";
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(transform.eulerAngles.x);
-        float mouseY = Input.GetAxis("Mouse Y");
-        //cap the rotation
-        if (transform.eulerAngles.x > 180 && transform.eulerAngles.x < 340)
-        {
-            if (mouseY > 0)
-            {
-                mouseY = 0;
-            }
-        }
-        else if (transform.eulerAngles.x < 180 && transform.eulerAngles.x > 60)
-        {
-            if (mouseY < 0)
-            {
-                mouseY = 0;
-            }
-        }
-
-        transform.Rotate(Vector3.left, mouseY);
+        transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * 2);
     }
 }

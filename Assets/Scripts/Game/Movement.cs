@@ -1,51 +1,38 @@
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Movement : NetworkBehaviour
 {
-    private Rigidbody rb;
-    public float moveSpeed = 5f;
-    public float jumpForce = 50f;
-    private Vector3 moveDirection; 
-    public Camera shoulderCamera;
+    [Header("Movement Settings")]
+    public float walkSpeed = 5f;
+    public float runMultiplier = 1.5f;
+    public float jumpForce = 5f;
 
-    // Start is called before the first frame update
+    [Header("Ground Check")]
+    public float groundCheckDistance = 1.1f;
+    public LayerMask groundMask;
+
+    private Rigidbody rb;
+    private Vector3 movementInput;
+    private bool isGrounded;
+    private bool isRunning;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-
-        //lock cursor
-        Cursor.lockState = CursorLockMode.Locked;
-
-        if (!isLocalPlayer)
-        {
-            // Disable the camera for other players
-            shoulderCamera.gameObject.SetActive(false);
-            shoulderCamera.GetComponent<AudioListener>().enabled = false;
-        }
-        else
-        {
-            // Enable the camera only for the local player
-            shoulderCamera.gameObject.SetActive(true);
-            shoulderCamera.tag = "MainCamera"; // Dynamically set this for the local player
-        }
-
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // Get input
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+        movementInput = (transform.forward * vertical + transform.right * horizontal).normalized;
 
-        // Convert input to movement direction
-        moveDirection = transform.right * moveX * 0.3f + transform.forward * moveZ;
-        float mouseX = Input.GetAxis("Mouse X");
-        transform.Rotate(Vector3.up, mouseX);
+        isRunning = Input.GetKey(KeyCode.LeftShift);
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance, groundMask);
 
-        // Jump
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetKeyUp(KeyCode.Space) && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
@@ -53,8 +40,20 @@ public class Movement : NetworkBehaviour
 
     void FixedUpdate()
     {
-        // Move the character smoothly
-        rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * moveDirection);
+        if (isLocalPlayer)
+        {
+            float currentSpeed = isRunning ? walkSpeed * runMultiplier : walkSpeed;
 
+            Vector3 move = movementInput * currentSpeed;
+            Vector3 velocity = new Vector3(move.x, rb.velocity.y, move.z);
+            rb.velocity = velocity;
+        }
+    }
+
+    //ground detection gizmo
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
     }
 }

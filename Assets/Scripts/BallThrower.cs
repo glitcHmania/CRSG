@@ -30,7 +30,6 @@ public class BallThrower : MonoBehaviour
         Camera mainCam = Camera.main;
         if (mainCam == null)
         {
-            Debug.LogError("Main Camera not found!");
             return;
         }
 
