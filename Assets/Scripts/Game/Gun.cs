@@ -11,6 +11,7 @@ public class Gun : MonoBehaviour
     private LineRenderer _lineRenderer;
     private bool _isAvailable = true;
 
+    public Rigidbody HandRigidbody;
     public int Power;
     public int MagazineSize;
     public int BulletCount;
@@ -20,7 +21,7 @@ public class Gun : MonoBehaviour
 
     void Awake()
     {
-        _lineRenderer = GetComponent<LineRenderer>();        
+        _lineRenderer = GetComponent<LineRenderer>();
     }
 
     // Start is called before the first frame update
@@ -29,38 +30,32 @@ public class Gun : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Equip()
     {
-        if (!_isAvailable)
-            return;
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            Shoot();
-        }
-        else if (Input.GetKeyUp(KeyCode.R))
-        {
-            StartCoroutine(Reload());
-        }
+        HandRigidbody = Extensions.GetFirstComponentInAncestor<Rigidbody>(transform);
     }
 
     public void Shoot()
     {
+        if (!_isAvailable)
+            return;
+
         if (BulletCount <= 0)
             return;
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = new Ray(transform.position, transform.forward);
+
+        StartCoroutine(ShotEffect(new Vector3[] { transform.position, transform.position + new Vector3(0,0, Range)}));
+
+        HandRigidbody.AddForce(-transform.forward * Power, ForceMode.Impulse);
 
         if (Physics.Raycast(ray, out RaycastHit hit, Range))
         {
-            Debug.Log("Hit: " + hit.collider.name);
-            
-            StartCoroutine(ShotEffect(new Vector3[] { Camera.main.transform.position, hit.point }));
+            Debug.Log("Hit: " + hit.collider.name);      
 
             if (hit.collider.TryGetComponent(out Rigidbody rb))
             {
-                Vector3 forceDirection = hit.point - Camera.main.transform.position;
+                Vector3 forceDirection = hit.point - transform.position;
                 forceDirection.Normalize();
 
                 rb.AddForce(forceDirection * Power, ForceMode.Impulse);
@@ -88,8 +83,11 @@ public class Gun : MonoBehaviour
         _isAvailable = true;
     }
 
-    private IEnumerator Reload()
+    public IEnumerator Reload()
     {
+        if (!_isAvailable)
+            yield break;
+
         _isAvailable = false;
 
         Debug.Log($"Reloading in {ReloadTime} seconds");
