@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class RagdollControl : MonoBehaviour
 {
@@ -24,7 +24,7 @@ public class RagdollControl : MonoBehaviour
         }
     }
 
-    private void ActivateRagdoll()
+    public void ActivateRagdoll()
     {
         SetPositionDamper(mainJoint, 0f);
 
@@ -36,7 +36,7 @@ public class RagdollControl : MonoBehaviour
         FreeHipAxis();
     }
 
-    private void DeactivateRagdoll()
+    public void DeactivateRagdoll()
     {
         SetPositionDamper(mainJoint, 1000f);
 
@@ -67,12 +67,12 @@ public class RagdollControl : MonoBehaviour
         hipJoint.angularXMotion = ConfigurableJointMotion.Free;
         hipJoint.angularYMotion = ConfigurableJointMotion.Free;
         hipJoint.angularZMotion = ConfigurableJointMotion.Free;
-        hipJoint.xMotion = ConfigurableJointMotion.Free;
-        hipJoint.yMotion = ConfigurableJointMotion.Free;
-        hipJoint.zMotion = ConfigurableJointMotion.Free;
+        //hipJoint.xMotion = ConfigurableJointMotion.Free;
+        //hipJoint.yMotion = ConfigurableJointMotion.Free;
+        //hipJoint.zMotion = ConfigurableJointMotion.Free;
 
-        //mainJoint.angularXMotion = ConfigurableJointMotion.Free;
-        //mainJoint.angularZMotion = ConfigurableJointMotion.Free;
+        mainJoint.angularXMotion = ConfigurableJointMotion.Free;
+        mainJoint.angularZMotion = ConfigurableJointMotion.Free;
     }
 
     private void LockHipAxis()
@@ -80,11 +80,11 @@ public class RagdollControl : MonoBehaviour
         hipJoint.angularXMotion = ConfigurableJointMotion.Locked;
         hipJoint.angularYMotion = ConfigurableJointMotion.Locked;
         hipJoint.angularZMotion = ConfigurableJointMotion.Locked;
-        hipJoint.xMotion = ConfigurableJointMotion.Locked;
-        hipJoint.yMotion = ConfigurableJointMotion.Locked;
-        hipJoint.zMotion = ConfigurableJointMotion.Locked;
+        //hipJoint.xMotion = ConfigurableJointMotion.Locked;
+        //hipJoint.yMotion = ConfigurableJointMotion.Locked;
+        //hipJoint.zMotion = ConfigurableJointMotion.Locked;
 
-        //mainJoint.angularXMotion = ConfigurableJointMotion.Locked;
-        //mainJoint.angularZMotion = ConfigurableJointMotion.Locked;
+        mainJoint.angularXMotion = ConfigurableJointMotion.Locked;
+        mainJoint.angularZMotion = ConfigurableJointMotion.Locked;
     }
 }
