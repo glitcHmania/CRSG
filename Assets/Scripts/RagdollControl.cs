@@ -3,22 +3,36 @@
 public class RagdollControl : MonoBehaviour
 {
     public bool ragdollActive = false;
-    public ConfigurableJoint hipJoint;
-    public ConfigurableJoint mainJoint;
-    public ConfigurableJoint[] otherJoints;
+    public float ragdollStiffness;
 
-    void Update()
+    ConfigurableJoint hipJoint;
+    [SerializeField]
+    ConfigurableJoint[] legJoints;
+    [SerializeField]
+    ConfigurableJoint[] otherJoints;
+
+    private float initialXPositionSpring;
+    private float initialYZPositionDamper;
+
+
+    private void Start()
     {
+        hipJoint = GetComponent<ConfigurableJoint>();
+        initialXPositionSpring = hipJoint.angularXDrive.positionSpring;
+        initialYZPositionDamper = hipJoint.angularYZDrive.positionSpring;
+    }
+
+    private void Update()
+    {
+        //if g is pressed, toggle ragdoll
         if (Input.GetKeyDown(KeyCode.G))
         {
             if (ragdollActive)
             {
-                ragdollActive = false;
                 DeactivateRagdoll();
             }
             else
             {
-                ragdollActive = true;
                 ActivateRagdoll();
             }
         }
@@ -26,65 +40,39 @@ public class RagdollControl : MonoBehaviour
 
     public void ActivateRagdoll()
     {
-        SetPositionDamper(mainJoint, 0f);
+        ragdollActive = true;
+        hipJoint.angularXDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
+        hipJoint.angularYZDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
 
-        foreach (ConfigurableJoint joint in otherJoints)
+        foreach (var joint in otherJoints)
         {
-            SetPositionSpring(joint, 30f);
+            joint.angularXDrive = new JointDrive { positionSpring = ragdollStiffness, maximumForce = 3.402823e+38f };
+            joint.angularYZDrive = new JointDrive { positionSpring = ragdollStiffness, maximumForce = 3.402823e+38f };
         }
 
-        FreeHipAxis();
+        foreach (var joint in legJoints)
+        {
+            joint.angularXDrive = new JointDrive { positionSpring = ragdollStiffness, maximumForce = 3.402823e+38f };
+            joint.angularYZDrive = new JointDrive { positionSpring = ragdollStiffness, maximumForce = 3.402823e+38f };
+        }
     }
 
     public void DeactivateRagdoll()
     {
-        SetPositionDamper(mainJoint, 1000f);
+        ragdollActive = false;
+        hipJoint.angularXDrive = new JointDrive { positionSpring = initialXPositionSpring, maximumForce = 3.402823e+38f };
+        hipJoint.angularYZDrive = new JointDrive { positionSpring = initialYZPositionDamper, maximumForce = 3.402823e+38f };
 
-        foreach (ConfigurableJoint joint in otherJoints)
+        foreach (var joint in otherJoints)
         {
-            SetPositionSpring(joint, 300f);
+            joint.angularXDrive = new JointDrive { positionSpring = 100, maximumForce = 3.402823e+38f };
+            joint.angularYZDrive = new JointDrive { positionSpring = 100, maximumForce = 3.402823e+38f };
         }
 
-        LockHipAxis();
-    }
-
-    private void SetPositionDamper(ConfigurableJoint joint, float damper)
-    {
-        JointDrive slerpDrive = joint.slerpDrive;
-        slerpDrive.positionDamper = damper;
-        joint.slerpDrive = slerpDrive;
-    }
-
-    private void SetPositionSpring(ConfigurableJoint joint, float spring)
-    {
-        JointDrive slerpDrive = joint.slerpDrive;
-        slerpDrive.positionSpring = spring;
-        joint.slerpDrive = slerpDrive;
-    }
-
-    private void FreeHipAxis()
-    {
-        hipJoint.angularXMotion = ConfigurableJointMotion.Free;
-        hipJoint.angularYMotion = ConfigurableJointMotion.Free;
-        hipJoint.angularZMotion = ConfigurableJointMotion.Free;
-        //hipJoint.xMotion = ConfigurableJointMotion.Free;
-        //hipJoint.yMotion = ConfigurableJointMotion.Free;
-        //hipJoint.zMotion = ConfigurableJointMotion.Free;
-
-        mainJoint.angularXMotion = ConfigurableJointMotion.Free;
-        mainJoint.angularZMotion = ConfigurableJointMotion.Free;
-    }
-
-    private void LockHipAxis()
-    {
-        hipJoint.angularXMotion = ConfigurableJointMotion.Locked;
-        hipJoint.angularYMotion = ConfigurableJointMotion.Locked;
-        hipJoint.angularZMotion = ConfigurableJointMotion.Locked;
-        //hipJoint.xMotion = ConfigurableJointMotion.Locked;
-        //hipJoint.yMotion = ConfigurableJointMotion.Locked;
-        //hipJoint.zMotion = ConfigurableJointMotion.Locked;
-
-        mainJoint.angularXMotion = ConfigurableJointMotion.Locked;
-        mainJoint.angularZMotion = ConfigurableJointMotion.Locked;
+        foreach (var joint in legJoints)
+        {
+            joint.angularXDrive = new JointDrive { positionSpring = 1000, maximumForce = 3.402823e+38f };
+            joint.angularYZDrive = new JointDrive { positionSpring = 1000, maximumForce = 3.402823e+38f };
+        }
     }
 }
