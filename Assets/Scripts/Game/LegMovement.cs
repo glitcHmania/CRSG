@@ -57,21 +57,9 @@ public class LegMovement : NetworkBehaviour
                 currentSpeed = walkSpeed;
             }
 
-            if (Input.GetKey(KeyCode.W))
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
             {
                 MoveForward();
-            }
-            else if (Input.GetKey(KeyCode.S))
-            {
-                MoveBackward();
-            }
-            else if (Input.GetKey(KeyCode.A))
-            {
-                MoveLeft();
-            }
-            else if (Input.GetKey(KeyCode.D))
-            {
-                MoveRight();
             }
             else if (Input.GetKey(KeyCode.Space))
             {
