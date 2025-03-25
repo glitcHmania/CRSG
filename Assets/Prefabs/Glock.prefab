@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HandRigidbody: {fileID: 0}
-  Power: 30
+  Power: 50
   MagazineSize: 15
   BulletCount: 15
   Range: 50

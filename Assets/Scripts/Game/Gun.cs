@@ -1,15 +1,17 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 
 public class Gun : MonoBehaviour
 {
     private const float ShotEffectDuration = 0.1f;
-    
-    private LineRenderer _lineRenderer;
-    private bool _isAvailable = true;
+
+    private LineRenderer lineRenderer;
+    private bool isAvailable = true;
+
+    private Vector3[] lastShotPoints;
+
+    private Timer shotEffectTimer;
+    private Timer recoverTimer;
+    private Timer reloadTimer;
 
     public Rigidbody HandRigidbody;
     public int Power;
@@ -21,79 +23,65 @@ public class Gun : MonoBehaviour
 
     void Awake()
     {
-        _lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer = GetComponent<LineRenderer>();
+
+        shotEffectTimer = new Timer(ShotEffectDuration, () => lineRenderer.enabled = false);
+        recoverTimer = new Timer(RecoverTime, () => isAvailable = true);
+        reloadTimer = new Timer(ReloadTime, () =>
+        {
+            BulletCount = MagazineSize;
+            isAvailable = true;
+        });
     }
 
-    // Start is called before the first frame update
-    void Start()
+    void Update()
     {
-        
-    }
-
-    public void Equip()
-    {
-        HandRigidbody = Extensions.GetFirstComponentInAncestor<Rigidbody>(transform);
+        shotEffectTimer.Update();
+        recoverTimer.Update();
+        reloadTimer.Update();
     }
 
     public void Shoot()
     {
-        if (!_isAvailable)
+        if (!isAvailable || BulletCount <= 0)
+        {
             return;
-
-        if (BulletCount <= 0)
-            return;
+        }
 
         Ray ray = new Ray(transform.position, transform.forward);
+        lastShotPoints = new Vector3[] { transform.position, transform.position + transform.forward * Range };
+        lineRenderer.SetPositions(lastShotPoints);
+        lineRenderer.enabled = true;
 
-        StartCoroutine(ShotEffect(new Vector3[] { transform.position, transform.position + new Vector3(0,0, Range)}));
+        shotEffectTimer.Reset();
+        recoverTimer.Reset();
 
+        isAvailable = false;
         HandRigidbody.AddForce(-transform.forward * Power, ForceMode.Impulse);
 
         if (Physics.Raycast(ray, out RaycastHit hit, Range))
         {
-            Debug.Log("Hit: " + hit.collider.name);      
+            Debug.Log("Hit: " + hit.collider.name);
 
             if (hit.collider.TryGetComponent(out Rigidbody rb))
             {
-                Vector3 forceDirection = hit.point - transform.position;
-                forceDirection.Normalize();
-
+                Vector3 forceDirection = (hit.point - transform.position).normalized;
                 rb.AddForce(forceDirection * Power, ForceMode.Impulse);
             }
-
-            StartCoroutine(Recover());
         }
 
         BulletCount--;
     }
 
-    private IEnumerator ShotEffect(Vector3[] points)
+    public void Reload()
     {
-        _lineRenderer.SetPositions(points);
-
-        _lineRenderer.enabled = true;
-        yield return new WaitForSeconds(ShotEffectDuration);
-        _lineRenderer.enabled = false;
-    }
-
-    private IEnumerator Recover()
-    {
-        _isAvailable = false;
-        yield return new WaitForSeconds(RecoverTime);
-        _isAvailable = true;
-    }
-
-    public IEnumerator Reload()
-    {
-        if (!_isAvailable)
-            yield break;
-
-        _isAvailable = false;
+        if (!isAvailable)
+        {
+            return;
+        }
 
         Debug.Log($"Reloading in {ReloadTime} seconds");
-        yield return new WaitForSeconds(ReloadTime);
-        BulletCount = MagazineSize;
-
-        _isAvailable = true;
+        isAvailable = false;
+        reloadTimer.Reset();
     }
 }

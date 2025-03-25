@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class WeaponHolder : MonoBehaviour
 {
-    public Transform weaponBone;
+    public GameObject recoilBone;
+    public GameObject weaponBone;
     private GameObject currentWeapon;
     private Gun currentWeaponGunScript;
 
@@ -10,13 +11,17 @@ public class WeaponHolder : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if(currentWeaponGunScript != null) 
+            if(currentWeaponGunScript != null)
+            {
                 currentWeaponGunScript.Shoot();
+            }
         }
         else if (Input.GetKeyUp(KeyCode.R))
         {
-            if(currentWeaponGunScript != null) 
-                StartCoroutine(currentWeaponGunScript.Reload());
+            if(currentWeaponGunScript != null)
+            {
+                currentWeaponGunScript.Reload();
+            }
         }
     }
 
@@ -31,11 +36,10 @@ public class WeaponHolder : MonoBehaviour
 
         Debug.Assert(weapon.TryGetComponent<Gun>(out var gunScript));
         currentWeaponGunScript = gunScript;
+        currentWeaponGunScript.HandRigidbody = recoilBone.GetComponent<Rigidbody>();
 
-        weapon.transform.SetParent(weaponBone);
+        weapon.transform.SetParent(weaponBone.transform);
         weapon.transform.localPosition = Vector3.zero;
         weapon.transform.localRotation = Quaternion.identity;
-
-        currentWeaponGunScript.Equip();
     }
 }
