@@ -1,7 +1,6 @@
 ﻿using Mirror;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 public class Movement : NetworkBehaviour
 {
     [Header("Movement Settings")]
@@ -15,8 +14,8 @@ public class Movement : NetworkBehaviour
     public LayerMask groundMask;
 
     [Header("References")]
-    public Transform root;   // ← Assign Player/root in inspector
-    public Transform cam;    // ← Assign Player/camera in inspector
+    public Transform root;
+    public Transform cam;
 
     private Rigidbody rb;
     private bool isRunning;
@@ -45,7 +44,6 @@ public class Movement : NetworkBehaviour
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
-        // Get camera-forward-based movement direction
         Vector3 camForward = cam.forward;
         Vector3 camRight = cam.right;
 
@@ -71,11 +69,9 @@ public class Movement : NetworkBehaviour
 
         float speed = isRunning ? moveSpeed * runMultiplier : moveSpeed;
 
-        // Apply movement
         Vector3 velocity = moveDir * speed;
         rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
 
-        // Rotate root toward movement direction
         if (moveDir != Vector3.zero && root != null)
         {
             Quaternion targetRotation = Quaternion.LookRotation(moveDir);

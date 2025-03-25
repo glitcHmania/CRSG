@@ -10,7 +10,6 @@ public class IgnoreCollision : NetworkBehaviour
 
     [SerializeField]
     Collider[] ColliderToIgnore;
-    // Start is called before the first frame update
     void Start()
     {
         foreach (Collider collider in ColliderToIgnore)

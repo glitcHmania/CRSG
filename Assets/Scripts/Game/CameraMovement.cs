@@ -7,6 +7,7 @@ public class ThirdPersonCamera : MonoBehaviour
     public float rotationSpeed = 5f;
     public float minYAngle = -30f;
     public float maxYAngle = 60f;
+    public float smoothSpeed = 0.125f;
 
     private float currentYaw = 0f;
     private float currentPitch = 20f;
@@ -28,14 +29,13 @@ public class ThirdPersonCamera : MonoBehaviour
         currentPitch -= mouseY * rotationSpeed;
         currentPitch = Mathf.Clamp(currentPitch, minYAngle, maxYAngle);
 
-        // Combine pitch and yaw rotations
         Quaternion rotation = Quaternion.Euler(currentPitch, currentYaw, 0);
         Vector3 desiredPosition = target.position + rotation * offset;
 
         transform.position = desiredPosition;
 
         // Optional: smooth movement
-        // transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * smoothSpeed);
+        transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * smoothSpeed);
 
         transform.LookAt(target.position + Vector3.up * 1.5f);
     }
