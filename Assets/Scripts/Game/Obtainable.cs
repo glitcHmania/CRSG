@@ -1,9 +1,8 @@
 using UnityEngine;
-using Mirror; // optional if using Mirror to spawn
 
-public class WeaponPicker : MonoBehaviour
+public class Obtainable : MonoBehaviour
 {
-    public GameObject weaponPrefab; // Reference to the full weapon prefab
+    public GameObject weaponPrefab;
     public Vector3 modelOffset = Vector3.zero;
     public float bobAmplitude = 0.25f;
     public float bobFrequency = 2f;
@@ -14,7 +13,6 @@ public class WeaponPicker : MonoBehaviour
 
     void Start()
     {
-        // Get the model child from the weapon prefab and instantiate it for visuals
         if (weaponPrefab != null)
         {
             Transform model = weaponPrefab.transform.Find("Model");
@@ -55,14 +53,8 @@ public class WeaponPicker : MonoBehaviour
             var weaponHolder = other.GetComponentInParent<WeaponHolder>();
             if (weaponHolder != null)
             {
-                // Give the player the weapon
                 GameObject newWeapon = Instantiate(weaponPrefab);
                 weaponHolder.EquipWeapon(newWeapon);
-
-                // Optionally: Network spawn if using Mirror
-                // NetworkServer.Spawn(newWeapon, other.connectionToClient);
-
-                // Destroy the pickup
                 Destroy(gameObject);
             }
         }

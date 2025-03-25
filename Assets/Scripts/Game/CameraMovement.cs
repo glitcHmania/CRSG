@@ -1,28 +1,42 @@
-using Mirror;
 using UnityEngine;
 
-public class CameraMovement : NetworkBehaviour
+public class ThirdPersonCamera : MonoBehaviour
 {
-    public Camera shoulderCamera;
-    void Start()
+    public Transform target;
+    public Vector3 offset = new Vector3(0f, 0f, -4f);
+    public float rotationSpeed = 5f;
+    public float minYAngle = -30f;
+    public float maxYAngle = 60f;
+    public float smoothSpeed = 0.125f;
+
+    private float currentYaw = 0f;
+    private float currentPitch = 20f;
+
+    private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-
-        if (!isLocalPlayer)
-        {
-            shoulderCamera.gameObject.SetActive(false);
-            shoulderCamera.GetComponent<AudioListener>().enabled = false;
-        }
-        else
-        {
-            shoulderCamera.gameObject.SetActive(true);
-            shoulderCamera.tag = "MainCamera";
-        }
+        Cursor.visible = false;
     }
 
-    // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * 2);
+        if (target == null) return;
+
+        float mouseX = Input.GetAxis("Mouse X");
+        float mouseY = Input.GetAxis("Mouse Y");
+
+        currentYaw += mouseX * rotationSpeed;
+        currentPitch -= mouseY * rotationSpeed;
+        currentPitch = Mathf.Clamp(currentPitch, minYAngle, maxYAngle);
+
+        Quaternion rotation = Quaternion.Euler(currentPitch, currentYaw, 0);
+        Vector3 desiredPosition = target.position + rotation * offset;
+
+        transform.position = desiredPosition;
+
+        // Optional: smooth movement
+        transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * smoothSpeed);
+
+        transform.LookAt(target.position + Vector3.up * 1.5f);
     }
 }

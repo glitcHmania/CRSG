@@ -1,33 +1,58 @@
-using Mirror;
+﻿using Mirror;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 public class Movement : NetworkBehaviour
 {
     [Header("Movement Settings")]
-    public float walkSpeed = 5f;
+    public float moveSpeed = 5f;
     public float runMultiplier = 1.5f;
     public float jumpForce = 5f;
+    public float rotationSpeed = 10f;
 
     [Header("Ground Check")]
     public float groundCheckDistance = 1.1f;
     public LayerMask groundMask;
 
+    [Header("References")]
+    public Transform root;
+    public Transform cam;
+
     private Rigidbody rb;
-    private Vector3 movementInput;
-    private bool isGrounded;
     private bool isRunning;
+    private bool isGrounded;
+    private Vector3 moveDir;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        if (cam == null)
+        {
+            Debug.LogError("Camera not assigned in Movement script.");
+        }
+
+        if (root == null)
+        {
+            Debug.LogError("Root not assigned in Movement script.");
+        }
     }
 
     void Update()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-        movementInput = (transform.forward * vertical + transform.right * horizontal).normalized;
+        if (!isLocalPlayer) return;
+
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+
+        Vector3 camForward = cam.forward;
+        Vector3 camRight = cam.right;
+
+        camForward.y = 0;
+        camRight.y = 0;
+        camForward.Normalize();
+        camRight.Normalize();
+
+        moveDir = (camForward * v + camRight * h).normalized;
 
         isRunning = Input.GetKey(KeyCode.LeftShift);
         isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance, groundMask);
@@ -40,17 +65,20 @@ public class Movement : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (isLocalPlayer)
-        {
-            float currentSpeed = isRunning ? walkSpeed * runMultiplier : walkSpeed;
+        if (!isLocalPlayer) return;
 
-            Vector3 move = movementInput * currentSpeed;
-            Vector3 velocity = new Vector3(move.x, rb.velocity.y, move.z);
-            rb.velocity = velocity;
+        float speed = isRunning ? moveSpeed * runMultiplier : moveSpeed;
+
+        Vector3 velocity = moveDir * speed;
+        rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
+
+        if (moveDir != Vector3.zero && root != null)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
+            root.rotation = Quaternion.Slerp(root.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
         }
     }
 
-    //ground detection gizmo
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
