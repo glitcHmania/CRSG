@@ -3,12 +3,7 @@ using UnityEngine;
 
 public class LegMovement : NetworkBehaviour
 {
-    enum BalanceState
-    {
-        Behind,
-        Front,
-        Balanced
-    }
+    public PlayerState playerState;
 
     private float currentSpeed;
     [SerializeField]
@@ -48,7 +43,7 @@ public class LegMovement : NetworkBehaviour
     {
         if (isLocalPlayer)
         {
-            if( Input.GetKey(KeyCode.LeftShift))
+            if( playerState.movementState == PlayerState.Movement.Running)
             {
                 currentSpeed = sprintSpeed;
             }
@@ -57,14 +52,13 @@ public class LegMovement : NetworkBehaviour
                 currentSpeed = walkSpeed;
             }
 
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+            if (playerState.IsMoving)
             {
                 MoveForward();
             }
-            else if (Input.GetKey(KeyCode.Space))
+            else if (playerState.movementState == PlayerState.Movement.Jumping)
             {
                 jumpAngle = Mathf.MoveTowards(jumpAngle, maxAngle, Time.deltaTime * jumpSpeed);
-                Debug.Log(jumpAngle);
 
                 float upperLegAngle = -jumpAngle;
                 float lowerLegAngle = Mathf.Max(jumpAngle, 0f) * 2f;

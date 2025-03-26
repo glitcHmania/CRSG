@@ -169,7 +169,6 @@ MonoBehaviour:
   rotationSpeed: 5
   minYAngle: -80
   maxYAngle: 10
-  smoothSpeed: 0.125
 --- !u!1 &8292016055041033889
 GameObject:
   m_ObjectHideFlags: 0
@@ -879,6 +878,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4131541563538897755}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8150470886946853929}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4419815717529161684}
@@ -2903,6 +2905,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recoilBone: {fileID: 287997504604421362}
   weaponBone: {fileID: 8292016055041033889}
+--- !u!114 &-8150470886946853929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8415338635620679260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84609038cdb3fc54a9df805ec2c05a0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  movementState: 0
+  isRagdoll: 0
+  isAiming: 0
+  isGrounded: 0
 --- !u!1 &8578548780879289607 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
@@ -3073,6 +3094,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  playerState: {fileID: -8150470886946853929}
   walkSpeed: 2
   sprintSpeed: 3
   maxAngle: 60
@@ -3097,6 +3119,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  playerState: {fileID: -8150470886946853929}
   moveSpeed: 2
   runMultiplier: 1.4
   jumpForce: 50
@@ -3119,7 +3142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ee0d6038c54d3345ac4964a76539df0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ragdollActive: 0
+  playerState: {fileID: -8150470886946853929}
   ragdollStiffness: 10
   legJoints:
   - {fileID: 4972469590395821077}
