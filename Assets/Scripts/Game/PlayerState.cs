@@ -11,26 +11,18 @@ public class PlayerState : NetworkBehaviour
         Jumping
     }
 
-    public Movement movementState { get; private set; }
-    public bool isAiming { get; private set; }
+    public Movement movementState { get; set; }
+    public bool isAiming { get; set; }
     public bool isGrounded { get; set; }
-
-    private bool _isRagdoll;
-    public bool IsRagdoll => _isRagdoll;
+    public bool isRagdoll { get; set; }
+    public bool isArmed { get; set; }
 
     public bool IsMoving => (movementState == Movement.Walking || movementState == Movement.Running) && movementState != Movement.Jumping;
-
-    public void SetRagdollState(bool state)
-    {
-        _isRagdoll = state;
-    }
 
     private void Update()
     {
         if (!isLocalPlayer) return;
-
         HandleMovementInput();
-        HandleAimingInput();
     }
 
     private void HandleMovementInput()
@@ -54,10 +46,5 @@ public class PlayerState : NetworkBehaviour
         {
             movementState = Movement.Idle;
         }
-    }
-
-    private void HandleAimingInput()
-    {
-        isAiming = Input.GetMouseButton(1);
     }
 }

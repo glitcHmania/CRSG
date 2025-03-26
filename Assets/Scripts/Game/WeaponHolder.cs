@@ -9,15 +9,12 @@ public class WeaponHolder : MonoBehaviour
     private GameObject currentWeapon;
     private Gun currentWeaponGunScript;
 
-    public ConfigurableJoint forearmJoint;
     public ConfigurableJoint armJoint;
 
-    private Vector3 initialForearmRotation;
     private Vector3 initialArmRotation;
 
     private void Start()
     {
-        initialForearmRotation = forearmJoint.targetRotation.eulerAngles;
         initialArmRotation = armJoint.targetRotation.eulerAngles;
     }
 
@@ -38,20 +35,28 @@ public class WeaponHolder : MonoBehaviour
             }
         }
 
-        if (playerState.isAiming)
+        if (Input.GetMouseButton(1))
         {
-            //forearmJoint.targetRotation = Quaternion.Euler(0f, 0f, 200f);
-            armJoint.targetRotation = Quaternion.Euler(0f, 45f, 300f);
+            playerState.isAiming = true;
+            if(playerState.isArmed)
+            {
+                armJoint.targetRotation = Quaternion.Euler(0f, 45f, 300f);
+            }
         }
         else
         {
-            forearmJoint.targetRotation = Quaternion.Euler(initialForearmRotation);
-            armJoint.targetRotation = Quaternion.Euler(initialArmRotation);
+            playerState.isAiming = false;
+            if (playerState.isArmed)
+            {
+                armJoint.targetRotation = Quaternion.Euler(initialArmRotation);
+            }
         }
     }
 
     public void EquipWeapon(GameObject weapon)
     {
+        playerState.isArmed = true;
+
         if (currentWeapon != null)
         {
             Destroy(currentWeapon);
