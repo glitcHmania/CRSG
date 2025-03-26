@@ -47,6 +47,7 @@ public class Movement : NetworkBehaviour
         }
         else
         {
+
             float h = Input.GetAxisRaw("Horizontal");
             float v = Input.GetAxisRaw("Vertical");
 
