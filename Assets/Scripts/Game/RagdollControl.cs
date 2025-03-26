@@ -2,7 +2,7 @@
 
 public class RagdollControl : MonoBehaviour
 {
-    public bool ragdollActive = false;
+    public PlayerState playerState;
     public float ragdollStiffness;
 
     ConfigurableJoint hipJoint;
@@ -27,7 +27,7 @@ public class RagdollControl : MonoBehaviour
         //if g is pressed, toggle ragdoll
         if (Input.GetKeyDown(KeyCode.G))
         {
-            if (ragdollActive)
+            if (playerState.IsRagdoll)
             {
                 DeactivateRagdoll();
             }
@@ -40,7 +40,7 @@ public class RagdollControl : MonoBehaviour
 
     public void ActivateRagdoll()
     {
-        ragdollActive = true;
+        playerState.SetRagdollState(true);
         hipJoint.angularXDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
         hipJoint.angularYZDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
 
@@ -59,7 +59,7 @@ public class RagdollControl : MonoBehaviour
 
     public void DeactivateRagdoll()
     {
-        ragdollActive = false;
+        playerState.SetRagdollState(false);
         hipJoint.angularXDrive = new JointDrive { positionSpring = initialXPositionSpring, maximumForce = 3.402823e+38f };
         hipJoint.angularYZDrive = new JointDrive { positionSpring = initialYZPositionDamper, maximumForce = 3.402823e+38f };
 
