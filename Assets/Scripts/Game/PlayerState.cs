@@ -18,7 +18,7 @@ public class PlayerState : NetworkBehaviour
     private bool _isRagdoll;
     public bool IsRagdoll => _isRagdoll;
 
-    public bool IsMoving => movementState == Movement.Walking || movementState == Movement.Running;
+    public bool IsMoving => (movementState == Movement.Walking || movementState == Movement.Running) && movementState != Movement.Jumping;
 
     public void SetRagdollState(bool state)
     {

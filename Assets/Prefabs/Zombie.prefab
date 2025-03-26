@@ -2903,8 +2903,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdef7d9fb748e4145825981f2392a05e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerState: {fileID: -8150470886946853929}
   recoilBone: {fileID: 287997504604421362}
   weaponBone: {fileID: 8292016055041033889}
+  forearmJoint: {fileID: 5653926879502385173}
+  armJoint: {fileID: 7538621294356234979}
 --- !u!114 &-8150470886946853929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2920,10 +2923,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  movementState: 0
-  isRagdoll: 0
-  isAiming: 0
-  isGrounded: 0
 --- !u!1 &8578548780879289607 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}

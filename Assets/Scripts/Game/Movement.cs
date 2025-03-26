@@ -1,4 +1,4 @@
-﻿using Mirror;
+using Mirror;
 using UnityEngine;
 
 public class Movement : NetworkBehaviour
@@ -72,35 +72,39 @@ public class Movement : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
 
-        float speed = playerState.movementState == PlayerState.Movement.Running ? moveSpeed * runMultiplier : moveSpeed;
-
-        if (playerState.isAiming)
+        if(playerState.IsMoving)
         {
-            float horizontal = Input.GetAxisRaw("Horizontal");
-            float vertical = Input.GetAxisRaw("Vertical");
-            var movementInput = (transform.forward * vertical + transform.right * horizontal).normalized;
+            float speed = playerState.movementState == PlayerState.Movement.Running ? moveSpeed * runMultiplier : moveSpeed;
 
-            if (horizontal != 0)
+            if (playerState.isAiming)
             {
-                movementInput *= 0.3f;
+                float horizontal = Input.GetAxisRaw("Horizontal");
+                float vertical = Input.GetAxisRaw("Vertical");
+                var movementInput = (transform.forward * vertical + transform.right * horizontal).normalized;
+
+                if (horizontal != 0)
+                {
+                    movementInput *= 0.3f;
+                }
+
+                Vector3 move = movementInput * speed;
+                Vector3 velocity = new Vector3(move.x, rb.velocity.y, move.z);
+                rb.velocity = velocity;
+            }
+            else
+            {
+                Vector3 velocity = moveDir * speed;
+                rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
             }
 
-            Vector3 move = movementInput * speed;
-            Vector3 velocity = new Vector3(move.x, rb.velocity.y, move.z);
-            rb.velocity = velocity;
-        }
-        else
-        {
-            Vector3 velocity = moveDir * speed;
-            rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
+
+            if (moveDir != Vector3.zero && root != null)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(moveDir);
+                root.rotation = Quaternion.Slerp(root.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
+            }
         }
 
-
-        if (moveDir != Vector3.zero && root != null)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
-            root.rotation = Quaternion.Slerp(root.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
-        }
     }
 
     void OnDrawGizmosSelected()
