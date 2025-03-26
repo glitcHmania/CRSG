@@ -96,7 +96,6 @@ public class Movement : NetworkBehaviour
             rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
         }
 
-
         if (moveDir != Vector3.zero && root != null)
         {
             Quaternion targetRotation = Quaternion.LookRotation(moveDir);
