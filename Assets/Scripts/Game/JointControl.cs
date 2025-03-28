@@ -1,7 +1,7 @@
 ﻿using Mirror;
 using UnityEngine;
 
-public class LegMovement : NetworkBehaviour
+public class JointControl : NetworkBehaviour
 {
     public PlayerState playerState;
 
@@ -14,30 +14,22 @@ public class LegMovement : NetworkBehaviour
     private float maxAngle;
     [SerializeField]
     private float lowerLegAngleMultiplier;
-
-    public GameObject leftUpLeg;
-    public GameObject leftLeg;
-    public GameObject rightUpLeg;
-    public GameObject rightLeg;
-
-    private ConfigurableJoint leftUpLegJoint;
-    private ConfigurableJoint rightUpLegJoint;
-    private ConfigurableJoint rightLegJoint;
-    private ConfigurableJoint leftLegJoint;
-
-    private float jumpAngle = 0f;
     [SerializeField]
     private float jumpSpeed = 60f;
 
+    public Camera cam;
 
-    void Start()
-    {
-        leftUpLegJoint = leftUpLeg.GetComponent<ConfigurableJoint>();
-        rightUpLegJoint = rightUpLeg.GetComponent<ConfigurableJoint>();
-        rightLegJoint = rightLeg.GetComponent<ConfigurableJoint>();
-        leftLegJoint = leftLeg.GetComponent<ConfigurableJoint>();
+    [Header("**********Leg Joints**********")]
+    public ConfigurableJoint leftUpLegJoint;
+    public ConfigurableJoint leftLegJoint;
+    public ConfigurableJoint rightUpLegJoint;
+    public ConfigurableJoint rightLegJoint;
 
-    }
+    [Header("**********Spine Joint**********")]
+    public ConfigurableJoint spineJoint;
+
+    private Quaternion defaultSpineTargetRotation = Quaternion.identity;
+    private float currentJumpAngle = 0f;
 
     void Update()
     {
@@ -51,6 +43,16 @@ public class LegMovement : NetworkBehaviour
             {
                 currentSpeed = walkSpeed;
             }
+
+            if(playerState.isAiming)
+            {
+                spineJoint.targetRotation = Quaternion.Euler(-cam.transform.eulerAngles.x, 0f, 0f);
+            }
+            else if( spineJoint.targetRotation != defaultSpineTargetRotation)
+            {
+                spineJoint.targetRotation = Quaternion.identity;
+            }   
+
 
             if (playerState.IsMoving)
             {
@@ -81,10 +83,10 @@ public class LegMovement : NetworkBehaviour
             }
             else if (playerState.movementState == PlayerState.Movement.Jumping)
             {
-                jumpAngle = Mathf.MoveTowards(jumpAngle, maxAngle, Time.deltaTime * jumpSpeed);
+                currentJumpAngle = Mathf.MoveTowards(currentJumpAngle, maxAngle, Time.deltaTime * jumpSpeed);
 
-                float upperLegAngle = -jumpAngle;
-                float lowerLegAngle = Mathf.Max(jumpAngle, 0f) * 2f;
+                float upperLegAngle = -currentJumpAngle;
+                float lowerLegAngle = Mathf.Max(currentJumpAngle, 0f) * 2f;
 
                 leftUpLegJoint.targetRotation = Quaternion.Euler(upperLegAngle, 0f, 0f);
                 leftLegJoint.targetRotation = Quaternion.Euler(lowerLegAngle, 0f, 0f);
@@ -97,7 +99,7 @@ public class LegMovement : NetworkBehaviour
                 rightUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
                 rightLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
                 leftLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
-                jumpAngle = 0f;
+                currentJumpAngle = 0f;
             }
         }
     }

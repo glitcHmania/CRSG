@@ -341,6 +341,10 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -6170625038081293824, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: LeftLeg
+      objectReference: {fileID: 0}
+    - target: {fileID: -6170625038081293824, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
@@ -363,6 +367,10 @@ PrefabInstance:
     - target: {fileID: -5857696854640597626, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -5561550452697079657, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: RightToeBase
       objectReference: {fileID: 0}
     - target: {fileID: -5561550452697079657, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
@@ -407,6 +415,10 @@ PrefabInstance:
     - target: {fileID: -4501530691011011137, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -4332706925441422008, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: RightLeg
       objectReference: {fileID: 0}
     - target: {fileID: -4332706925441422008, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
@@ -481,6 +493,10 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: -2084811680363313996, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: LeftFoot
+      objectReference: {fileID: 0}
+    - target: {fileID: -2084811680363313996, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
@@ -495,6 +511,10 @@ PrefabInstance:
     - target: {fileID: -1781356600409242780, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: -1703473491307067327, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: LeftToe_End
       objectReference: {fileID: 0}
     - target: {fileID: -1703473491307067327, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
@@ -517,6 +537,10 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -1200856079203341021, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: RightToe_End
+      objectReference: {fileID: 0}
+    - target: {fileID: -1200856079203341021, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
@@ -527,6 +551,10 @@ PrefabInstance:
     - target: {fileID: -799392243407967859, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -751476226918971245, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: RightFoot
       objectReference: {fileID: 0}
     - target: {fileID: -751476226918971245, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
@@ -607,6 +635,10 @@ PrefabInstance:
     - target: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339101018200438765, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: LeftToeBase
       objectReference: {fileID: 0}
     - target: {fileID: 1339101018200438765, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
@@ -2906,7 +2938,6 @@ MonoBehaviour:
   playerState: {fileID: -8150470886946853929}
   recoilBone: {fileID: 287997504604421362}
   weaponBone: {fileID: 8292016055041033889}
-  forearmJoint: {fileID: 5653926879502385173}
   armJoint: {fileID: 7538621294356234979}
 --- !u!114 &-8150470886946853929
 MonoBehaviour:
@@ -3098,10 +3129,12 @@ MonoBehaviour:
   sprintSpeed: 3
   maxAngle: 60
   lowerLegAngleMultiplier: 0.8
-  leftUpLeg: {fileID: 6020512023720708384}
-  leftLeg: {fileID: 5932833963332583693}
-  rightUpLeg: {fileID: 3252415828649867142}
-  rightLeg: {fileID: 4311917604382387781}
+  cam: {fileID: 5699811975147871603}
+  leftUpLegJoint: {fileID: 4972469590395821077}
+  leftLegJoint: {fileID: 2251790151858933668}
+  rightUpLegJoint: {fileID: 6889533636252730622}
+  rightLegJoint: {fileID: 4435855779518955221}
+  spineJoint: {fileID: 8214332939447216057}
   jumpSpeed: 90
 --- !u!114 &3011746944026857508
 MonoBehaviour:
