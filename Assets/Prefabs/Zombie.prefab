@@ -169,7 +169,6 @@ MonoBehaviour:
   rotationSpeed: 5
   minYAngle: -80
   maxYAngle: 10
-  smoothSpeed: 0.125
 --- !u!1 &8292016055041033889
 GameObject:
   m_ObjectHideFlags: 0
@@ -342,6 +341,10 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -6170625038081293824, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: LeftLeg
+      objectReference: {fileID: 0}
+    - target: {fileID: -6170625038081293824, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
@@ -364,6 +367,10 @@ PrefabInstance:
     - target: {fileID: -5857696854640597626, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -5561550452697079657, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: RightToeBase
       objectReference: {fileID: 0}
     - target: {fileID: -5561550452697079657, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
@@ -408,6 +415,10 @@ PrefabInstance:
     - target: {fileID: -4501530691011011137, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -4332706925441422008, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: RightLeg
       objectReference: {fileID: 0}
     - target: {fileID: -4332706925441422008, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
@@ -482,6 +493,10 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: -2084811680363313996, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: LeftFoot
+      objectReference: {fileID: 0}
+    - target: {fileID: -2084811680363313996, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
@@ -496,6 +511,10 @@ PrefabInstance:
     - target: {fileID: -1781356600409242780, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: -1703473491307067327, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: LeftToe_End
       objectReference: {fileID: 0}
     - target: {fileID: -1703473491307067327, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
@@ -518,6 +537,10 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -1200856079203341021, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: RightToe_End
+      objectReference: {fileID: 0}
+    - target: {fileID: -1200856079203341021, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
@@ -528,6 +551,10 @@ PrefabInstance:
     - target: {fileID: -799392243407967859, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -751476226918971245, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: RightFoot
       objectReference: {fileID: 0}
     - target: {fileID: -751476226918971245, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
@@ -608,6 +635,10 @@ PrefabInstance:
     - target: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_TagString
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1339101018200438765, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      propertyPath: m_Name
+      value: LeftToeBase
       objectReference: {fileID: 0}
     - target: {fileID: 1339101018200438765, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
@@ -879,6 +910,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4131541563538897755}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8150470886946853929}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4419815717529161684}
@@ -2901,8 +2935,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdef7d9fb748e4145825981f2392a05e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerState: {fileID: -8150470886946853929}
   recoilBone: {fileID: 287997504604421362}
   weaponBone: {fileID: 8292016055041033889}
+  armJoint: {fileID: 7538621294356234979}
+--- !u!114 &-8150470886946853929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8415338635620679260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84609038cdb3fc54a9df805ec2c05a0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &8578548780879289607 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
@@ -3073,14 +3124,17 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  playerState: {fileID: -8150470886946853929}
   walkSpeed: 2
   sprintSpeed: 3
   maxAngle: 60
   lowerLegAngleMultiplier: 0.8
-  leftUpLeg: {fileID: 6020512023720708384}
-  leftLeg: {fileID: 5932833963332583693}
-  rightUpLeg: {fileID: 3252415828649867142}
-  rightLeg: {fileID: 4311917604382387781}
+  cam: {fileID: 5699811975147871603}
+  leftUpLegJoint: {fileID: 4972469590395821077}
+  leftLegJoint: {fileID: 2251790151858933668}
+  rightUpLegJoint: {fileID: 6889533636252730622}
+  rightLegJoint: {fileID: 4435855779518955221}
+  spineJoint: {fileID: 8214332939447216057}
   jumpSpeed: 90
 --- !u!114 &3011746944026857508
 MonoBehaviour:
@@ -3097,6 +3151,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  playerState: {fileID: -8150470886946853929}
   moveSpeed: 2
   runMultiplier: 1.4
   jumpForce: 50
@@ -3119,7 +3174,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ee0d6038c54d3345ac4964a76539df0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ragdollActive: 0
+  playerState: {fileID: -8150470886946853929}
   ragdollStiffness: 10
   legJoints:
   - {fileID: 4972469590395821077}

@@ -2,10 +2,21 @@ using UnityEngine;
 
 public class WeaponHolder : MonoBehaviour
 {
+    public PlayerState playerState;
+
     public GameObject recoilBone;
     public GameObject weaponBone;
     private GameObject currentWeapon;
     private Gun currentWeaponGunScript;
+
+    public ConfigurableJoint armJoint;
+
+    private Vector3 initialArmRotation;
+
+    private void Start()
+    {
+        initialArmRotation = armJoint.targetRotation.eulerAngles;
+    }
 
     void Update()
     {
@@ -23,10 +34,29 @@ public class WeaponHolder : MonoBehaviour
                 currentWeaponGunScript.Reload();
             }
         }
+
+        if (Input.GetMouseButton(1))
+        {
+            playerState.isAiming = true;
+            if(playerState.isArmed)
+            {
+                armJoint.targetRotation = Quaternion.Euler(0f, 45f, 300f);
+            }
+        }
+        else
+        {
+            playerState.isAiming = false;
+            if (playerState.isArmed)
+            {
+                armJoint.targetRotation = Quaternion.Euler(initialArmRotation);
+            }
+        }
     }
 
     public void EquipWeapon(GameObject weapon)
     {
+        playerState.isArmed = true;
+
         if (currentWeapon != null)
         {
             Destroy(currentWeapon);
