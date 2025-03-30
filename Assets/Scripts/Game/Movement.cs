@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Movement : NetworkBehaviour
 {
@@ -18,13 +19,14 @@ public class Movement : NetworkBehaviour
     [Header("References")]
     public Transform root;
     public Transform cam;
+    public GameObject hip;
 
-    private Rigidbody rb;
     private Vector3 moveDir;
+    private Rigidbody HipRigidBody;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        HipRigidBody = hip.GetComponent<Rigidbody>();
 
         if (cam == null)
         {
@@ -40,6 +42,8 @@ public class Movement : NetworkBehaviour
     void Update()
     {
         if (!isLocalPlayer) return;
+
+        if (playerState.isRagdoll) return;
 
         if (playerState.isAiming)
         {
@@ -61,11 +65,11 @@ public class Movement : NetworkBehaviour
 
             moveDir = (camForward * v + camRight * h).normalized;
         }
-        playerState.isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance, groundMask);
+        playerState.isGrounded = Physics.Raycast(hip.transform.position, Vector3.down, groundCheckDistance, groundMask);
 
         if (Input.GetKeyUp(KeyCode.Space) && playerState.isGrounded)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            HipRigidBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 
@@ -73,13 +77,15 @@ public class Movement : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
 
+        if (playerState.isRagdoll) return;
+
         float speed = playerState.movementState == PlayerState.Movement.Running ? moveSpeed * runMultiplier : moveSpeed;
 
         if (playerState.isAiming)
         {
             float horizontal = Input.GetAxisRaw("Horizontal");
             float vertical = Input.GetAxisRaw("Vertical");
-            var movementInput = (transform.forward * vertical + transform.right * horizontal).normalized;
+            var movementInput = (hip.transform.forward * vertical + hip.transform.right * horizontal).normalized;
 
             if (horizontal != 0)
             {
@@ -87,13 +93,13 @@ public class Movement : NetworkBehaviour
             }
 
             Vector3 move = movementInput * speed;
-            Vector3 velocity = new Vector3(move.x, rb.velocity.y, move.z);
-            rb.velocity = velocity;
+            Vector3 velocity = new Vector3(move.x, HipRigidBody.velocity.y, move.z);
+            HipRigidBody.velocity = velocity;
         }
         else
         {
             Vector3 velocity = moveDir * speed;
-            rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
+            HipRigidBody.velocity = new Vector3(velocity.x, HipRigidBody.velocity.y, velocity.z);
         }
 
         if (moveDir != Vector3.zero && root != null)
@@ -106,6 +112,6 @@ public class Movement : NetworkBehaviour
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
+        Gizmos.DrawLine(hip.transform.position, hip.transform.position + Vector3.down * groundCheckDistance);
     }
 }

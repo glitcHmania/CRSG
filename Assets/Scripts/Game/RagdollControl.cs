@@ -4,7 +4,10 @@ public class RagdollControl : MonoBehaviour
 {
     public PlayerState playerState;
     public float ragdollStiffness;
+    public Rigidbody hipsRigidbody;
+    public Rigidbody spineRigidbody;
 
+    [SerializeField]
     ConfigurableJoint hipJoint;
     [SerializeField]
     ConfigurableJoint[] legJoints;
@@ -17,7 +20,6 @@ public class RagdollControl : MonoBehaviour
 
     private void Start()
     {
-        hipJoint = GetComponent<ConfigurableJoint>();
         initialXPositionSpring = hipJoint.angularXDrive.positionSpring;
         initialYZPositionDamper = hipJoint.angularYZDrive.positionSpring;
     }
@@ -40,6 +42,9 @@ public class RagdollControl : MonoBehaviour
 
     public void ActivateRagdoll()
     {
+        hipsRigidbody.mass = 0.3f;
+        spineRigidbody.mass = 0.3f;
+
         playerState.isRagdoll = true;
         hipJoint.angularXDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
         hipJoint.angularYZDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
@@ -59,6 +64,9 @@ public class RagdollControl : MonoBehaviour
 
     public void DeactivateRagdoll()
     {
+        hipsRigidbody.mass = 2f;
+        spineRigidbody.mass = 1f;
+
         playerState.isRagdoll = false;
         hipJoint.angularXDrive = new JointDrive { positionSpring = initialXPositionSpring, maximumForce = 3.402823e+38f };
         hipJoint.angularYZDrive = new JointDrive { positionSpring = initialYZPositionDamper, maximumForce = 3.402823e+38f };
