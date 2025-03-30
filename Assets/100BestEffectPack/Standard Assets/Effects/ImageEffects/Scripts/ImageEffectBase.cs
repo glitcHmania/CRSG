@@ -17,11 +17,7 @@ namespace UnityStandardAssets.ImageEffects
         protected virtual void Start()
         {
             // Disable if we don't support image effects
-            if (!SystemInfo.supportsImageEffects)
-            {
-                enabled = false;
-                return;
-            }
+            // Obsolete check removed as supportsImageEffects always returns true
 
             // Disable the image effect if the shader can't
             // run on the users graphics card

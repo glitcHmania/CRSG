@@ -179,7 +179,6 @@ namespace UnityStandardAssets.ImageEffects
                     }
                     else
                     {
-                        quarterRezColor.MarkRestoreExpected(); // using max blending, RT restore expected
                         Graphics.Blit (secondQuarterRezColor, quarterRezColor, screenBlend, 10);
                     }
                 }
@@ -310,21 +309,19 @@ namespace UnityStandardAssets.ImageEffects
             RenderTexture.ReleaseTemporary (secondQuarterRezColor);
         }
 
-        private void AddTo (float intensity_, RenderTexture from, RenderTexture to)
+        private void AddTo(float intensity_, RenderTexture from, RenderTexture to)
         {
-            screenBlend.SetFloat ("_Intensity", intensity_);
-            to.MarkRestoreExpected(); // additive blending, RT restore expected
-            Graphics.Blit (from, to, screenBlend, 9);
+            screenBlend.SetFloat("_Intensity", intensity_);
+            Graphics.Blit(from, to, screenBlend, 9);
         }
 
-        private void BlendFlares (RenderTexture from, RenderTexture to)
+        private void BlendFlares(RenderTexture from, RenderTexture to)
         {
-            lensFlareMaterial.SetVector ("colorA", new Vector4 (flareColorA.r, flareColorA.g, flareColorA.b, flareColorA.a) * lensflareIntensity);
-            lensFlareMaterial.SetVector ("colorB", new Vector4 (flareColorB.r, flareColorB.g, flareColorB.b, flareColorB.a) * lensflareIntensity);
-            lensFlareMaterial.SetVector ("colorC", new Vector4 (flareColorC.r, flareColorC.g, flareColorC.b, flareColorC.a) * lensflareIntensity);
-            lensFlareMaterial.SetVector ("colorD", new Vector4 (flareColorD.r, flareColorD.g, flareColorD.b, flareColorD.a) * lensflareIntensity);
-            to.MarkRestoreExpected(); // additive blending, RT restore expected
-            Graphics.Blit (from, to, lensFlareMaterial);
+            lensFlareMaterial.SetVector("colorA", new Vector4(flareColorA.r, flareColorA.g, flareColorA.b, flareColorA.a) * lensflareIntensity);
+            lensFlareMaterial.SetVector("colorB", new Vector4(flareColorB.r, flareColorB.g, flareColorB.b, flareColorB.a) * lensflareIntensity);
+            lensFlareMaterial.SetVector("colorC", new Vector4(flareColorC.r, flareColorC.g, flareColorC.b, flareColorC.a) * lensflareIntensity);
+            lensFlareMaterial.SetVector("colorD", new Vector4(flareColorD.r, flareColorD.g, flareColorD.b, flareColorD.a) * lensflareIntensity);
+            Graphics.Blit(from, to, lensFlareMaterial);
         }
 
         private void BrightFilter (float thresh, RenderTexture from, RenderTexture to)
@@ -339,19 +336,18 @@ namespace UnityStandardAssets.ImageEffects
             Graphics.Blit (from, to, brightPassFilterMaterial, 1);
         }
 
-        private void Vignette (float amount, RenderTexture from, RenderTexture to)
+        private void Vignette(float amount, RenderTexture from, RenderTexture to)
         {
             if (lensFlareVignetteMask)
             {
-                screenBlend.SetTexture ("_ColorBuffer", lensFlareVignetteMask);
-                to.MarkRestoreExpected(); // using blending, RT restore expected
-                Graphics.Blit (from == to ? null : from, to, screenBlend, from == to ? 7 : 3);
+                screenBlend.SetTexture("_ColorBuffer", lensFlareVignetteMask);
+                Graphics.Blit(from == to ? null : from, to, screenBlend, from == to ? 7 : 3);
             }
             else if (from != to)
             {
-                Graphics.SetRenderTarget (to);
+                Graphics.SetRenderTarget(to);
                 GL.Clear(false, true, Color.black); // clear destination to avoid RT restore
-                Graphics.Blit (from, to);
+                Graphics.Blit(from, to);
             }
         }
     }

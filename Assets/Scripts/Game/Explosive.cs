@@ -24,10 +24,7 @@ public class Explosive : NetworkBehaviour
 
     public static void ExplodeStatic(GameObject effect, Vector3 position, float radius, float force, float upwardsModifier)
     {
-        // Instantiate explosion effect and destroy it after 2 seconds
         GameObject explosion = Instantiate(effect, position, Quaternion.identity);
-
-        // Destroy the explosion effect after 2 seconds
         Destroy(explosion, 2f);
 
         Collider[] colliders = Physics.OverlapSphere(position, radius);

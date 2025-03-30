@@ -48,24 +48,19 @@ namespace UnityStandardAssets.ImageEffects
         private float scratchTimeLeft = 0.0f;
         private float scratchX, scratchY;
 
-        protected void Start ()
+        protected void Start()
         {
-            // Disable if we don't support image effects
-            if (!SystemInfo.supportsImageEffects) {
-                enabled = false;
-                return;
-            }
-
-            if ( shaderRGB == null || shaderYUV == null )
+            // Remove the obsolete check for supportsImageEffects
+            if (shaderRGB == null || shaderYUV == null)
             {
-                Debug.Log( "Noise shaders are not set up! Disabling noise effect." );
+                Debug.Log("Noise shaders are not set up! Disabling noise effect.");
                 enabled = false;
             }
             else
             {
-                if ( !shaderRGB.isSupported ) // disable effect if RGB shader is not supported
+                if (!shaderRGB.isSupported) // disable effect if RGB shader is not supported
                     enabled = false;
-                else if ( !shaderYUV.isSupported ) // fallback to RGB if YUV is not supported
+                else if (!shaderYUV.isSupported) // fallback to RGB if YUV is not supported
                     rgbFallback = true;
             }
         }
