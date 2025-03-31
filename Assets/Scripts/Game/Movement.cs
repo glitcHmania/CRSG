@@ -14,6 +14,8 @@ public class Movement : NetworkBehaviour
 
     [Header("Ground Check")]
     public float groundCheckDistance = 1.1f;
+    public float ungroundedTime = 0.1f;
+    public float maxGroundAngle = 30f;
     public LayerMask groundMask;
 
     [Header("References")]
@@ -22,11 +24,15 @@ public class Movement : NetworkBehaviour
     public GameObject hip;
 
     private Vector3 moveDir;
-    private Rigidbody HipRigidBody;
+    private Rigidbody hipRigidBody;
+    private RagdollControl ragdollControl;
+    private Timer ungroundedTimer;
 
     void Start()
     {
-        HipRigidBody = hip.GetComponent<Rigidbody>();
+        hipRigidBody = hip.GetComponent<Rigidbody>();
+        ragdollControl = GetComponent<RagdollControl>();
+        ungroundedTimer = new Timer(ungroundedTime, () => ragdollControl.ActivateRagdoll());
 
         if (cam == null)
         {
@@ -65,11 +71,37 @@ public class Movement : NetworkBehaviour
 
             moveDir = (camForward * v + camRight * h).normalized;
         }
-        playerState.isGrounded = Physics.Raycast(hip.transform.position, Vector3.down, groundCheckDistance, groundMask);
+
+
+        //raycast to check if the player is grounded and take the normal of the surface
+        if (Physics.Raycast(hip.transform.position, Vector3.down, out RaycastHit hit, groundCheckDistance, groundMask))
+        {
+            Vector3 groundNormal = hit.normal;
+            float angle = Vector3.Angle(Vector3.up, groundNormal);
+            if (angle > maxGroundAngle)
+            {
+                playerState.isGrounded = false;
+            }
+            else
+            {
+                playerState.isGrounded = true;
+            }
+        }
+
+        if (playerState.isGrounded)
+        {
+            ungroundedTimer.Reset();
+        }
+        else
+        {
+            ungroundedTimer.Update();
+        }
+
+        Debug.Log(ungroundedTimer.RemainingTime);
 
         if (Input.GetKeyUp(KeyCode.Space) && playerState.isGrounded)
         {
-            HipRigidBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            hipRigidBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 
@@ -93,13 +125,13 @@ public class Movement : NetworkBehaviour
             }
 
             Vector3 move = movementInput * speed;
-            Vector3 velocity = new Vector3(move.x, HipRigidBody.velocity.y, move.z);
-            HipRigidBody.velocity = velocity;
+            Vector3 velocity = new Vector3(move.x, hipRigidBody.velocity.y, move.z);
+            hipRigidBody.velocity = velocity;
         }
         else
         {
             Vector3 velocity = moveDir * speed;
-            HipRigidBody.velocity = new Vector3(velocity.x, HipRigidBody.velocity.y, velocity.z);
+            hipRigidBody.velocity = new Vector3(velocity.x, hipRigidBody.velocity.y, velocity.z);
         }
 
         if (moveDir != Vector3.zero && root != null)

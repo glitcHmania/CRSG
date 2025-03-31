@@ -4,27 +4,28 @@ using UnityEngine;
 public class Timer
 {
     public float Duration;
+    public bool IsFinished { get; private set; }
+    public float RemainingTime => Duration - (Time.time - _startTime);
     private float _startTime;
-    private bool _isRunning;
     private Action _onFinish;
 
     public Timer(float duration, Action onFinish = null)
     {
         Duration = duration;
         _startTime = Time.time;
-        _isRunning = true;
         _onFinish = onFinish;
     }
 
-    public bool IsRunning => _isRunning;
+    public void Start()
+    {
+        _startTime = Time.time;
+    }
 
     public void Update()
     {
-        if (!_isRunning) return;
-
         if (Time.time - _startTime >= Duration)
         {
-            _isRunning = false;
+            IsFinished = true;
             _onFinish?.Invoke();
         }
     }
@@ -32,6 +33,6 @@ public class Timer
     public void Reset()
     {
         _startTime = Time.time;
-        _isRunning = true;
+        IsFinished = false;
     }
 }
