@@ -2,14 +2,8 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    private const float ShotEffectDuration = 0.1f;
-
-    private LineRenderer lineRenderer;
     private bool isAvailable = true;
 
-    private Vector3[] lastShotPoints;
-
-    private Timer shotEffectTimer;
     private Timer recoverTimer;
     private Timer reloadTimer;
 
@@ -20,23 +14,28 @@ public class Gun : MonoBehaviour
     public float Range;
     public float ReloadTime;
     public float RecoverTime;
+    public bool infiniteAmmo = false;
+
+    [Header("Bullet Trail Settings")]
+    public BulletTrail bulletTrailPrefab;
+    public int trailPoolSize = 10;
+
+    private ObjectPool<BulletTrail> trailPool;
 
     void Awake()
     {
-        lineRenderer = GetComponent<LineRenderer>();
-
-        shotEffectTimer = new Timer(ShotEffectDuration, () => lineRenderer.enabled = false);
         recoverTimer = new Timer(RecoverTime, () => isAvailable = true);
         reloadTimer = new Timer(ReloadTime, () =>
         {
             BulletCount = MagazineSize;
             isAvailable = true;
         });
+
+        trailPool = new ObjectPool<BulletTrail>(bulletTrailPrefab, trailPoolSize);
     }
 
     void Update()
     {
-        shotEffectTimer.Update();
         recoverTimer.Update();
         reloadTimer.Update();
     }
@@ -48,19 +47,17 @@ public class Gun : MonoBehaviour
             return;
         }
 
-        Ray ray = new Ray(transform.position, transform.forward);
-        lastShotPoints = new Vector3[] { transform.position, transform.position + transform.forward * Range };
-        lineRenderer.SetPositions(lastShotPoints);
-        lineRenderer.enabled = true;
-
-        shotEffectTimer.Reset();
         recoverTimer.Reset();
-
         isAvailable = false;
         HandRigidbody.AddForce(-transform.forward * Power, ForceMode.Impulse);
 
+        Ray ray = new Ray(transform.position, transform.forward);
+        Vector3 hitPoint = transform.position + transform.forward * Range;
+
         if (Physics.Raycast(ray, out RaycastHit hit, Range))
         {
+            hitPoint = hit.point;
+
             Debug.Log("Hit: " + hit.collider.name);
 
             if (hit.collider.TryGetComponent(out Rigidbody rb))
@@ -70,7 +67,14 @@ public class Gun : MonoBehaviour
             }
         }
 
-        BulletCount--;
+        // Spawn a trail
+        BulletTrail trail = trailPool.Get();
+        trail.Init(transform.position, hitPoint, (t) => trailPool.Return(t));
+
+        if (!infiniteAmmo)
+        {
+            BulletCount--;
+        }
     }
 
     public void Reload()

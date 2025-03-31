@@ -169,8 +169,8 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 12.5
-      minScalar: 6.25
+      scalar: 20
+      minScalar: 20
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -269,7 +269,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.0625
+      scalar: 0.01
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -9604,7 +9604,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _light: {fileID: 10800000}
   Delay: 0
-  Down: 5
+  Down: 12
 --- !u!1 &100008
 GameObject:
   m_ObjectHideFlags: 0
@@ -9614,7 +9614,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 400008}
-  - component: {fileID: 114000010770360858}
   m_Layer: 0
   m_Name: ExplosionEffect4
   m_TagString: Untagged
@@ -9642,18 +9641,6 @@ Transform:
   - {fileID: 400004}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114000010770360858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100008}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee2d51cd96616d7418f4bdf22e018f4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &100010
 GameObject:
   m_ObjectHideFlags: 0
@@ -9823,8 +9810,8 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 8
-      minScalar: 6
+      scalar: 20
+      minScalar: 20
       maxCurve:
         serializedVersion: 2
         m_Curve:
