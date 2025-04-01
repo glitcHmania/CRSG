@@ -1,141 +1,147 @@
-﻿using Mirror;
+using Mirror;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Movement : NetworkBehaviour
 {
-    private Rigidbody rb;
+    public PlayerState playerState;
 
-    public Camera shoulderCamera;
+    [Header("Movement Settings")]
+    public float moveSpeed = 5f;
+    public float runMultiplier = 1.5f;
+    public float jumpForce = 5f;
+    public float rotationSpeed = 10f;
 
-    public float jumpForce = 50f;
+    [Header("Ground Check")]
+    public float groundCheckDistance = 1.1f;
+    public float ungroundedTime = 0.1f;
+    public float maxGroundAngle = 30f;
+    public LayerMask groundMask;
 
-    public float initialMoveSpeed;
-    public float moveSpeedMultiplier;
-    private float moveSpeed;
+    [Header("References")]
+    public Transform root;
+    public Transform cam;
+    public GameObject hip;
 
-    private Vector3 moveDirection;
+    private Vector3 moveDir;
+    private Rigidbody hipRigidBody;
+    private RagdollControl ragdollControl;
+    private Timer ungroundedTimer;
 
-    private float lastMoveX;
-    private float lastMoveZ;
-
-    private void Awake()
+    void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        hipRigidBody = hip.GetComponent<Rigidbody>();
+        ragdollControl = GetComponent<RagdollControl>();
+        ungroundedTimer = new Timer(ungroundedTime, () => ragdollControl.ActivateRagdoll());
+
+        if (cam == null)
+        {
+            Debug.LogError("Camera not assigned in Movement script.");
+        }
+
+        if (root == null)
+        {
+            Debug.LogError("Root not assigned in Movement script.");
+        }
     }
 
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
-
-        if (rb == null)
-        {
-            Debug.LogError("Rigidbody is missing on " + gameObject.name);
-            return;
-        }
-
-        if (isLocalPlayer)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            shoulderCamera.gameObject.SetActive(true);
-            shoulderCamera.tag = "MainCamera";
-        }
-        else
-        {
-            shoulderCamera.gameObject.SetActive(false);
-            shoulderCamera.GetComponent<AudioListener>().enabled = false;
-        }
-    }
-
-    private void Update()
+    void Update()
     {
         if (!isLocalPlayer) return;
 
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
-        moveDirection = transform.right * moveX * 0.6f + transform.forward * moveZ;
+        if (playerState.isRagdoll) return;
 
-        float mouseX = Input.GetAxis("Mouse X");
-        transform.Rotate(Vector3.up, mouseX);
-
-        if (moveX != lastMoveX || moveZ != lastMoveZ)
+        if (playerState.isAiming)
         {
-            lastMoveX = moveX;
-            lastMoveZ = moveZ;
-            CmdMove(moveX, moveZ);
-        }
-
-        if (Input.GetButtonDown("Jump"))
-        {
-            JumpLocally(); // apply jump immediately for responsiveness
-            CmdJump();     // tell the server to replicate
-        }
-
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            moveSpeed = initialMoveSpeed * 2f;
+            root.rotation = Quaternion.Euler(0, cam.eulerAngles.y, 0);
+            moveDir = Vector3.zero;
         }
         else
         {
-            moveSpeed = initialMoveSpeed;
+
+            float h = Input.GetAxisRaw("Horizontal");
+            float v = Input.GetAxisRaw("Vertical");
+
+            Vector3 camForward = cam.forward;
+            Vector3 camRight = cam.right;
+
+            camForward.y = 0;
+            camRight.y = 0;
+            camForward.Normalize();
+            camRight.Normalize();
+
+            moveDir = (camForward * v + camRight * h).normalized;
+        }
+
+
+        //raycast to check if the player is grounded and take the normal of the surface
+        if (Physics.Raycast(hip.transform.position, Vector3.down, out RaycastHit hit, groundCheckDistance, groundMask))
+        {
+            Vector3 groundNormal = hit.normal;
+            float angle = Vector3.Angle(Vector3.up, groundNormal);
+
+            //if raycast hits an object and the angle is less than the max ground angle, the player is grounded
+            playerState.isGrounded = angle <= maxGroundAngle;
+        }
+        else
+        {
+            playerState.isGrounded = false;
+        }
+
+        if (playerState.isGrounded)
+        {
+            ungroundedTimer.Reset();
+        }
+        else
+        {
+            ungroundedTimer.Update();
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space) && playerState.isGrounded)
+        {
+            hipRigidBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 
-    [Command]
-    private void CmdMove(float moveX, float moveZ)
+    void FixedUpdate()
     {
-        moveDirection = transform.right * moveX * 0.3f + transform.forward * moveZ;
-        RpcMove(moveX, moveZ);
-    }
+        if (!isLocalPlayer) return;
 
-    [ClientRpc]
-    private void RpcMove(float moveX, float moveZ)
-    {
-        if (!isLocalPlayer)
+        if (playerState.isRagdoll) return;
+
+        float speed = playerState.movementState == PlayerState.Movement.Running ? moveSpeed * runMultiplier : moveSpeed;
+
+        if (playerState.isAiming)
         {
-            moveDirection = transform.right * moveX * 0.3f + transform.forward * moveZ;
+            float horizontal = Input.GetAxisRaw("Horizontal");
+            float vertical = Input.GetAxisRaw("Vertical");
+            var movementInput = (hip.transform.forward * vertical + hip.transform.right * horizontal).normalized;
+
+            if (horizontal != 0)
+            {
+                movementInput *= 0.3f;
+            }
+
+            Vector3 move = movementInput * speed;
+            Vector3 velocity = new Vector3(move.x, hipRigidBody.velocity.y, move.z);
+            hipRigidBody.velocity = velocity;
+        }
+        else
+        {
+            Vector3 velocity = moveDir * speed;
+            hipRigidBody.velocity = new Vector3(velocity.x, hipRigidBody.velocity.y, velocity.z);
+        }
+
+        if (moveDir != Vector3.zero && root != null)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
+            root.rotation = Quaternion.Slerp(root.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
         }
     }
 
-    private void JumpLocally()
+    void OnDrawGizmosSelected()
     {
-        if (rb == null) return;
-
-        if (Mathf.Abs(rb.velocity.y) < 0.1f) // check if the player is on the ground
-        {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
-    }
-
-    [Command]
-    private void CmdJump()
-    {
-        if (Mathf.Abs(rb.velocity.y) < 0.1f) // ensure server-side jump validation
-        {
-            RpcJump();
-        }
-    }
-
-    [ClientRpc]
-    private void RpcJump()
-    {
-        if (!isLocalPlayer) // only apply force for non-local clients
-        {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
-    }
-
-
-    private void FixedUpdate()
-    {
-        if (rb == null) return;
-
-        if (isLocalPlayer)
-        {
-            rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * moveDirection);
-        }
-        else if (isServer)
-        {
-            rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * moveDirection);
-        }
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(hip.transform.position, hip.transform.position + Vector3.down * groundCheckDistance);
     }
 }

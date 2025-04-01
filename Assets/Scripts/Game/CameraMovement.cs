@@ -1,37 +1,38 @@
-using Mirror;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraMovement : MonoBehaviour
+public class ThirdPersonCamera : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public Transform target;
+    public Vector3 offset = new Vector3(0f, 0f, -4f);
+    public float rotationSpeed = 5f;
+    public float minYAngle = -30f;
+    public float maxYAngle = 60f;
+
+    private float currentYaw = 0f;
+    private float currentPitch = 20f;
+
+    private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
-    // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        Debug.Log(transform.eulerAngles.x);
-        float mouseY = Input.GetAxis("Mouse Y");
-        //cap the rotation
-        if (transform.eulerAngles.x > 180 && transform.eulerAngles.x < 340)
-        {
-            if (mouseY > 0)
-            {
-                mouseY = 0;
-            }
-        }
-        else if (transform.eulerAngles.x < 180 && transform.eulerAngles.x > 60)
-        {
-            if (mouseY < 0)
-            {
-                mouseY = 0;
-            }
-        }
+        if (target == null) return;
 
-        transform.Rotate(Vector3.left, mouseY);
+        float mouseX = Input.GetAxis("Mouse X");
+        float mouseY = Input.GetAxis("Mouse Y");
+
+        currentYaw += mouseX * rotationSpeed;
+        currentPitch -= mouseY * rotationSpeed;
+        currentPitch = Mathf.Clamp(currentPitch, minYAngle, maxYAngle);
+
+        Quaternion rotation = Quaternion.Euler(currentPitch, currentYaw, 0);
+        Vector3 desiredPosition = target.position + rotation * offset;
+
+        transform.position = desiredPosition;
+
+        transform.LookAt(target.position + Vector3.up * 1.5f);
     }
 }
