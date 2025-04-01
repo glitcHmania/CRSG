@@ -54,6 +54,7 @@ public class Movement : NetworkBehaviour
         if (playerState.isAiming)
         {
             root.rotation = Quaternion.Euler(0, cam.eulerAngles.y, 0);
+            moveDir = Vector3.zero;
         }
         else
         {
