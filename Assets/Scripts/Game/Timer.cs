@@ -5,25 +5,35 @@ public class Timer
 {
     public float Duration;
     public bool IsFinished { get; private set; }
-    public float RemainingTime => Duration - (Time.time - _startTime);
+    public float RemainingTime { get; private set; }
+
     private float _startTime;
     private Action _onFinish;
+    private bool _hasStarted;
 
     public Timer(float duration, Action onFinish = null)
     {
         Duration = duration;
-        _startTime = Time.time;
         _onFinish = onFinish;
-    }
-
-    public void Start()
-    {
-        _startTime = Time.time;
+        RemainingTime = duration;
+        IsFinished = false;
+        _hasStarted = false;
     }
 
     public void Update()
     {
-        if (Time.time - _startTime >= Duration)
+        if (!_hasStarted)
+        {
+            _startTime = Time.time;
+            _hasStarted = true;
+        }
+
+        if (IsFinished) return;
+
+        float elapsed = Time.time - _startTime;
+        RemainingTime = Mathf.Max(0f, Duration - elapsed);
+
+        if (elapsed >= Duration)
         {
             IsFinished = true;
             _onFinish?.Invoke();
@@ -32,7 +42,8 @@ public class Timer
 
     public void Reset()
     {
-        _startTime = Time.time;
+        RemainingTime = Duration;
         IsFinished = false;
+        _hasStarted = false;
     }
 }

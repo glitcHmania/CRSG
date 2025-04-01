@@ -2975,10 +2975,11 @@ MonoBehaviour:
   jumpForce: 50
   rotationSpeed: 6
   groundCheckDistance: 1.1
-  ungroundedTime: 1
+  ungroundedTime: 1.5
+  maxGroundAngle: 30
   groundMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 55
   root: {fileID: 5216023494965125893}
   cam: {fileID: 2638820883776881641}
   hip: {fileID: 8578548780879289607}
@@ -2998,6 +2999,7 @@ MonoBehaviour:
   ragdollStiffness: 4
   hipsRigidbody: {fileID: 3454390574484014621}
   spineRigidbody: {fileID: 766732502656243233}
+  ragdollDuration: 2.5
   hipJoint: {fileID: 8592437074796424599}
   legJoints:
   - {fileID: 4972469590395821077}

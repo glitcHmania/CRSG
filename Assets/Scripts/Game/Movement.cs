@@ -78,14 +78,13 @@ public class Movement : NetworkBehaviour
         {
             Vector3 groundNormal = hit.normal;
             float angle = Vector3.Angle(Vector3.up, groundNormal);
-            if (angle > maxGroundAngle)
-            {
-                playerState.isGrounded = false;
-            }
-            else
-            {
-                playerState.isGrounded = true;
-            }
+
+            //if raycast hits an object and the angle is less than the max ground angle, the player is grounded
+            playerState.isGrounded = angle <= maxGroundAngle;
+        }
+        else
+        {
+            playerState.isGrounded = false;
         }
 
         if (playerState.isGrounded)
@@ -96,8 +95,6 @@ public class Movement : NetworkBehaviour
         {
             ungroundedTimer.Update();
         }
-
-        Debug.Log(ungroundedTimer.RemainingTime);
 
         if (Input.GetKeyUp(KeyCode.Space) && playerState.isGrounded)
         {
