@@ -4,7 +4,12 @@ public class RagdollControl : MonoBehaviour
 {
     public PlayerState playerState;
     public float ragdollStiffness;
+    public Rigidbody hipsRigidbody;
+    public Rigidbody spineRigidbody;
 
+    public float ragdollDuration;
+
+    [SerializeField]
     ConfigurableJoint hipJoint;
     [SerializeField]
     ConfigurableJoint[] legJoints;
@@ -13,18 +18,26 @@ public class RagdollControl : MonoBehaviour
 
     private float initialXPositionSpring;
     private float initialYZPositionDamper;
+    private Timer ragdollTimer;
 
 
     private void Start()
     {
-        hipJoint = GetComponent<ConfigurableJoint>();
+        playerState.isRagdoll = false;
+
         initialXPositionSpring = hipJoint.angularXDrive.positionSpring;
         initialYZPositionDamper = hipJoint.angularYZDrive.positionSpring;
+
+        ragdollTimer = new Timer(ragdollDuration, DeactivateRagdoll);
     }
 
     private void Update()
     {
-        //if g is pressed, toggle ragdoll
+        if (playerState.isRagdoll)
+        {
+            ragdollTimer.Update();
+        }
+
         if (Input.GetKeyDown(KeyCode.G))
         {
             if (playerState.isRagdoll)
@@ -41,6 +54,10 @@ public class RagdollControl : MonoBehaviour
     public void ActivateRagdoll()
     {
         playerState.isRagdoll = true;
+
+        hipsRigidbody.mass = 0.3f;
+        spineRigidbody.mass = 0.3f;
+
         hipJoint.angularXDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
         hipJoint.angularYZDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
 
@@ -60,6 +77,12 @@ public class RagdollControl : MonoBehaviour
     public void DeactivateRagdoll()
     {
         playerState.isRagdoll = false;
+
+        hipsRigidbody.mass = 2f;
+        spineRigidbody.mass = 1f;
+
+        ragdollTimer.Reset();
+
         hipJoint.angularXDrive = new JointDrive { positionSpring = initialXPositionSpring, maximumForce = 3.402823e+38f };
         hipJoint.angularYZDrive = new JointDrive { positionSpring = initialYZPositionDamper, maximumForce = 3.402823e+38f };
 

@@ -40,7 +40,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5421579849077235502}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 0.001
   m_Drag: 0
   m_AngularDrag: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -54,7 +54,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
@@ -913,6 +913,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: -8150470886946853929}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7321850614008527734}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8757769546477567384}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5882155198792178596}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4419815717529161684}
@@ -922,15 +931,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8592437074796424599}
-    - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 341072902913915856}
-    - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3011746944026857508}
-    - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2637330851986148461}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3087060184374622719}
@@ -2954,6 +2954,92 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+--- !u!114 &7321850614008527734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8415338635620679260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a3731df5609a4c47a9de2d140c7106e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  playerState: {fileID: -8150470886946853929}
+  moveSpeed: 2
+  runMultiplier: 1.4
+  jumpForce: 50
+  rotationSpeed: 6
+  groundCheckDistance: 1.1
+  ungroundedTime: 1.5
+  maxGroundAngle: 30
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 55
+  root: {fileID: 5216023494965125893}
+  cam: {fileID: 2638820883776881641}
+  hip: {fileID: 8578548780879289607}
+--- !u!114 &8757769546477567384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8415338635620679260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ee0d6038c54d3345ac4964a76539df0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerState: {fileID: -8150470886946853929}
+  ragdollStiffness: 4
+  hipsRigidbody: {fileID: 3454390574484014621}
+  spineRigidbody: {fileID: 766732502656243233}
+  ragdollDuration: 2.5
+  hipJoint: {fileID: 8592437074796424599}
+  legJoints:
+  - {fileID: 4972469590395821077}
+  - {fileID: 2251790151858933668}
+  - {fileID: 6889533636252730622}
+  - {fileID: 4435855779518955221}
+  otherJoints:
+  - {fileID: 8214332939447216057}
+  - {fileID: 277685062306828632}
+  - {fileID: 1380890681972881484}
+  - {fileID: 7538621294356234979}
+  - {fileID: 5653926879502385173}
+  - {fileID: 8699569115064483695}
+--- !u!114 &5882155198792178596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8415338635620679260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b66e0cefca26da24fac3caac42026cb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  playerState: {fileID: -8150470886946853929}
+  walkSpeed: 2
+  sprintSpeed: 3
+  maxAngle: 60
+  lowerLegAngleMultiplier: 0.8
+  jumpSpeed: 90
+  cam: {fileID: 5699811975147871603}
+  leftUpLegJoint: {fileID: 4972469590395821077}
+  leftLegJoint: {fileID: 2251790151858933668}
+  rightUpLegJoint: {fileID: 6889533636252730622}
+  rightLegJoint: {fileID: 4435855779518955221}
+  spineJoint: {fileID: 8214332939447216057}
 --- !u!1 &8578548780879289607 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
@@ -3109,85 +3195,6 @@ ConfigurableJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!114 &341072902913915856
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8578548780879289607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b66e0cefca26da24fac3caac42026cb6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  playerState: {fileID: -8150470886946853929}
-  walkSpeed: 2
-  sprintSpeed: 3
-  maxAngle: 60
-  lowerLegAngleMultiplier: 0.8
-  cam: {fileID: 5699811975147871603}
-  leftUpLegJoint: {fileID: 4972469590395821077}
-  leftLegJoint: {fileID: 2251790151858933668}
-  rightUpLegJoint: {fileID: 6889533636252730622}
-  rightLegJoint: {fileID: 4435855779518955221}
-  spineJoint: {fileID: 8214332939447216057}
-  jumpSpeed: 90
---- !u!114 &3011746944026857508
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8578548780879289607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a3731df5609a4c47a9de2d140c7106e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  playerState: {fileID: -8150470886946853929}
-  moveSpeed: 2
-  runMultiplier: 1.4
-  jumpForce: 50
-  rotationSpeed: 6
-  groundCheckDistance: 1.1
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  root: {fileID: 5216023494965125893}
-  cam: {fileID: 2638820883776881641}
---- !u!114 &2637330851986148461
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8578548780879289607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ee0d6038c54d3345ac4964a76539df0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerState: {fileID: -8150470886946853929}
-  ragdollStiffness: 10
-  legJoints:
-  - {fileID: 4972469590395821077}
-  - {fileID: 2251790151858933668}
-  - {fileID: 6889533636252730622}
-  - {fileID: 4435855779518955221}
-  otherJoints:
-  - {fileID: 8214332939447216057}
-  - {fileID: 277685062306828632}
-  - {fileID: 1380890681972881484}
-  - {fileID: 7538621294356234979}
-  - {fileID: 5653926879502385173}
-  - {fileID: 8699569115064483695}
 --- !u!114 &3087060184374622719
 MonoBehaviour:
   m_ObjectHideFlags: 0

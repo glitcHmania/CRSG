@@ -4,34 +4,46 @@ using UnityEngine;
 public class Timer
 {
     public float Duration;
+    public bool IsFinished { get; private set; }
+    public float RemainingTime { get; private set; }
+
     private float _startTime;
-    private bool _isRunning;
     private Action _onFinish;
+    private bool _hasStarted;
 
     public Timer(float duration, Action onFinish = null)
     {
         Duration = duration;
-        _startTime = Time.time;
-        _isRunning = true;
         _onFinish = onFinish;
+        RemainingTime = duration;
+        IsFinished = false;
+        _hasStarted = false;
     }
-
-    public bool IsRunning => _isRunning;
 
     public void Update()
     {
-        if (!_isRunning) return;
-
-        if (Time.time - _startTime >= Duration)
+        if (!_hasStarted)
         {
-            _isRunning = false;
+            _startTime = Time.time;
+            _hasStarted = true;
+        }
+
+        if (IsFinished) return;
+
+        float elapsed = Time.time - _startTime;
+        RemainingTime = Mathf.Max(0f, Duration - elapsed);
+
+        if (elapsed >= Duration)
+        {
+            IsFinished = true;
             _onFinish?.Invoke();
         }
     }
 
     public void Reset()
     {
-        _startTime = Time.time;
-        _isRunning = true;
+        RemainingTime = Duration;
+        IsFinished = false;
+        _hasStarted = false;
     }
 }
