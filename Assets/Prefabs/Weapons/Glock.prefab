@@ -55,6 +55,8 @@ MonoBehaviour:
   infiniteAmmo: 1
   bulletTrailPrefab: {fileID: 8483647679569776263, guid: 2414faf7e632ab743a3474446c779a74, type: 3}
   trailPoolSize: 10
+  muzzleFlash: {fileID: 198000012944515248, guid: 9defeac88977c0d448aa4541073ee9e4, type: 3}
+  stoneImpactEffect: {fileID: 198000012529019072, guid: 4edabb1c0dde62743b137378c7d22980, type: 3}
 --- !u!1001 &3566661192098838077
 PrefabInstance:
   m_ObjectHideFlags: 0

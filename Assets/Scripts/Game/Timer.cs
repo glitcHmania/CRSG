@@ -46,4 +46,9 @@ public class Timer
         IsFinished = false;
         _hasStarted = false;
     }
+
+    public float GetRatio()
+    {
+        return Mathf.Clamp01(1f - RemainingTime / Duration);
+    }
 }
