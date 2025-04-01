@@ -8,6 +8,8 @@ public class Gun : MonoBehaviour
     private Timer reloadTimer;
 
     public Rigidbody HandRigidbody;
+
+    [Header("Weapon Settings")]
     public int Power;
     public int MagazineSize;
     public int BulletCount;
@@ -19,6 +21,11 @@ public class Gun : MonoBehaviour
     [Header("Bullet Trail Settings")]
     public BulletTrail bulletTrailPrefab;
     public int trailPoolSize = 10;
+
+    [Header("Particle System")]
+    public ParticleSystem muzzleFlash;
+    public ParticleSystem stoneImpactEffect;
+
 
     private ObjectPool<BulletTrail> trailPool;
 
@@ -47,6 +54,8 @@ public class Gun : MonoBehaviour
             return;
         }
 
+        muzzleFlash.Play();
+
         recoverTimer.Reset();
         isAvailable = false;
         HandRigidbody.AddForce(-transform.forward * Power, ForceMode.Impulse);
@@ -60,10 +69,15 @@ public class Gun : MonoBehaviour
 
             Debug.Log("Hit: " + hit.collider.name);
 
-            if (hit.collider.TryGetComponent(out Rigidbody rb))
+            if (hit.collider)
             {
-                Vector3 forceDirection = (hit.point - transform.position).normalized;
-                rb.AddForce(forceDirection * Power, ForceMode.Impulse);
+                Instantiate(stoneImpactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+
+                if (hit.collider.TryGetComponent(out Rigidbody rb))
+                {
+                    Vector3 forceDirection = (hit.point - transform.position).normalized;
+                    rb.AddForce(forceDirection * Power, ForceMode.Impulse);
+                }
             }
         }
 
