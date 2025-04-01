@@ -16,7 +16,6 @@ public class FadeDestroy : MonoBehaviour
         rendererComponent = fadeTarget.GetComponent<Renderer>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         timer.Update();

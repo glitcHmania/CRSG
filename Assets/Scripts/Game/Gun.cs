@@ -54,6 +54,8 @@ public class Gun : MonoBehaviour
             return;
         }
 
+        muzzleFlash.Play();
+
         recoverTimer.Reset();
         isAvailable = false;
         HandRigidbody.AddForce(-transform.forward * Power, ForceMode.Impulse);
