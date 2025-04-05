@@ -2935,6 +2935,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdef7d9fb748e4145825981f2392a05e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   playerState: {fileID: -8150470886946853929}
   recoilBone: {fileID: 287997504604421362}
   weaponBone: {fileID: 8292016055041033889}
@@ -2954,6 +2957,11 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  movementState: 0
+  isAiming: 0
+  isGrounded: 0
+  isRagdoll: 0
+  isArmed: 0
 --- !u!114 &7321850614008527734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2981,7 +2989,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 55
   root: {fileID: 5216023494965125893}
-  cam: {fileID: 2638820883776881641}
+  cam: {fileID: 5430204467148329921}
   hip: {fileID: 8578548780879289607}
 --- !u!114 &8757769546477567384
 MonoBehaviour:
@@ -3025,9 +3033,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b66e0cefca26da24fac3caac42026cb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   playerState: {fileID: -8150470886946853929}
   walkSpeed: 2
   sprintSpeed: 3

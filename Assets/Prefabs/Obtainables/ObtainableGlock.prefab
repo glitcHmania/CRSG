@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1696730685791098962}
   - component: {fileID: 6040818575161680709}
   - component: {fileID: 4983481482715329854}
+  - component: {fileID: -4699540882630230374}
   m_Layer: 0
   m_Name: ObtainableGlock
   m_TagString: Untagged
@@ -46,6 +47,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f07084e9c3f6d742a05f2359111d3e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   weaponPrefab: {fileID: 6219196561423381161, guid: 21e3b97009c20894bbf354a7e6eadcfe, type: 3}
   modelOffset: {x: 0, y: 0, z: 0}
   bobAmplitude: 0.12
@@ -72,6 +76,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-4699540882630230374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2349670444129837435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 4238321053
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &4086154473092365888
 PrefabInstance:
   m_ObjectHideFlags: 0

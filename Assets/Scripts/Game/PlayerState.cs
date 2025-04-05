@@ -11,11 +11,20 @@ public class PlayerState : NetworkBehaviour
         Jumping
     }
 
-    public Movement movementState { get; set; }
-    public bool isAiming { get; set; }
-    public bool isGrounded { get; set; }
-    public bool isRagdoll { get; set; }
-    public bool isArmed { get; set; }
+    [SyncVar]
+    public Movement movementState;
+
+    [SyncVar]
+    public bool isAiming;
+
+    [SyncVar]
+    public bool isGrounded;
+
+    [SyncVar]
+    public bool isRagdoll;
+
+    [SyncVar]
+    public bool isArmed;
 
     public bool IsMoving => (movementState == Movement.Walking || movementState == Movement.Running) && movementState != Movement.Jumping;
 

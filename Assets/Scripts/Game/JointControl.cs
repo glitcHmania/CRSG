@@ -1,7 +1,6 @@
-﻿using Mirror;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class JointControl : NetworkBehaviour
+public class JointControl : MonoBehaviour
 {
     public PlayerState playerState;
 
@@ -19,13 +18,13 @@ public class JointControl : NetworkBehaviour
 
     public Camera cam;
 
-    [Header("**********Leg Joints**********")]
+    [Header("Leg Joints")]
     public ConfigurableJoint leftUpLegJoint;
     public ConfigurableJoint leftLegJoint;
     public ConfigurableJoint rightUpLegJoint;
     public ConfigurableJoint rightLegJoint;
 
-    [Header("**********Spine Joint**********")]
+    [Header("Spine Joint")]
     public ConfigurableJoint spineJoint;
 
     private Quaternion defaultSpineTargetRotation = Quaternion.identity;
@@ -33,74 +32,71 @@ public class JointControl : NetworkBehaviour
 
     void Update()
     {
-        if (isLocalPlayer)
+        if (playerState.movementState == PlayerState.Movement.Running)
         {
-            if( playerState.movementState == PlayerState.Movement.Running)
+            currentSpeed = sprintSpeed;
+        }
+        else
+        {
+            currentSpeed = walkSpeed;
+        }
+
+        if (playerState.isAiming)
+        {
+            spineJoint.targetRotation = Quaternion.Euler(-cam.transform.eulerAngles.x, 0f, 0f);
+        }
+        else if (spineJoint.targetRotation != defaultSpineTargetRotation)
+        {
+            spineJoint.targetRotation = Quaternion.identity;
+        }
+
+
+        if (playerState.IsMoving)
+        {
+            if (!playerState.isAiming)
             {
-                currentSpeed = sprintSpeed;
+                MoveForward();
             }
             else
             {
-                currentSpeed = walkSpeed;
-            }
-
-            if(playerState.isAiming)
-            {
-                spineJoint.targetRotation = Quaternion.Euler(-cam.transform.eulerAngles.x, 0f, 0f);
-            }
-            else if( spineJoint.targetRotation != defaultSpineTargetRotation)
-            {
-                spineJoint.targetRotation = Quaternion.identity;
-            }   
-
-
-            if (playerState.IsMoving)
-            {
-                if (!playerState.isAiming)
+                if (Input.GetKey(KeyCode.W))
                 {
                     MoveForward();
                 }
-                else
+                else if (Input.GetKey(KeyCode.S))
                 {
-                    if (Input.GetKey(KeyCode.W))
-                    {
-                        MoveForward();
-                    }
-                    else if (Input.GetKey(KeyCode.S))
-                    {
-                        MoveBackward();
-                    }
-                    else if (Input.GetKey(KeyCode.A))
-                    {
-                        MoveLeft();
-                    }
-                    else if (Input.GetKey(KeyCode.D))
-                    {
-                        MoveRight();
-                    }
+                    MoveBackward();
                 }
-
+                else if (Input.GetKey(KeyCode.A))
+                {
+                    MoveLeft();
+                }
+                else if (Input.GetKey(KeyCode.D))
+                {
+                    MoveRight();
+                }
             }
-            else if (playerState.movementState == PlayerState.Movement.Jumping)
-            {
-                currentJumpAngle = Mathf.MoveTowards(currentJumpAngle, maxAngle, Time.deltaTime * jumpSpeed);
 
-                float upperLegAngle = -currentJumpAngle;
-                float lowerLegAngle = Mathf.Max(currentJumpAngle, 0f) * 2f;
+        }
+        else if (playerState.movementState == PlayerState.Movement.Jumping)
+        {
+            currentJumpAngle = Mathf.MoveTowards(currentJumpAngle, maxAngle, Time.deltaTime * jumpSpeed);
 
-                leftUpLegJoint.targetRotation = Quaternion.Euler(upperLegAngle, 0f, 0f);
-                leftLegJoint.targetRotation = Quaternion.Euler(lowerLegAngle, 0f, 0f);
-                rightUpLegJoint.targetRotation = Quaternion.Euler(upperLegAngle, 0f, 0f);
-                rightLegJoint.targetRotation = Quaternion.Euler(lowerLegAngle, 0f, 0f);
-            }
-            else
-            {
-                leftUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
-                rightUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
-                rightLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
-                leftLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
-                currentJumpAngle = 0f;
-            }
+            float upperLegAngle = -currentJumpAngle;
+            float lowerLegAngle = Mathf.Max(currentJumpAngle, 0f) * 2f;
+
+            leftUpLegJoint.targetRotation = Quaternion.Euler(upperLegAngle, 0f, 0f);
+            leftLegJoint.targetRotation = Quaternion.Euler(lowerLegAngle, 0f, 0f);
+            rightUpLegJoint.targetRotation = Quaternion.Euler(upperLegAngle, 0f, 0f);
+            rightLegJoint.targetRotation = Quaternion.Euler(lowerLegAngle, 0f, 0f);
+        }
+        else
+        {
+            leftUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
+            rightUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
+            rightLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
+            leftLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
+            currentJumpAngle = 0f;
         }
     }
 
