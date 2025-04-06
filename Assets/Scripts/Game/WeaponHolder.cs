@@ -12,10 +12,12 @@ public class WeaponHolder : NetworkBehaviour
 
     public ConfigurableJoint armJoint;
     private Vector3 initialArmRotation;
+    private RagdollControl ragdollControl;
 
     private void Start()
     {
         initialArmRotation = armJoint.targetRotation.eulerAngles;
+        ragdollControl = GetComponent<RagdollControl>();
     }
 
     void Update()
@@ -28,7 +30,7 @@ public class WeaponHolder : NetworkBehaviour
 
     private void HandleInput()
     {
-        if(playerState.isArmed && currentWeaponGunScript.isAutomatic)
+        if (playerState.isArmed && currentWeaponGunScript.isAutomatic)
         {
             if (Input.GetMouseButton(0) && currentWeaponGunScript != null)
             {
@@ -53,19 +55,24 @@ public class WeaponHolder : NetworkBehaviour
         if (Input.GetMouseButton(1))
         {
             playerState.isAiming = true;
+            //ragdollControl.SetRagdollStiffness(1000f);
+
             if (playerState.isArmed)
             {
                 armJoint.targetRotation = Quaternion.Euler(0f, 45f, 300f);
             }
         }
-        else
+        else if (Input.GetMouseButtonUp(1))
         {
+            //ragdollControl.ResetRagdollStifness();
             playerState.isAiming = false;
+
             if (playerState.isArmed)
             {
                 armJoint.targetRotation = Quaternion.Euler(initialArmRotation);
             }
         }
+
     }
 
     [Command]

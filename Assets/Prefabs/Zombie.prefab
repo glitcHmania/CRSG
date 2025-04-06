@@ -1599,7 +1599,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_TargetRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_TargetRotation: {x: 0.21643962, y: 0, z: 0, w: 0.976296}
   m_TargetAngularVelocity: {x: 0, y: 0, z: 0}
   m_RotationDriveMode: 0
   m_AngularXDrive:
@@ -2004,7 +2004,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_TargetRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_TargetRotation: {x: -0.21643962, y: 0, z: 0, w: 0.976296}
   m_TargetAngularVelocity: {x: 0, y: 0, z: 0}
   m_RotationDriveMode: 0
   m_AngularXDrive:
@@ -2082,7 +2082,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4311917604382387781}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7ce4de679212a2549974f2315e8e13e9, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2137,7 +2137,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.9999993, y: 0.4125875, z: 0.0013563777}
+  m_ConnectedAnchor: {x: -0.000000027323154, y: 0.41253215, z: -0.00000022444874}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: -1}
   m_XMotion: 0
@@ -2464,7 +2464,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5932833963332583693}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7ce4de679212a2549974f2315e8e13e9, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3110,7 +3110,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.00000023841858, y: 1.0354106, z: -0.012955666}
+  m_ConnectedAnchor: {x: 0.00000023841858, y: 0.45041066, z: -0.012955666}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0

@@ -27,8 +27,13 @@ public class JointControl : MonoBehaviour
     [Header("Spine Joint")]
     public ConfigurableJoint spineJoint;
 
-    private Quaternion defaultSpineTargetRotation = Quaternion.identity;
+    private Quaternion defaultSpineTargetRotation;
     private float currentJumpAngle = 0f;
+
+    private void Start()
+    {
+        defaultSpineTargetRotation = spineJoint.targetRotation;
+    }
 
     void Update()
     {
@@ -47,7 +52,7 @@ public class JointControl : MonoBehaviour
         }
         else if (spineJoint.targetRotation != defaultSpineTargetRotation)
         {
-            spineJoint.targetRotation = Quaternion.identity;
+            spineJoint.targetRotation = defaultSpineTargetRotation;
         }
 
 

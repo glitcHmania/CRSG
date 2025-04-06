@@ -17,6 +17,7 @@ public class Gun : NetworkBehaviour
     public int BulletCount;
     public float Range;
     public float ReloadTime;
+    public float recoilMultiplier;
     public float RecoverTime;
     public bool isAutomatic = false;
     public bool infiniteAmmo = false;
@@ -119,7 +120,7 @@ public class Gun : NetworkBehaviour
     {
         if (HandRigidbody != null)
         {
-            HandRigidbody.AddForce(-transform.forward * Power, ForceMode.Impulse);
+            HandRigidbody.AddForce(-transform.forward * Power * recoilMultiplier, ForceMode.Impulse);
         }
     }
 
