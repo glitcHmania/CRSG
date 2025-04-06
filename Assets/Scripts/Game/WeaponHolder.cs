@@ -28,11 +28,20 @@ public class WeaponHolder : NetworkBehaviour
 
     private void HandleInput()
     {
-        if (Input.GetMouseButtonDown(0) && currentWeaponGunScript != null)
+        if(playerState.isArmed && currentWeaponGunScript.isAutomatic)
         {
-            CmdShoot();
+            if (Input.GetMouseButton(0) && currentWeaponGunScript != null)
+            {
+                CmdShoot();
+            }
         }
-
+        else
+        {
+            if (Input.GetMouseButtonDown(0) && currentWeaponGunScript != null)
+            {
+                CmdShoot();
+            }
+        }
         if (Input.GetKeyDown(KeyCode.R) && currentWeaponGunScript != null)
         {
             CmdReload();
@@ -100,6 +109,7 @@ public class WeaponHolder : NetworkBehaviour
                 // Equip weapon AFTER client has authority
                 RpcEquipWeapon(newWeapon); // tells client to attach it locally
                 currentWeapon = newWeapon; // server keeps track too
+                currentWeaponGunScript = newWeapon.GetComponent<Gun>();
 
                 NetworkServer.Destroy(pickup.gameObject); // remove pickup
             }

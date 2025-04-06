@@ -9,6 +9,7 @@ public class Gun : NetworkBehaviour
     private Timer reloadTimer;
 
     public Rigidbody HandRigidbody;
+    public Transform MuzzleTransform;
 
     [Header("Weapon Settings")]
     public int Power;
@@ -17,6 +18,7 @@ public class Gun : NetworkBehaviour
     public float Range;
     public float ReloadTime;
     public float RecoverTime;
+    public bool isAutomatic = false;
     public bool infiniteAmmo = false;
 
     [Header("Bullet Trail Settings")]
@@ -71,8 +73,8 @@ public class Gun : NetworkBehaviour
 
         TargetApplyRecoil(ownerConn); //  Only client will apply force
 
-        Vector3 hitPoint = transform.position + transform.forward * Range;
-        Ray ray = new Ray(transform.position, transform.forward);
+        Vector3 hitPoint = MuzzleTransform.position + MuzzleTransform.forward * Range;
+        Ray ray = new Ray(MuzzleTransform.position, MuzzleTransform.forward);
 
         if (Physics.Raycast(ray, out RaycastHit hit, Range))
         {
@@ -83,7 +85,7 @@ public class Gun : NetworkBehaviour
 
                 if (hitIdentity?.connectionToClient != null) // it's a client-owned object
                 {
-                    Vector3 forceDir = (hit.point - transform.position).normalized;
+                    Vector3 forceDir = (hit.point - MuzzleTransform.position).normalized;
                     TargetApplyImpactForce(hitIdentity.connectionToClient, forceDir, Power);
                 }
 
@@ -91,7 +93,7 @@ public class Gun : NetworkBehaviour
             }
         }
 
-        RpcSpawnTrail(transform.position, hitPoint);
+        RpcSpawnTrail(MuzzleTransform.position, hitPoint);
 
         if (!infiniteAmmo)
         {
@@ -103,7 +105,7 @@ public class Gun : NetworkBehaviour
     void TargetApplyImpactForce(NetworkConnection target, Vector3 forceDirection, float power)
     {
         // Find the Rigidbody again on the client and apply force
-        if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, Range))
+        if (Physics.Raycast(MuzzleTransform.position, MuzzleTransform.forward, out RaycastHit hit, Range))
         {
             if (hit.collider.TryGetComponent(out Rigidbody rb))
             {
