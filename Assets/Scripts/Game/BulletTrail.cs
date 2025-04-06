@@ -1,8 +1,7 @@
-using UnityEngine;
 using System;
-using Mirror;
+using UnityEngine;
 
-public class BulletTrail : NetworkBehaviour
+public class BulletTrail : MonoBehaviour
 {
     private TrailRenderer trail;
     private Vector3 target;

@@ -1,6 +1,7 @@
+﻿using Mirror;
 using UnityEngine;
 
-public class Gun : MonoBehaviour
+public class Gun : NetworkBehaviour
 {
     private bool isAvailable = true;
 
@@ -26,7 +27,6 @@ public class Gun : MonoBehaviour
     public ParticleSystem muzzleFlash;
     public ParticleSystem stoneImpactEffect;
 
-
     private ObjectPool<BulletTrail> trailPool;
 
     void Awake()
@@ -47,43 +47,51 @@ public class Gun : MonoBehaviour
         reloadTimer.Update();
     }
 
-    public void Shoot()
+    public void Reload()
     {
-        if (!isAvailable || BulletCount <= 0)
-        {
-            return;
-        }
+        if (!isServer) return;
 
-        muzzleFlash.Play();
+        if (!isAvailable) return;
 
-        recoverTimer.Reset();
         isAvailable = false;
-        HandRigidbody.AddForce(-transform.forward * Power, ForceMode.Impulse);
+        reloadTimer.Reset();
+    }
 
-        Ray ray = new Ray(transform.position, transform.forward);
+    public void Shoot(NetworkConnectionToClient ownerConn)
+    {
+        if (!isServer) return;
+
+        if (!isAvailable || BulletCount <= 0)
+            return;
+
+        isAvailable = false;
+        recoverTimer.Reset();
+
+        RpcPlayMuzzleFlash();
+
+        TargetApplyRecoil(ownerConn); //  Only client will apply force
+
         Vector3 hitPoint = transform.position + transform.forward * Range;
+        Ray ray = new Ray(transform.position, transform.forward);
 
         if (Physics.Raycast(ray, out RaycastHit hit, Range))
         {
             hitPoint = hit.point;
-
-            Debug.Log("Hit: " + hit.collider.name);
-
             if (hit.collider)
             {
-                Instantiate(stoneImpactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                var hitIdentity = hit.collider.GetComponentInParent<NetworkIdentity>();
 
-                if (hit.collider.TryGetComponent(out Rigidbody rb))
+                if (hitIdentity?.connectionToClient != null) // it's a client-owned object
                 {
-                    Vector3 forceDirection = (hit.point - transform.position).normalized;
-                    rb.AddForce(forceDirection * Power, ForceMode.Impulse);
+                    Vector3 forceDir = (hit.point - transform.position).normalized;
+                    TargetApplyImpactForce(hitIdentity.connectionToClient, forceDir, Power);
                 }
+
+                RpcSpawnImpact(hit.point, hit.normal);
             }
         }
 
-        // Spawn a trail
-        BulletTrail trail = trailPool.Get();
-        trail.Init(transform.position, hitPoint, (t) => trailPool.Return(t));
+        RpcSpawnTrail(transform.position, hitPoint);
 
         if (!infiniteAmmo)
         {
@@ -91,15 +99,47 @@ public class Gun : MonoBehaviour
         }
     }
 
-    public void Reload()
+    [TargetRpc]
+    void TargetApplyImpactForce(NetworkConnection target, Vector3 forceDirection, float power)
     {
-        if (!isAvailable)
+        // Find the Rigidbody again on the client and apply force
+        if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, Range))
         {
-            return;
+            if (hit.collider.TryGetComponent(out Rigidbody rb))
+            {
+                rb.AddForce(forceDirection * power, ForceMode.Impulse);
+            }
         }
+    }
 
-        Debug.Log($"Reloading in {ReloadTime} seconds");
-        isAvailable = false;
-        reloadTimer.Reset();
+    [TargetRpc]
+    private void TargetApplyRecoil(NetworkConnection target)
+    {
+        if (HandRigidbody != null)
+        {
+            HandRigidbody.AddForce(-transform.forward * Power, ForceMode.Impulse);
+        }
+    }
+
+    [ClientRpc]
+    private void RpcPlayMuzzleFlash()
+    {
+        muzzleFlash?.Play();
+    }
+
+    [ClientRpc]
+    private void RpcSpawnImpact(Vector3 point, Vector3 normal)
+    {
+        if (stoneImpactEffect != null)
+        {
+            Instantiate(stoneImpactEffect, point, Quaternion.LookRotation(normal));
+        }
+    }
+
+    [ClientRpc]
+    private void RpcSpawnTrail(Vector3 start, Vector3 end)
+    {
+        BulletTrail trail = trailPool.Get();
+        trail.Init(start, end, (t) => trailPool.Return(t));
     }
 }

@@ -1,6 +1,8 @@
+using Mirror;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class ObtainableWeapon : MonoBehaviour
+public class ObtainableWeapon : NetworkBehaviour
 {
     public GameObject weaponPrefab;
     public Vector3 modelOffset = Vector3.zero;
@@ -34,13 +36,11 @@ public class ObtainableWeapon : MonoBehaviour
     {
         if (modelInstance != null)
         {
-            // Bobbing
             float bobOffset = Mathf.Sin(Time.time * bobFrequency) * bobAmplitude;
             Vector3 pos = modelOffset;
             pos.y = startY + bobOffset;
             modelInstance.transform.localPosition = pos;
 
-            // Rotation
             modelInstance.transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
         }
     }
@@ -49,13 +49,10 @@ public class ObtainableWeapon : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Player entered trigger!");
-            var weaponHolder = other.GetComponentInParent<WeaponHolder>();
-            if (weaponHolder != null)
+            WeaponHolder holder = other.GetComponentInParent<WeaponHolder>();
+            if (holder != null)
             {
-                GameObject newWeapon = Instantiate(weaponPrefab);
-                weaponHolder.EquipWeapon(newWeapon);
-                Destroy(gameObject);
+                holder.TryPickupWeapon(this);
             }
         }
     }

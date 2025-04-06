@@ -1,6 +1,5 @@
 using Mirror;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Movement : NetworkBehaviour
 {
@@ -20,7 +19,7 @@ public class Movement : NetworkBehaviour
 
     [Header("References")]
     public Transform root;
-    public Transform cam;
+    public GameObject cam;
     public GameObject hip;
 
     private Vector3 moveDir;
@@ -30,30 +29,29 @@ public class Movement : NetworkBehaviour
 
     void Start()
     {
+        if (!isLocalPlayer)
+        {
+            cam.SetActive(false); // Turn off other player cameras
+        }
+        else
+        {
+            cam.SetActive(true); // Only keep the local camera on
+        }
+
         hipRigidBody = hip.GetComponent<Rigidbody>();
         ragdollControl = GetComponent<RagdollControl>();
         ungroundedTimer = new Timer(ungroundedTime, () => ragdollControl.ActivateRagdoll());
-
-        if (cam == null)
-        {
-            Debug.LogError("Camera not assigned in Movement script.");
-        }
-
-        if (root == null)
-        {
-            Debug.LogError("Root not assigned in Movement script.");
-        }
     }
 
     void Update()
     {
         if (!isLocalPlayer) return;
-
         if (playerState.isRagdoll) return;
+        if (!Application.isFocused) return;
 
         if (playerState.isAiming)
         {
-            root.rotation = Quaternion.Euler(0, cam.eulerAngles.y, 0);
+            root.rotation = Quaternion.Euler(0, cam.transform.eulerAngles.y, 0);
             moveDir = Vector3.zero;
         }
         else
@@ -62,8 +60,8 @@ public class Movement : NetworkBehaviour
             float h = Input.GetAxisRaw("Horizontal");
             float v = Input.GetAxisRaw("Vertical");
 
-            Vector3 camForward = cam.forward;
-            Vector3 camRight = cam.right;
+            Vector3 camForward = cam.transform.forward;
+            Vector3 camRight = cam.transform.right;
 
             camForward.y = 0;
             camRight.y = 0;
