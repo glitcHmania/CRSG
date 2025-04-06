@@ -33,7 +33,7 @@ public class RagdollControl : MonoBehaviour
 
     private void Update()
     {
-        if (playerState.isRagdoll)
+        if (playerState.isRagdoll && playerState.isGrounded)
         {
             ragdollTimer.Update();
         }
@@ -55,8 +55,8 @@ public class RagdollControl : MonoBehaviour
     {
         playerState.isRagdoll = true;
 
-        hipsRigidbody.mass = 0.3f;
-        spineRigidbody.mass = 0.3f;
+        //hipsRigidbody.mass = 0.3f;
+        //spineRigidbody.mass = 0.3f;
 
         hipJoint.angularXDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
         hipJoint.angularYZDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
@@ -78,11 +78,34 @@ public class RagdollControl : MonoBehaviour
     {
         playerState.isRagdoll = false;
 
-        hipsRigidbody.mass = 2f;
-        spineRigidbody.mass = 1f;
+        //hipsRigidbody.mass = 2f;
+        //spineRigidbody.mass = 1f;
 
         ragdollTimer.Reset();
 
+        ResetRagdollStifness();
+    }
+
+    public void SetRagdollStiffness(float stiffness)
+    {
+        hipJoint.angularXDrive = new JointDrive { positionSpring = stiffness, maximumForce = 3.402823e+38f };
+        hipJoint.angularYZDrive = new JointDrive { positionSpring = stiffness, maximumForce = 3.402823e+38f };
+
+        foreach (var joint in otherJoints)
+        {
+            joint.angularXDrive = new JointDrive { positionSpring = stiffness, maximumForce = 3.402823e+38f };
+            joint.angularYZDrive = new JointDrive { positionSpring = stiffness, maximumForce = 3.402823e+38f };
+        }
+
+        foreach (var joint in legJoints)
+        {
+            joint.angularXDrive = new JointDrive { positionSpring = stiffness, maximumForce = 3.402823e+38f };
+            joint.angularYZDrive = new JointDrive { positionSpring = stiffness, maximumForce = 3.402823e+38f };
+        }
+    }
+
+    public void ResetRagdollStifness()
+    {
         hipJoint.angularXDrive = new JointDrive { positionSpring = initialXPositionSpring, maximumForce = 3.402823e+38f };
         hipJoint.angularYZDrive = new JointDrive { positionSpring = initialYZPositionDamper, maximumForce = 3.402823e+38f };
 
