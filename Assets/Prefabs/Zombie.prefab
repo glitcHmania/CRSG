@@ -785,7 +785,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3135921509060577837, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Name
-      value: LeftLegUp
+      value: LeftUpLeg
       objectReference: {fileID: 0}
     - target: {fileID: 3135921509060577837, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       propertyPath: m_Layer
@@ -3347,7 +3347,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8415338635620679260}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bdef7d9fb748e4145825981f2392a05e, type: 3}
   m_Name: 
@@ -3366,7 +3366,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8415338635620679260}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 84609038cdb3fc54a9df805ec2c05a0f, type: 3}
   m_Name: 
@@ -3386,7 +3386,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8415338635620679260}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a3731df5609a4c47a9de2d140c7106e, type: 3}
   m_Name: 
@@ -3415,7 +3415,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8415338635620679260}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0ee0d6038c54d3345ac4964a76539df0, type: 3}
   m_Name: 
@@ -3474,33 +3474,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fd756e465aa59141b86a38df8256d83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerParts:
-  - {fileID: 3953321249163296208}
-  - {fileID: 8578548780879289607}
-  - {fileID: 8797502928376955211}
-  - {fileID: 168700711247263374}
-  - {fileID: 3252415828649867142}
-  - {fileID: 4311917604382387781}
-  - {fileID: 5393420517641593754}
-  - {fileID: 6020512023720708384}
-  - {fileID: 5932833963332583693}
-  - {fileID: 7682386085153092832}
-  - {fileID: 4776376126633098442}
-  JointParts:
-  - {fileID: 8214332939447216057}
-  - {fileID: 8592437074796424599}
-  - {fileID: 7538621294356234979}
-  - {fileID: 277685062306828632}
-  - {fileID: 6889533636252730622}
-  - {fileID: 4435855779518955221}
-  - {fileID: 6223093350908747519}
-  - {fileID: 4972469590395821077}
-  - {fileID: 2251790151858933668}
-  - {fileID: 7270287498334233675}
-  TouchForce: 50
-  TimeStep: 0.2
-  LegsHeight: 1
-  FallFactor: 0.4
+  spine: {fileID: 3953321249163296208}
+  hips: {fileID: 8578548780879289607}
+  rightArm: {fileID: 8797502928376955211}
+  leftArm: {fileID: 168700711247263374}
+  rightUpLeg: {fileID: 3252415828649867142}
+  rightLeg: {fileID: 4311917604382387781}
+  rightFoot: {fileID: 5393420517641593754}
+  leftUpLeg: {fileID: 6020512023720708384}
+  leftLeg: {fileID: 5932833963332583693}
+  leftFoot: {fileID: 7682386085153092832}
+  head: {fileID: 2256155713053655145}
+  centerOfMass: {fileID: 4776376126633098442}
+  spineMovingSpeed: 6
+  touchForce: 5
+  timeStep: 0.2
+  legsHeight: 1
+  fallFactor: 0.4
   StepR: 0
   StepL: 0
   WalkF: 0

@@ -2,11 +2,40 @@ using UnityEngine;
 
 public class SelfBalance : MonoBehaviour
 {
-    public GameObject[] PlayerParts;
-    public ConfigurableJoint[] JointParts;
-    Vector3 COM;
-    public float TouchForce, TimeStep, LegsHeight, FallFactor;
-    float Step_R_Time, Step_L_Time;
+    [Header("Player Parts")]
+    public GameObject spine;
+    public GameObject hips;
+    public GameObject rightArm;
+    public GameObject leftArm;
+    public GameObject rightUpLeg;
+    public GameObject rightLeg;
+    public GameObject rightFoot;
+    public GameObject leftUpLeg;
+    public GameObject leftLeg;
+    public GameObject leftFoot;
+    public GameObject head;
+    public GameObject centerOfMass;
+
+    [Header("Settings")]
+    public float spineMovingSpeed = 6f;
+    public float touchForce = 1f;
+    public float timeStep = 0.2f;
+    public float legsHeight = 1f;
+    public float fallFactor = 0.4f;
+
+    ConfigurableJoint spineJoint;
+    ConfigurableJoint hipsJoint;
+    ConfigurableJoint rightArmJoint;
+    ConfigurableJoint leftArmJoint;
+    ConfigurableJoint rightUpLegJoint;
+    ConfigurableJoint rightLegJoint;
+    ConfigurableJoint rightFootJoint;
+    ConfigurableJoint leftUpLegJoint;
+    ConfigurableJoint leftLegJoint;
+    ConfigurableJoint leftFootJoint;
+
+    private Vector3 COM;
+    float rightStepTime, leftStepTime;
     public bool StepR, StepL, WalkF, WalkB, Falling, Fall, StandUp;
     bool flag, Flag_Leg_R, Flag_Leg_L;
     Quaternion StartLegR1, StartLegR2, StartLegL1, StartLegL2;
@@ -14,12 +43,12 @@ public class SelfBalance : MonoBehaviour
 
     private void Awake()
     {
-        Physics.IgnoreCollision(PlayerParts[2].GetComponent<Collider>(), PlayerParts[4].GetComponent<Collider>(), true);
-        Physics.IgnoreCollision(PlayerParts[3].GetComponent<Collider>(), PlayerParts[7].GetComponent<Collider>(), true);
-        StartLegR1 = PlayerParts[4].GetComponent<ConfigurableJoint>().targetRotation;
-        StartLegR2 = PlayerParts[5].GetComponent<ConfigurableJoint>().targetRotation;
-        StartLegL1 = PlayerParts[7].GetComponent<ConfigurableJoint>().targetRotation;
-        StartLegL2 = PlayerParts[8].GetComponent<ConfigurableJoint>().targetRotation;
+        //Physics.IgnoreCollision(rightArm.GetComponent<Collider>(), rightUpLeg.GetComponent<Collider>(), true);
+        //Physics.IgnoreCollision(leftArm.GetComponent<Collider>(), leftUpLeg.GetComponent<Collider>(), true);
+        StartLegR1 = rightUpLeg.GetComponent<ConfigurableJoint>().targetRotation;
+        StartLegR2 = rightLeg.GetComponent<ConfigurableJoint>().targetRotation;
+        StartLegL1 = leftUpLeg.GetComponent<ConfigurableJoint>().targetRotation;
+        StartLegL2 = leftLeg.GetComponent<ConfigurableJoint>().targetRotation;
 
         Spring0 = new JointDrive();
         Spring0.positionSpring = 0;
@@ -40,19 +69,30 @@ public class SelfBalance : MonoBehaviour
         Spring320.positionSpring = 320;
         Spring320.positionDamper = 0;
         Spring320.maximumForce = Mathf.Infinity;
+
+        spineJoint = spine.GetComponent<ConfigurableJoint>();
+        hipsJoint = hips.GetComponent<ConfigurableJoint>();
+        rightArmJoint = rightArm.GetComponent<ConfigurableJoint>();
+        leftArmJoint = leftArm.GetComponent<ConfigurableJoint>();
+        rightUpLegJoint = rightUpLeg.GetComponent<ConfigurableJoint>();
+        rightLegJoint = rightLeg.GetComponent<ConfigurableJoint>();
+        rightFootJoint = rightFoot.GetComponent<ConfigurableJoint>();
+        leftUpLegJoint = leftUpLeg.GetComponent<ConfigurableJoint>();
+        leftLegJoint = leftLeg.GetComponent<ConfigurableJoint>();
+        leftFootJoint = leftFoot.GetComponent<ConfigurableJoint>();
     }
 
     private void Update()
     {
 
         #region Input
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.UpArrow))
         {
-            PlayerParts[0].GetComponent<Rigidbody>().AddForce(Vector3.back * TouchForce, ForceMode.Impulse);
+            head.GetComponent<Rigidbody>().AddForce(Vector3.back * touchForce, ForceMode.Impulse);
         }
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.DownArrow))
         {
-            PlayerParts[0].GetComponent<Rigidbody>().AddForce(Vector3.forward * TouchForce, ForceMode.Impulse);
+            head.GetComponent<Rigidbody>().AddForce(Vector3.forward * touchForce, ForceMode.Impulse);
         }
 
         if (Input.GetKeyDown(KeyCode.S))
@@ -65,9 +105,9 @@ public class SelfBalance : MonoBehaviour
 
         #endregion
 
-        Calculate_COM();
+        CalculateCenterOfMass();
 
-        PlayerParts[10].transform.position = COM;
+        centerOfMass.transform.position = COM;
 
         Balance();
 
@@ -75,11 +115,11 @@ public class SelfBalance : MonoBehaviour
         {
             StepR = false;
             StepL = false;
-            Step_R_Time = 0;
-            Step_L_Time = 0;
+            rightStepTime = 0;
+            leftStepTime = 0;
             Flag_Leg_R = false;
             Flag_Leg_L = false;
-            JointParts[0].targetRotation = Quaternion.Lerp(JointParts[0].targetRotation, new Quaternion(-0.1f, JointParts[0].targetRotation.y, JointParts[0].targetRotation.z, JointParts[0].targetRotation.w), 6 * Time.fixedDeltaTime);
+            spineJoint.targetRotation = Quaternion.Lerp(spineJoint.targetRotation, new Quaternion(-0.1f, spineJoint.targetRotation.y, spineJoint.targetRotation.z, spineJoint.targetRotation.w), spineMovingSpeed * Time.fixedDeltaTime);
         }
     }
 
@@ -90,30 +130,30 @@ public class SelfBalance : MonoBehaviour
 
     void Balance()
     {
-        if (PlayerParts[10].transform.position.z < PlayerParts[6].transform.position.z && PlayerParts[10].transform.position.z < PlayerParts[9].transform.position.z)
+        if (centerOfMass.transform.position.z < rightFoot.transform.position.z && centerOfMass.transform.position.z < leftFoot.transform.position.z)
         {
             WalkB = true;
-            JointParts[0].targetRotation = Quaternion.Lerp(JointParts[0].targetRotation, new Quaternion(-0.1f, JointParts[0].targetRotation.y, JointParts[0].targetRotation.z, JointParts[0].targetRotation.w), 6 * Time.fixedDeltaTime);
+            spineJoint.targetRotation = Quaternion.Lerp(spineJoint.targetRotation, new Quaternion(-0.1f, spineJoint.targetRotation.y, spineJoint.targetRotation.z, spineJoint.targetRotation.w), spineMovingSpeed * Time.fixedDeltaTime);
         }
         else
         {
             WalkB = false;
         }
 
-        if (PlayerParts[10].transform.position.z > PlayerParts[6].transform.position.z && PlayerParts[10].transform.position.z > PlayerParts[9].transform.position.z)
+        if (centerOfMass.transform.position.z > rightFoot.transform.position.z && centerOfMass.transform.position.z > leftFoot.transform.position.z)
         {
             WalkF = true;
-            JointParts[0].targetRotation = Quaternion.Lerp(JointParts[0].targetRotation, new Quaternion(0, JointParts[0].targetRotation.y, JointParts[0].targetRotation.z, JointParts[0].targetRotation.w), 6 * Time.fixedDeltaTime);
+            spineJoint.targetRotation = Quaternion.Lerp(spineJoint.targetRotation, new Quaternion(0, spineJoint.targetRotation.y, spineJoint.targetRotation.z, spineJoint.targetRotation.w), spineMovingSpeed * Time.fixedDeltaTime);
         }
         else
         {
             WalkF = false;
         }
 
-        if (PlayerParts[10].transform.position.z > PlayerParts[6].transform.position.z + FallFactor &&
-           PlayerParts[10].transform.position.z > PlayerParts[9].transform.position.z + FallFactor ||
-           PlayerParts[10].transform.position.z < PlayerParts[6].transform.position.z - (FallFactor + 0.2f) &&
-           PlayerParts[10].transform.position.z < PlayerParts[9].transform.position.z - (FallFactor + 0.2f))
+        if (centerOfMass.transform.position.z > rightFoot.transform.position.z + fallFactor &&
+           centerOfMass.transform.position.z > leftFoot.transform.position.z + fallFactor ||
+           centerOfMass.transform.position.z < rightFoot.transform.position.z - (fallFactor + 0.2f) &&
+           centerOfMass.transform.position.z < leftFoot.transform.position.z - (fallFactor + 0.2f))
         {
             Falling = true;
         }
@@ -124,24 +164,24 @@ public class SelfBalance : MonoBehaviour
 
         if (Falling)
         {
-            JointParts[1].angularXDrive = Spring0;
-            JointParts[1].angularYZDrive = Spring0;
-            LegsHeight = 5;
+            hipsJoint.angularXDrive = Spring0;
+            hipsJoint.angularYZDrive = Spring0;
+            legsHeight = 5;
         }
         else
         {
-            JointParts[1].angularXDrive = Spring300;
-            JointParts[1].angularYZDrive = Spring300;
-            LegsHeight = 1;
-            JointParts[2].targetRotation = Quaternion.Lerp(JointParts[2].targetRotation, new Quaternion(0, JointParts[2].targetRotation.y, JointParts[2].targetRotation.z, JointParts[2].targetRotation.w), 6 * Time.fixedDeltaTime);
-            JointParts[3].targetRotation = Quaternion.Lerp(JointParts[3].targetRotation, new Quaternion(0, JointParts[3].targetRotation.y, JointParts[3].targetRotation.z, JointParts[3].targetRotation.w), 6 * Time.fixedDeltaTime);
-            JointParts[2].angularXDrive = Spring0;
-            JointParts[2].angularYZDrive = Spring150;
-            JointParts[3].angularXDrive = Spring0;
-            JointParts[3].angularYZDrive = Spring150;
+            hipsJoint.angularXDrive = Spring300;
+            hipsJoint.angularYZDrive = Spring300;
+            legsHeight = 1;
+            rightArmJoint.targetRotation = Quaternion.Lerp(rightArmJoint.targetRotation, new Quaternion(0, rightArmJoint.targetRotation.y, rightArmJoint.targetRotation.z, rightArmJoint.targetRotation.w), 6 * Time.fixedDeltaTime);
+            leftArmJoint.targetRotation = Quaternion.Lerp(leftArmJoint.targetRotation, new Quaternion(0, leftArmJoint.targetRotation.y, leftArmJoint.targetRotation.z, leftArmJoint.targetRotation.w), 6 * Time.fixedDeltaTime);
+            rightArmJoint.angularXDrive = Spring0;
+            rightArmJoint.angularYZDrive = Spring150;
+            leftArmJoint.angularXDrive = Spring0;
+            leftArmJoint.angularYZDrive = Spring150;
         }
 
-        if (PlayerParts[0].transform.position.y - 0.1f <= PlayerParts[1].transform.position.y)
+        if (spine.transform.position.y - 0.1f <= hips.transform.position.y)
         {
             Fall = true;
         }
@@ -152,8 +192,8 @@ public class SelfBalance : MonoBehaviour
 
         if (Fall)
         {
-            JointParts[1].angularXDrive = Spring0;
-            JointParts[1].angularYZDrive = Spring0;
+            hipsJoint.angularXDrive = Spring0;
+            hipsJoint.angularYZDrive = Spring0;
             StandUping();
         }
     }
@@ -162,13 +202,13 @@ public class SelfBalance : MonoBehaviour
     {
         if (WalkF)
         {
-            if (PlayerParts[6].transform.position.z < PlayerParts[9].transform.position.z && !StepL && !Flag_Leg_R)
+            if (rightFoot.transform.position.z < leftFoot.transform.position.z && !StepL && !Flag_Leg_R)
             {
                 StepR = true;
                 Flag_Leg_R = true;
                 Flag_Leg_L = true;
             }
-            if (PlayerParts[6].transform.position.z > PlayerParts[9].transform.position.z && !StepR && !Flag_Leg_L)
+            if (rightFoot.transform.position.z > leftFoot.transform.position.z && !StepR && !Flag_Leg_L)
             {
                 StepL = true;
                 Flag_Leg_L = true;
@@ -178,13 +218,13 @@ public class SelfBalance : MonoBehaviour
 
         if (WalkB)
         {
-            if (PlayerParts[6].transform.position.z > PlayerParts[9].transform.position.z && !StepL && !Flag_Leg_R)
+            if (rightFoot.transform.position.z > leftFoot.transform.position.z && !StepL && !Flag_Leg_R)
             {
                 StepR = true;
                 Flag_Leg_R = true;
                 Flag_Leg_L = true;
             }
-            if (PlayerParts[6].transform.position.z < PlayerParts[9].transform.position.z && !StepR && !Flag_Leg_L)
+            if (rightFoot.transform.position.z < leftFoot.transform.position.z && !StepR && !Flag_Leg_L)
             {
                 StepL = true;
                 Flag_Leg_L = true;
@@ -194,27 +234,27 @@ public class SelfBalance : MonoBehaviour
 
         if (StepR)
         {
-            Step_R_Time += Time.fixedDeltaTime;
+            rightStepTime += Time.fixedDeltaTime;
 
             if (WalkF)
             {
-                JointParts[4].targetRotation = new Quaternion(JointParts[4].targetRotation.x + 0.07f * LegsHeight, JointParts[4].targetRotation.y, JointParts[4].targetRotation.z, JointParts[4].targetRotation.w);
-                JointParts[5].targetRotation = new Quaternion(JointParts[5].targetRotation.x - 0.04f * LegsHeight * 2, JointParts[5].targetRotation.y, JointParts[5].targetRotation.z, JointParts[5].targetRotation.w);
+                rightUpLegJoint.targetRotation = new Quaternion(rightUpLegJoint.targetRotation.x + 0.07f * legsHeight, rightUpLegJoint.targetRotation.y, rightUpLegJoint.targetRotation.z, rightUpLegJoint.targetRotation.w);
+                rightLegJoint.targetRotation = new Quaternion(rightLegJoint.targetRotation.x - 0.04f * legsHeight * 2, rightLegJoint.targetRotation.y, rightLegJoint.targetRotation.z, rightLegJoint.targetRotation.w);
 
-                JointParts[7].targetRotation = new Quaternion(JointParts[7].targetRotation.x - 0.02f * LegsHeight / 2, JointParts[7].targetRotation.y, JointParts[7].targetRotation.z, JointParts[7].targetRotation.w);
+                leftUpLegJoint.targetRotation = new Quaternion(leftUpLegJoint.targetRotation.x - 0.02f * legsHeight / 2, leftUpLegJoint.targetRotation.y, leftUpLegJoint.targetRotation.z, leftUpLegJoint.targetRotation.w);
             }
 
             if (WalkB)
             {
-                JointParts[4].targetRotation = new Quaternion(JointParts[4].targetRotation.x - 0.00f * LegsHeight, JointParts[4].targetRotation.y, JointParts[4].targetRotation.z, JointParts[4].targetRotation.w);
-                JointParts[5].targetRotation = new Quaternion(JointParts[5].targetRotation.x - 0.06f * LegsHeight * 2, JointParts[5].targetRotation.y, JointParts[5].targetRotation.z, JointParts[5].targetRotation.w);
+                rightUpLegJoint.targetRotation = new Quaternion(rightUpLegJoint.targetRotation.x - 0.00f * legsHeight, rightUpLegJoint.targetRotation.y, rightUpLegJoint.targetRotation.z, rightUpLegJoint.targetRotation.w);
+                rightLegJoint.targetRotation = new Quaternion(rightLegJoint.targetRotation.x - 0.06f * legsHeight * 2, rightLegJoint.targetRotation.y, rightLegJoint.targetRotation.z, rightLegJoint.targetRotation.w);
 
-                JointParts[7].targetRotation = new Quaternion(JointParts[7].targetRotation.x + 0.02f * LegsHeight / 2, JointParts[7].targetRotation.y, JointParts[7].targetRotation.z, JointParts[7].targetRotation.w);
+                leftUpLegJoint.targetRotation = new Quaternion(leftUpLegJoint.targetRotation.x + 0.02f * legsHeight / 2, leftUpLegJoint.targetRotation.y, leftUpLegJoint.targetRotation.z, leftUpLegJoint.targetRotation.w);
             }
 
-            if (Step_R_Time > TimeStep)
+            if (rightStepTime > timeStep)
             {
-                Step_R_Time = 0;
+                rightStepTime = 0;
                 StepR = false;
 
                 if (WalkB || WalkF)
@@ -225,33 +265,33 @@ public class SelfBalance : MonoBehaviour
         }
         else
         {
-            JointParts[4].targetRotation = Quaternion.Lerp(JointParts[4].targetRotation, StartLegR1, (8f) * Time.fixedDeltaTime);
-            JointParts[5].targetRotation = Quaternion.Lerp(JointParts[5].targetRotation, StartLegR2, (17f) * Time.fixedDeltaTime);
+            rightUpLegJoint.targetRotation = Quaternion.Lerp(rightUpLegJoint.targetRotation, StartLegR1, (8f) * Time.fixedDeltaTime);
+            rightLegJoint.targetRotation = Quaternion.Lerp(rightLegJoint.targetRotation, StartLegR2, (17f) * Time.fixedDeltaTime);
         }
 
         if (StepL)
         {
-            Step_L_Time += Time.fixedDeltaTime;
+            leftStepTime += Time.fixedDeltaTime;
 
             if (WalkF)
             {
-                JointParts[7].targetRotation = new Quaternion(JointParts[7].targetRotation.x + 0.07f * LegsHeight, JointParts[7].targetRotation.y, JointParts[7].targetRotation.z, JointParts[7].targetRotation.w);
-                JointParts[8].targetRotation = new Quaternion(JointParts[8].targetRotation.x - 0.04f * LegsHeight * 2, JointParts[8].targetRotation.y, JointParts[8].targetRotation.z, JointParts[8].targetRotation.w);
+                leftUpLegJoint.targetRotation = new Quaternion(leftUpLegJoint.targetRotation.x + 0.07f * legsHeight, leftUpLegJoint.targetRotation.y, leftUpLegJoint.targetRotation.z, leftUpLegJoint.targetRotation.w);
+                leftLegJoint.targetRotation = new Quaternion(leftLegJoint.targetRotation.x - 0.04f * legsHeight * 2, leftLegJoint.targetRotation.y, leftLegJoint.targetRotation.z, leftLegJoint.targetRotation.w);
 
-                JointParts[4].targetRotation = new Quaternion(JointParts[4].targetRotation.x - 0.02f * LegsHeight / 2, JointParts[4].targetRotation.y, JointParts[4].targetRotation.z, JointParts[4].targetRotation.w);
+                rightUpLegJoint.targetRotation = new Quaternion(rightUpLegJoint.targetRotation.x - 0.02f * legsHeight / 2, rightUpLegJoint.targetRotation.y, rightUpLegJoint.targetRotation.z, rightUpLegJoint.targetRotation.w);
             }
 
             if (WalkB)
             {
-                JointParts[7].targetRotation = new Quaternion(JointParts[7].targetRotation.x - 0.00f * LegsHeight, JointParts[7].targetRotation.y, JointParts[7].targetRotation.z, JointParts[7].targetRotation.w);
-                JointParts[8].targetRotation = new Quaternion(JointParts[8].targetRotation.x - 0.06f * LegsHeight * 2, JointParts[8].targetRotation.y, JointParts[8].targetRotation.z, JointParts[8].targetRotation.w);
+                leftUpLegJoint.targetRotation = new Quaternion(leftUpLegJoint.targetRotation.x - 0.00f * legsHeight, leftUpLegJoint.targetRotation.y, leftUpLegJoint.targetRotation.z, leftUpLegJoint.targetRotation.w);
+                leftLegJoint.targetRotation = new Quaternion(leftLegJoint.targetRotation.x - 0.06f * legsHeight * 2, leftLegJoint.targetRotation.y, leftLegJoint.targetRotation.z, leftLegJoint.targetRotation.w);
 
-                JointParts[4].targetRotation = new Quaternion(JointParts[4].targetRotation.x + 0.02f * LegsHeight / 2, JointParts[4].targetRotation.y, JointParts[4].targetRotation.z, JointParts[4].targetRotation.w);
+                rightUpLegJoint.targetRotation = new Quaternion(rightUpLegJoint.targetRotation.x + 0.02f * legsHeight / 2, rightUpLegJoint.targetRotation.y, rightUpLegJoint.targetRotation.z, rightUpLegJoint.targetRotation.w);
             }
 
-            if (Step_L_Time > TimeStep)
+            if (leftStepTime > timeStep)
             {
-                Step_L_Time = 0;
+                leftStepTime = 0;
                 StepL = false;
 
                 if (WalkB || WalkF)
@@ -262,8 +302,8 @@ public class SelfBalance : MonoBehaviour
         }
         else
         {
-            JointParts[7].targetRotation = Quaternion.Lerp(JointParts[7].targetRotation, StartLegL1, (8) * Time.fixedDeltaTime);
-            JointParts[8].targetRotation = Quaternion.Lerp(JointParts[8].targetRotation, StartLegL2, (17) * Time.fixedDeltaTime);
+            leftUpLegJoint.targetRotation = Quaternion.Lerp(leftUpLegJoint.targetRotation, StartLegL1, (8) * Time.fixedDeltaTime);
+            leftLegJoint.targetRotation = Quaternion.Lerp(leftLegJoint.targetRotation, StartLegL2, (17) * Time.fixedDeltaTime);
         }
     }
 
@@ -271,63 +311,63 @@ public class SelfBalance : MonoBehaviour
     {
         if (WalkF)
         {
-            JointParts[2].angularXDrive = Spring320;
-            JointParts[2].angularYZDrive = Spring320;
-            JointParts[3].angularXDrive = Spring320;
-            JointParts[3].angularYZDrive = Spring320;
-            JointParts[0].targetRotation = Quaternion.Lerp(JointParts[0].targetRotation, new Quaternion(-0.1f, JointParts[0].targetRotation.y,
-                JointParts[0].targetRotation.z, JointParts[0].targetRotation.w), 6 * Time.fixedDeltaTime);
+            rightArmJoint.angularXDrive = Spring320;
+            rightArmJoint.angularYZDrive = Spring320;
+            leftArmJoint.angularXDrive = Spring320;
+            leftArmJoint.angularYZDrive = Spring320;
+            spineJoint.targetRotation = Quaternion.Lerp(spineJoint.targetRotation, new Quaternion(-0.1f, spineJoint.targetRotation.y,
+                spineJoint.targetRotation.z, spineJoint.targetRotation.w), 6 * Time.fixedDeltaTime);
 
-            if (JointParts[2].targetRotation.x < 1.7f)
+            if (rightArmJoint.targetRotation.x < 1.7f)
             {
-                JointParts[2].targetRotation = new Quaternion(JointParts[2].targetRotation.x + 0.07f, JointParts[2].targetRotation.y,
-                    JointParts[2].targetRotation.z, JointParts[2].targetRotation.w);
+                rightArmJoint.targetRotation = new Quaternion(rightArmJoint.targetRotation.x + 0.07f, rightArmJoint.targetRotation.y,
+                    rightArmJoint.targetRotation.z, rightArmJoint.targetRotation.w);
             }
 
-            if (JointParts[3].targetRotation.x < 1.7f)
+            if (leftArmJoint.targetRotation.x < 1.7f)
             {
-                JointParts[3].targetRotation = new Quaternion(JointParts[3].targetRotation.x + 0.07f, JointParts[3].targetRotation.y,
-                    JointParts[3].targetRotation.z, JointParts[3].targetRotation.w);
+                leftArmJoint.targetRotation = new Quaternion(leftArmJoint.targetRotation.x + 0.07f, leftArmJoint.targetRotation.y,
+                    leftArmJoint.targetRotation.z, leftArmJoint.targetRotation.w);
             }
         }
 
         if (WalkB)
         {
-            JointParts[2].angularXDrive = Spring320;
-            JointParts[2].angularYZDrive = Spring320;
-            JointParts[3].angularXDrive = Spring320;
-            JointParts[3].angularYZDrive = Spring320;
+            rightArmJoint.angularXDrive = Spring320;
+            rightArmJoint.angularYZDrive = Spring320;
+            leftArmJoint.angularXDrive = Spring320;
+            leftArmJoint.angularYZDrive = Spring320;
 
-            if (JointParts[2].targetRotation.x > -1.7f)
+            if (rightArmJoint.targetRotation.x > -1.7f)
             {
-                JointParts[2].targetRotation = new Quaternion(JointParts[2].targetRotation.x - 0.09f, JointParts[2].targetRotation.y,
-                    JointParts[2].targetRotation.z, JointParts[2].targetRotation.w);
+                rightArmJoint.targetRotation = new Quaternion(rightArmJoint.targetRotation.x - 0.09f, rightArmJoint.targetRotation.y,
+                    rightArmJoint.targetRotation.z, rightArmJoint.targetRotation.w);
             }
 
-            if (JointParts[3].targetRotation.x > -1.7f)
+            if (leftArmJoint.targetRotation.x > -1.7f)
             {
-                JointParts[3].targetRotation = new Quaternion(JointParts[3].targetRotation.x - 0.09f, JointParts[3].targetRotation.y,
-                    JointParts[3].targetRotation.z, JointParts[3].targetRotation.w);
+                leftArmJoint.targetRotation = new Quaternion(leftArmJoint.targetRotation.x - 0.09f, leftArmJoint.targetRotation.y,
+                    leftArmJoint.targetRotation.z, leftArmJoint.targetRotation.w);
             }
         }
     }
 
-    void Calculate_COM()
+    void CalculateCenterOfMass()
     {
-        COM = (JointParts[0].GetComponent<Rigidbody>().mass * JointParts[0].transform.position +
-            JointParts[1].GetComponent<Rigidbody>().mass * JointParts[1].transform.position +
-            JointParts[2].GetComponent<Rigidbody>().mass * JointParts[2].transform.position +
-            JointParts[3].GetComponent<Rigidbody>().mass * JointParts[3].transform.position +
-            JointParts[4].GetComponent<Rigidbody>().mass * JointParts[4].transform.position +
-            JointParts[5].GetComponent<Rigidbody>().mass * JointParts[5].transform.position +
-            JointParts[6].GetComponent<Rigidbody>().mass * JointParts[6].transform.position +
-            JointParts[7].GetComponent<Rigidbody>().mass * JointParts[7].transform.position +
-            JointParts[8].GetComponent<Rigidbody>().mass * JointParts[8].transform.position +
-            JointParts[9].GetComponent<Rigidbody>().mass * JointParts[9].transform.position) /
-            (JointParts[0].GetComponent<Rigidbody>().mass + JointParts[1].GetComponent<Rigidbody>().mass +
-            JointParts[2].GetComponent<Rigidbody>().mass + JointParts[3].GetComponent<Rigidbody>().mass +
-            JointParts[4].GetComponent<Rigidbody>().mass + JointParts[5].GetComponent<Rigidbody>().mass +
-            JointParts[6].GetComponent<Rigidbody>().mass + JointParts[7].GetComponent<Rigidbody>().mass +
-            JointParts[8].GetComponent<Rigidbody>().mass + JointParts[9].GetComponent<Rigidbody>().mass);
+        COM = (spineJoint.GetComponent<Rigidbody>().mass * spineJoint.transform.position +
+            hipsJoint.GetComponent<Rigidbody>().mass * hipsJoint.transform.position +
+            rightArmJoint.GetComponent<Rigidbody>().mass * rightArmJoint.transform.position +
+            leftArmJoint.GetComponent<Rigidbody>().mass * leftArmJoint.transform.position +
+            rightUpLegJoint.GetComponent<Rigidbody>().mass * rightUpLegJoint.transform.position +
+            rightLegJoint.GetComponent<Rigidbody>().mass * rightLegJoint.transform.position +
+            rightFootJoint.GetComponent<Rigidbody>().mass * rightFootJoint.transform.position +
+            leftUpLegJoint.GetComponent<Rigidbody>().mass * leftUpLegJoint.transform.position +
+            leftLegJoint.GetComponent<Rigidbody>().mass * leftLegJoint.transform.position +
+            leftFootJoint.GetComponent<Rigidbody>().mass * leftFootJoint.transform.position) /
+            (spineJoint.GetComponent<Rigidbody>().mass + hipsJoint.GetComponent<Rigidbody>().mass +
+            rightArmJoint.GetComponent<Rigidbody>().mass + leftArmJoint.GetComponent<Rigidbody>().mass +
+            rightUpLegJoint.GetComponent<Rigidbody>().mass + rightLegJoint.GetComponent<Rigidbody>().mass +
+            rightFootJoint.GetComponent<Rigidbody>().mass + leftUpLegJoint.GetComponent<Rigidbody>().mass +
+            leftLegJoint.GetComponent<Rigidbody>().mass + leftFootJoint.GetComponent<Rigidbody>().mass);
     }
 }
