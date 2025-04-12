@@ -2,37 +2,41 @@
 
 public class JointControl : MonoBehaviour
 {
+    [Header("References")]
     public PlayerState playerState;
-
-    private float currentSpeed;
-    [SerializeField]
-    private float walkSpeed;
-    [SerializeField]
-    private float sprintSpeed;
-    [SerializeField]
-    private float maxAngle;
-    [SerializeField]
-    private float lowerLegAngleMultiplier;
-    [SerializeField]
-    private float jumpSpeed = 60f;
-
+    public GameObject hips;
     public Camera cam;
+
+    [Header("Speed Settings")]
+    public float currentSpeed;
+    public float walkSpeed;
+    public float sprintSpeed;
+
+    [Header("Step Settings")]
+    public float stepTime;
+    public float stepHeight;
+    public float stepSpeed;
+
+    private bool stepFlag = false;
+    private Timer stepTimer;
 
     [Header("Leg Joints")]
     public ConfigurableJoint leftUpLegJoint;
     public ConfigurableJoint leftLegJoint;
+    public ConfigurableJoint leftFootJoint;
     public ConfigurableJoint rightUpLegJoint;
     public ConfigurableJoint rightLegJoint;
+    public ConfigurableJoint rightFootJoint;
 
     [Header("Spine Joint")]
     public ConfigurableJoint spineJoint;
 
     private Quaternion defaultSpineTargetRotation;
-    private float currentJumpAngle = 0f;
 
     private void Start()
     {
         defaultSpineTargetRotation = spineJoint.targetRotation;
+        stepTimer = new Timer(stepTime);
     }
 
     void Update()
@@ -83,90 +87,54 @@ public class JointControl : MonoBehaviour
             }
 
         }
-        else if (playerState.movementState == PlayerState.Movement.Jumping)
-        {
-            currentJumpAngle = Mathf.MoveTowards(currentJumpAngle, maxAngle, Time.deltaTime * jumpSpeed);
-
-            float upperLegAngle = -currentJumpAngle;
-            float lowerLegAngle = Mathf.Max(currentJumpAngle, 0f) * 2f;
-
-            leftUpLegJoint.targetRotation = Quaternion.Euler(upperLegAngle, 0f, 0f);
-            leftLegJoint.targetRotation = Quaternion.Euler(lowerLegAngle, 0f, 0f);
-            rightUpLegJoint.targetRotation = Quaternion.Euler(upperLegAngle, 0f, 0f);
-            rightLegJoint.targetRotation = Quaternion.Euler(lowerLegAngle, 0f, 0f);
-        }
         else
         {
             leftUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
             rightUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
             rightLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
             leftLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
-            currentJumpAngle = 0f;
         }
     }
 
     private void MoveForward()
     {
-        float stepDuration = 1f / currentSpeed;
-        float cycleTime = Time.time % (stepDuration * 2f);
-        bool isRightLegMoving = cycleTime < stepDuration;
-
-        float t = Mathf.Clamp01((cycleTime % stepDuration) / stepDuration);
-        float easedT = Mathf.Sin(t * Mathf.PI);
-        float angle = easedT * maxAngle;
-        float lowerLegAngle = Mathf.Max(angle * lowerLegAngleMultiplier, 0f);
-
-        if (isRightLegMoving)
+        //calculate the slope to determine the step height
+        float angle = 0;
+        RaycastHit hit;
+        if (Physics.Raycast(hips.transform.position, -hips.transform.up, out hit, 10f, LayerMask.GetMask("Ground")))
         {
-            rightUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
-            rightLegJoint.targetRotation = Quaternion.Euler(lowerLegAngle, 0f, 0f);
+            angle = Vector3.Angle(hips.transform.up, hit.transform.up);
+        }
+
+        Debug.Log("Angle: " + angle);
+
+        var legSwing = Mathf.Sin(Time.time * stepSpeed) * (stepHeight + angle * 2f);
+
+        leftUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Min(legSwing, 0), 0, 0);
+        rightUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Min(-legSwing, 0), 0, 0);
+        if(legSwing < 0)
+        {
+            leftLegJoint.targetRotation = Quaternion.Euler(-legSwing, 0, 0);
         }
         else
         {
-            leftUpLegJoint.targetRotation = Quaternion.Euler(-angle, 0f, 0f);
-            leftLegJoint.targetRotation = Quaternion.Euler(lowerLegAngle, 0f, 0f);
+            rightLegJoint.targetRotation = Quaternion.Euler(legSwing, 0, 0);
         }
     }
 
     private void MoveBackward()
     {
-        float t = Mathf.PingPong(Time.time * currentSpeed, 1);
-        float angle = Mathf.Lerp(-maxAngle, maxAngle, t);
-        leftUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle * 0.5f, 0f), 0f, 0f);
-        leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f) * 0.5f, 0f, 0f);
-        rightUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle * 0.5f, 0f), 0f, 0f);
-        rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle, 0f) * 0.5f, 0f, 0f);
+
     }
 
 
     private void MoveLeft()
     {
-        float t = Mathf.PingPong(Time.time * currentSpeed, 1);
-        float angle = Mathf.Lerp(-maxAngle, maxAngle, t);
-        if (angle >= 0)
-        {
-            leftUpLegJoint.targetRotation = Quaternion.Euler(0f, 0f, angle * 0.5f);
-            leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
-        }
-        else
-        {
-            rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle, 0f), 0f, 0f);
-        }
+
     }
 
     private void MoveRight()
     {
-        float t = Mathf.PingPong(Time.time * currentSpeed, 1);
-        float angle = Mathf.Lerp(-maxAngle, maxAngle, t);
-        if (angle >= 0)
-        {
-            rightUpLegJoint.targetRotation = Quaternion.Euler(0f, 0f, -angle * 0.5f);
-            rightLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(angle, 0f), 0f, 0f);
-        }
-        else
-        {
-            leftLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-angle * 1.5f, 0f), 0f, 0f);
-        }
 
     }
 }
