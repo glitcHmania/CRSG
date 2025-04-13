@@ -12,9 +12,7 @@ public class JointControl : MonoBehaviour
     public float sprintSpeed;
 
     [Header("Step Settings")]
-    public float stepTime;
     public float stepHeight;
-    public float stepSpeed;
 
     [Header("Arm Settings")]
     public float armSwingHeight;
@@ -39,10 +37,12 @@ public class JointControl : MonoBehaviour
     private float currentSlope;
     private float currentStepHeight;
     private Quaternion defaultSpineTargetRotation;
+    private Chronometer chronometer;
 
     private void Start()
     {
         defaultSpineTargetRotation = spineJoint.targetRotation;
+        chronometer = new Chronometer();
     }
 
     void Update()
@@ -71,11 +71,14 @@ public class JointControl : MonoBehaviour
         else if (spineJoint.targetRotation != defaultSpineTargetRotation)
         {
             spineJoint.targetRotation = defaultSpineTargetRotation;
+            hips.GetComponent<ConfigurableJoint>().targetRotation = Quaternion.Euler(0, 0, 0);
         }
 
 
         if (playerState.IsMoving)
         {
+            chronometer.Update();
+
             if (!playerState.isAiming)
             {
                 MoveForward();
@@ -109,17 +112,17 @@ public class JointControl : MonoBehaviour
             leftLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
             leftForeArmJoint.targetRotation = Quaternion.Euler(0, 0, 30);
             rightForeArmJoint.targetRotation = Quaternion.Euler(0, 0, 330);
+            chronometer.Reset();
         }
     }
 
     private void MoveForward()
     {
         SwingArms();
-        //calculate the slope to determine the step height
 
         Debug.Log("Angle: " + currentSlope);
 
-        var legSwing = Mathf.Sin(Time.time * currentSpeed) * (currentStepHeight + currentSlope * 2f);
+        var legSwing = Mathf.Sin(chronometer.Elapsed * currentSpeed) * (currentStepHeight + currentSlope * 2f);
 
         leftUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Min(legSwing, 0), 0, 0);
         rightUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Min(-legSwing, 0), 0, 0);
@@ -135,22 +138,26 @@ public class JointControl : MonoBehaviour
 
     private void MoveBackward()
     {
-
+        hips.GetComponent<ConfigurableJoint>().targetRotation = Quaternion.Euler(-20f, 0, 0);
+        MoveForward();
     }
+
 
     private void MoveLeft()
     {
-
+        hips.GetComponent<ConfigurableJoint>().targetRotation = Quaternion.Euler(-20f, 0, 0);
+        MoveForward();
     }
 
     private void MoveRight()
     {
-
+        hips.GetComponent<ConfigurableJoint>().targetRotation = Quaternion.Euler(-20f, 0, 0);
+        MoveForward();
     }
 
     private void SwingArms()
     {
-        float armSwing = (Mathf.Sin(Time.time * currentSpeed) + 1f) / 2f * armSwingHeight;
+        float armSwing = (Mathf.Sin(chronometer.Elapsed * currentSpeed) + 1f) * 0.5f * armSwingHeight;
 
         leftForeArmJoint.targetRotation = Quaternion.Euler(0, 0, 30f + armSwing);
         rightForeArmJoint.targetRotation = Quaternion.Euler(0, 0, 330f - (armSwingHeight - armSwing));

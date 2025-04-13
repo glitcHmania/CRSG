@@ -8,6 +8,8 @@ public class Gun : NetworkBehaviour
     private Timer recoverTimer;
     private Timer reloadTimer;
 
+    [Header("References")]
+    public PlayerState playerState;
     public Rigidbody HandRigidbody;
     public Transform MuzzleTransform;
 
@@ -53,7 +55,6 @@ public class Gun : NetworkBehaviour
     public void Reload()
     {
         if (!isServer) return;
-
         if (!isAvailable) return;
 
         isAvailable = false;
@@ -122,6 +123,8 @@ public class Gun : NetworkBehaviour
         {
             HandRigidbody.AddForce(-transform.forward * Power * recoilMultiplier, ForceMode.Impulse);
         }
+
+        playerState.Numbness += 0.1f * Power;
     }
 
     [ClientRpc]

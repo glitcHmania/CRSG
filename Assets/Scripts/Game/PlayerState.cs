@@ -26,6 +26,9 @@ public class PlayerState : NetworkBehaviour
     [SyncVar]
     public bool isArmed;
 
+    [SyncVar]
+    public float Numbness;
+
     public bool IsMoving => (movementState == Movement.Walking || movementState == Movement.Running) && movementState != Movement.Jumping;
 
     private void Update()

@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class Timer
 {
-    public float Duration;
+    public float Duration { get; private set; }
+    public float Elapsed { get; private set; }
     public bool IsFinished { get; private set; }
     public float RemainingTime { get; private set; }
 
@@ -30,10 +31,10 @@ public class Timer
 
         if (IsFinished) return;
 
-        float elapsed = Time.time - _startTime;
-        RemainingTime = Mathf.Max(0f, Duration - elapsed);
+        Elapsed = Time.time - _startTime;
+        RemainingTime = Mathf.Max(0f, Duration - Elapsed);
 
-        if (elapsed >= Duration)
+        if (Elapsed >= Duration)
         {
             IsFinished = true;
             _onFinish?.Invoke();
@@ -50,5 +51,51 @@ public class Timer
     public float GetRatio()
     {
         return Mathf.Clamp01(1f - RemainingTime / Duration);
+    }
+}
+
+public class Chronometer
+{
+    public float Elapsed { get; private set; }
+    public bool IsRunning { get; private set; }
+
+    public Chronometer()
+    {
+        Elapsed = 0f;
+        IsRunning = false;
+    }
+
+    public void Start()
+    {
+        IsRunning = true;
+    }
+
+    public void Stop()
+    {
+        IsRunning = false;
+    }
+
+    public void Reset()
+    {
+        Elapsed = 0f;
+    }
+
+    public void Restart()
+    {
+        Reset();
+        Start();
+    }
+
+    public void Update()
+    {
+        if(!IsRunning)
+        {
+            IsRunning = true;
+        }
+
+        if (IsRunning)
+        {
+            Elapsed += Time.deltaTime;
+        }
     }
 }

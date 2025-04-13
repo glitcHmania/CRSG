@@ -49,6 +49,22 @@ public class RagdollControl : MonoBehaviour
                 ActivateRagdoll();
             }
         }
+
+        Debug.Log("Numbness: " + playerState.Numbness);
+        if (playerState.Numbness > 0)
+        {
+            playerState.Numbness -= Time.deltaTime * 1f;
+        }
+        else
+        {
+            playerState.Numbness = 0;
+        }
+
+        if (playerState.Numbness > 100f)
+        {
+            ActivateRagdoll();
+            playerState.Numbness = 0;
+        }
     }
 
     public void ActivateRagdoll()

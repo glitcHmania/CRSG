@@ -134,6 +134,7 @@ public class WeaponHolder : NetworkBehaviour
         {
             currentWeaponGunScript = gunScript;
             currentWeaponGunScript.HandRigidbody = recoilBone.GetComponent<Rigidbody>();
+            currentWeaponGunScript.playerState = playerState;
         }
 
         weapon.transform.SetParent(weaponBone.transform);
