@@ -1,36 +1,11 @@
 ﻿using Mirror;
 using UnityEngine;
 
-public class Weapon : NetworkBehaviour
+public class Weapon : WeaponBase
 {
-    [Header("References")]
-    public PlayerState playerState;
-    public Rigidbody HandRigidbody;
-    public Transform MuzzleTransform;
-
-    [Header("Weapon Settings")]
-    public int Power;
-    public int MagazineSize;
-    public int BulletCount;
-    public float Range;
-    public float ReloadTime;
-    public float recoilMultiplier;
-    public float RecoverTime;
-    public bool isAutomatic = false;
-    public bool infiniteAmmo = false;
-
     [Header("Bullet Trail Settings")]
     public BulletTrail bulletTrailPrefab;
     public int trailPoolSize = 10;
-
-    [Header("Particle System")]
-    public ParticleSystem muzzleFlash;
-    public ParticleSystem stoneImpactEffect;
-
-    private bool isAvailable = true;
-    private Timer recoverTimer;
-    private Timer reloadTimer;
-    private ObjectPool<BulletTrail> trailPool;
 
     void Awake()
     {
