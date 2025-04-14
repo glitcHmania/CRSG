@@ -1831,13 +1831,13 @@ ConfigurableJoint:
   m_RotationDriveMode: 0
   m_AngularXDrive:
     serializedVersion: 4
-    positionSpring: 400
+    positionSpring: 1000
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_AngularYZDrive:
     serializedVersion: 4
-    positionSpring: 400
+    positionSpring: 1000
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
@@ -2968,13 +2968,13 @@ ConfigurableJoint:
   m_RotationDriveMode: 0
   m_AngularXDrive:
     serializedVersion: 4
-    positionSpring: 400
+    positionSpring: 1000
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_AngularYZDrive:
     serializedVersion: 4
-    positionSpring: 400
+    positionSpring: 1000
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
@@ -3289,10 +3289,10 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  playerState: {fileID: -8150470886946853929}
   recoilBone: {fileID: 287997504604421362}
   weaponBone: {fileID: 8292016055041033889}
   armJoint: {fileID: 7538621294356234979}
+  playerState: {fileID: -8150470886946853929}
 --- !u!114 &-8150470886946853929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3313,6 +3313,7 @@ MonoBehaviour:
   isGrounded: 0
   isRagdoll: 0
   isArmed: 0
+  Numbness: 0
 --- !u!114 &7321850614008527734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3328,6 +3329,9 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  root: {fileID: 5216023494965125893}
+  cam: {fileID: 5430204467148329921}
+  hip: {fileID: 8578548780879289607}
   playerState: {fileID: -8150470886946853929}
   moveSpeed: 2
   runMultiplier: 1.4
@@ -3339,9 +3343,6 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 183
-  root: {fileID: 5216023494965125893}
-  cam: {fileID: 5430204467148329921}
-  hip: {fileID: 8578548780879289607}
 --- !u!114 &8757769546477567384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3355,10 +3356,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerState: {fileID: -8150470886946853929}
-  ragdollStiffness: 4
   hipsRigidbody: {fileID: 3454390574484014621}
   spineRigidbody: {fileID: 766732502656243233}
-  ragdollDuration: 2.5
   hipJoint: {fileID: 8592437074796424599}
   legJoints:
   - {fileID: 4972469590395821077}
@@ -3372,6 +3371,8 @@ MonoBehaviour:
   - {fileID: 7538621294356234979}
   - {fileID: 5653926879502385173}
   - {fileID: 8699569115064483695}
+  ragdollDuration: 2.5
+  ragdollStiffness: 4
 --- !u!114 &5882155198792178596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3387,12 +3388,9 @@ MonoBehaviour:
   playerState: {fileID: -8150470886946853929}
   hips: {fileID: 8578548780879289607}
   cam: {fileID: 5699811975147871603}
-  currentSpeed: 0
   walkSpeed: 7
   sprintSpeed: 9
-  stepTime: 0.2
   stepHeight: 40
-  stepSpeed: 7
   armSwingHeight: 50
   leftUpLegJoint: {fileID: 4972469590395821077}
   leftLegJoint: {fileID: 2251790151858933668}
@@ -3531,13 +3529,13 @@ ConfigurableJoint:
   m_RotationDriveMode: 0
   m_AngularXDrive:
     serializedVersion: 4
-    positionSpring: 400
+    positionSpring: 1000
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_AngularYZDrive:
     serializedVersion: 4
-    positionSpring: 400
+    positionSpring: 1000
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0

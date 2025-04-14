@@ -1,7 +1,6 @@
-﻿using Mirror;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Explosive : NetworkBehaviour
+public class Explosive : MonoBehaviour
 {
     public GameObject explosionEffect;
 
@@ -13,36 +12,15 @@ public class Explosive : NetworkBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (isLocalPlayer)
-            {
-                CmdRequestExplosion();
-            }
 
+            ExplodeStatic(transform.position, radius, force, upwardsModifier, explosionEffect);
         }
     }
 
-    // Called by the client, runs on the server
-    [Command(requiresAuthority = false)]
-    private void CmdRequestExplosion()
+    private static void ExplodeStatic(Vector3 position, float radius, float force, float upwardsModifier, GameObject explosionEffect)
     {
-        RpcExplode(transform.position);
-        ExplodeStatic(transform.position, radius, force, upwardsModifier);
-    }
-
-    // Called on the server, runs on all clients
-    [ClientRpc]
-    private void RpcExplode(Vector3 position)
-    {
-        if (explosionEffect != null)
-        {
-            GameObject explosion = Instantiate(explosionEffect, position, Quaternion.identity);
-            Destroy(explosion, 2f);
-        }
-    }
-
-    // Physics and ragdoll logic happens server-side
-    private void ExplodeStatic(Vector3 position, float radius, float force, float upwardsModifier)
-    {
+        GameObject explosion = Instantiate(explosionEffect, position, Quaternion.identity);
+        Destroy(explosion, 2f);
         Collider[] colliders = Physics.OverlapSphere(position, radius);
         foreach (var collider in colliders)
         {
