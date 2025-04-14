@@ -31,16 +31,6 @@ public abstract class WeaponBase : NetworkBehaviour
 
     protected bool isAvailable = true;
 
-    void Awake()
-    {
-        recoverTimer = new Timer(RecoverTime, () => isAvailable = true);
-        reloadTimer = new Timer(ReloadTime, () =>
-        {
-            BulletCount = MagazineSize;
-            isAvailable = true;
-        });
-    }
-
     void Update()
     {
         recoverTimer.Update();
@@ -77,6 +67,12 @@ public abstract class WeaponBase : NetworkBehaviour
         // Find the Rigidbody again on the client and apply force
         if (Physics.Raycast(MuzzleTransform.position, MuzzleTransform.forward, out RaycastHit hit, Range))
         {
+            var ragdollControl = hit.collider.GetComponentInParent<RagdollControl>();
+            if (ragdollControl)
+            {
+                ragdollControl.ActivateRagdoll();
+            }
+
             if (hit.collider.TryGetComponent(out Rigidbody rb))
             {
                 rb.AddForce(forceDirection * power, ForceMode.Impulse);

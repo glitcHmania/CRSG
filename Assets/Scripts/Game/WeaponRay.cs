@@ -7,8 +7,15 @@ public class WeaponRay : WeaponBase
     public BulletTrail bulletTrailPrefab;
     public int trailPoolSize = 10;
 
-    private void Awake()
+    private void Start()
     {
+        recoverTimer = new Timer(RecoverTime, () => isAvailable = true);
+        reloadTimer = new Timer(ReloadTime, () =>
+        {
+            BulletCount = MagazineSize;
+            isAvailable = true;
+        });
+
         trailPool = new ObjectPool<BulletTrail>(bulletTrailPrefab, trailPoolSize);
     }
 

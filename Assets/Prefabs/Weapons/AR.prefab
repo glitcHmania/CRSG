@@ -195,7 +195,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3207413368977302510}
-  - component: {fileID: 533902080912870051}
+  - component: {fileID: 1032838100698764739}
   - component: {fileID: -2822595856086337125}
   m_Layer: 0
   m_Name: AR
@@ -222,7 +222,7 @@ Transform:
   - {fileID: 1905933039852444659}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &533902080912870051
+--- !u!114 &1032838100698764739
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -231,27 +231,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 6219196561423381161}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f706eefcd06907409c815a0e47f5018, type: 3}
+  m_Script: {fileID: 11500000, guid: b905a7e1ec1040548ba805de47120c93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  playerState: {fileID: 0}
   HandRigidbody: {fileID: 0}
   MuzzleTransform: {fileID: 9077244307745308885}
-  Power: 50
+  Power: 60
   MagazineSize: 30
   BulletCount: 30
-  Range: 300
-  ReloadTime: 5
-  recoilMultiplier: 0.1
-  RecoverTime: 0.1
-  isAutomatic: 1
+  Range: 100
+  ReloadTime: 2
+  recoilMultiplier: 0.3
+  RecoverTime: 0.2
+  isAutomatic: 0
   infiniteAmmo: 1
-  bulletTrailPrefab: {fileID: 8483647679569776263, guid: 2414faf7e632ab743a3474446c779a74, type: 3}
-  trailPoolSize: 10
   muzzleFlash: {fileID: 7534688564351721480}
   stoneImpactEffect: {fileID: 198000012529019072, guid: 4edabb1c0dde62743b137378c7d22980, type: 3}
+  bulletTrailPrefab: {fileID: 8483647679569776263, guid: 2414faf7e632ab743a3474446c779a74, type: 3}
+  trailPoolSize: 10
 --- !u!114 &-2822595856086337125
 MonoBehaviour:
   m_ObjectHideFlags: 0
