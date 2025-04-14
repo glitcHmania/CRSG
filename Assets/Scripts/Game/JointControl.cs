@@ -120,8 +120,6 @@ public class JointControl : MonoBehaviour
     {
         SwingArms();
 
-        Debug.Log("Angle: " + currentSlope);
-
         var legSwing = Mathf.Sin(chronometer.Elapsed * currentSpeed) * (currentStepHeight + currentSlope * 2f);
 
         leftUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Min(legSwing, 0), 0, 0);

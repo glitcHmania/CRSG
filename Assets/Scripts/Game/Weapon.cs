@@ -1,13 +1,8 @@
 ﻿using Mirror;
 using UnityEngine;
 
-public class Gun : NetworkBehaviour
+public class Weapon : NetworkBehaviour
 {
-    private bool isAvailable = true;
-
-    private Timer recoverTimer;
-    private Timer reloadTimer;
-
     [Header("References")]
     public PlayerState playerState;
     public Rigidbody HandRigidbody;
@@ -32,6 +27,9 @@ public class Gun : NetworkBehaviour
     public ParticleSystem muzzleFlash;
     public ParticleSystem stoneImpactEffect;
 
+    private bool isAvailable = true;
+    private Timer recoverTimer;
+    private Timer reloadTimer;
     private ObjectPool<BulletTrail> trailPool;
 
     void Awake()

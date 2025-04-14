@@ -3,16 +3,16 @@ using UnityEngine;
 
 public class WeaponHolder : NetworkBehaviour
 {
-    public PlayerState playerState;
-
+    [Header("References")]
     public GameObject recoilBone;
     public GameObject weaponBone;
-    private GameObject currentWeapon;
-    private Gun currentWeaponGunScript;
-
     public ConfigurableJoint armJoint;
+    public PlayerState playerState;
+
     private Vector3 initialArmRotation;
     private RagdollControl ragdollControl;
+    private GameObject currentWeapon;
+    private Weapon currentWeaponGunScript;
 
     private void Start()
     {
@@ -116,7 +116,7 @@ public class WeaponHolder : NetworkBehaviour
                 // Equip weapon AFTER client has authority
                 RpcEquipWeapon(newWeapon); // tells client to attach it locally
                 currentWeapon = newWeapon; // server keeps track too
-                currentWeaponGunScript = newWeapon.GetComponent<Gun>();
+                currentWeaponGunScript = newWeapon.GetComponent<Weapon>();
 
                 NetworkServer.Destroy(pickup.gameObject); // remove pickup
             }
@@ -130,7 +130,7 @@ public class WeaponHolder : NetworkBehaviour
 
         currentWeapon = weapon;
 
-        if (weapon.TryGetComponent<Gun>(out var gunScript))
+        if (weapon.TryGetComponent<Weapon>(out var gunScript))
         {
             currentWeaponGunScript = gunScript;
             currentWeaponGunScript.HandRigidbody = recoilBone.GetComponent<Rigidbody>();

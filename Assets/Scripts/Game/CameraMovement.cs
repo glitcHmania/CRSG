@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ThirdPersonCamera : MonoBehaviour
 {
+    [Header("References")]
     public Transform target;
     public Vector3 offset = new Vector3(0f, 0f, -4f);
     public float rotationSpeed = 5f;

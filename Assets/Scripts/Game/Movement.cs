@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class Movement : NetworkBehaviour
 {
+    [Header("References")]
+    public Transform root;
+    public GameObject cam;
+    public GameObject hip;
     public PlayerState playerState;
 
     [Header("Movement Settings")]
@@ -16,11 +20,6 @@ public class Movement : NetworkBehaviour
     public float ungroundedTime = 0.1f;
     public float maxGroundAngle = 30f;
     public LayerMask groundMask;
-
-    [Header("References")]
-    public Transform root;
-    public GameObject cam;
-    public GameObject hip;
 
     private Vector3 moveDir;
     private Rigidbody hipRigidBody;

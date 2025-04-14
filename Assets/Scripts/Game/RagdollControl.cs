@@ -2,19 +2,17 @@
 
 public class RagdollControl : MonoBehaviour
 {
+    [Header("References")]
     public PlayerState playerState;
-    public float ragdollStiffness;
     public Rigidbody hipsRigidbody;
     public Rigidbody spineRigidbody;
+    public ConfigurableJoint hipJoint;
+    public ConfigurableJoint[] legJoints;
+    public ConfigurableJoint[] otherJoints;
 
+    [Header("Settings")]
     public float ragdollDuration;
-
-    [SerializeField]
-    ConfigurableJoint hipJoint;
-    [SerializeField]
-    ConfigurableJoint[] legJoints;
-    [SerializeField]
-    ConfigurableJoint[] otherJoints;
+    public float ragdollStiffness;
 
     private float initialXPositionSpring;
     private float initialYZPositionDamper;
@@ -50,7 +48,6 @@ public class RagdollControl : MonoBehaviour
             }
         }
 
-        Debug.Log("Numbness: " + playerState.Numbness);
         if (playerState.Numbness > 0)
         {
             playerState.Numbness -= Time.deltaTime * 1f;
