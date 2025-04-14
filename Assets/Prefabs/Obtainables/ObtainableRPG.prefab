@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 4983481482715329854}
   - component: {fileID: -4699540882630230374}
   m_Layer: 0
-  m_Name: ObtainableAR
+  m_Name: ObtainableRPG
   m_TagString: Untagged
-  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -49,8 +49,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  weaponPrefab: {fileID: 6219196561423381161, guid: baf36d00e7b25ea47873e02337cdd91f, type: 3}
-  itemEffect: {fileID: 1943286446490004412, guid: 235b0882259d1e84f9b6f458b3a237e1, type: 3}
+  weaponPrefab: {fileID: 6219196561423381161, guid: 5696c9531de70af418a0fbe2da6bf65e, type: 3}
+  itemEffect: {fileID: 1943286446490004412, guid: c784bd51943b0664cbb69c07878f8fea, type: 3}
   modelOffset: {x: 0, y: 0, z: 0}
   bobAmplitude: 0.12
   bobFrequency: 2
@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 0
-  _assetId: 1544778866
+  _assetId: 967688196
   serverOnly: 0
   visibility: 0
   hasSpawned: 0

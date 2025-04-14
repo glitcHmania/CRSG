@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4982736183173540077}
   - component: {fileID: 6859094472005569181}
   m_Layer: 0
-  m_Name: vfx_LootDrop_01
+  m_Name: vfx_LootDrop_Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,10 +1,13 @@
 using Mirror;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ObtainableWeapon : NetworkBehaviour
 {
+    [Header("References")]
     public GameObject weaponPrefab;
+    public GameObject itemEffect;
+
+    [Header("Settings")]
     public Vector3 modelOffset = Vector3.zero;
     public float bobAmplitude = 0.25f;
     public float bobFrequency = 2f;
@@ -15,6 +18,8 @@ public class ObtainableWeapon : NetworkBehaviour
 
     void Start()
     {
+        Instantiate(itemEffect, transform.position + new Vector3(0f, -0.3f), Quaternion.identity, gameObject.transform);
+
         if (weaponPrefab != null)
         {
             Transform model = weaponPrefab.transform.Find("Model");

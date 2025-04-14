@@ -1,6 +1,4 @@
 using Mirror;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponBullet : WeaponBase
@@ -42,18 +40,18 @@ public class WeaponBullet : WeaponBase
             Debug.LogError("Ball prefab must have a Rigidbody!");
         }
 
-        Destroy(newBall, 5f); 
+        Destroy(newBall, 5f);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
