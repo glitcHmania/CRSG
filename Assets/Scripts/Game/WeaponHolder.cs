@@ -116,7 +116,7 @@ public class WeaponHolder : NetworkBehaviour
                 // Equip weapon AFTER client has authority
                 RpcEquipWeapon(newWeapon); // tells client to attach it locally
                 currentWeapon = newWeapon; // server keeps track too
-                currentWeaponGunScript = newWeapon.GetComponent<WeaponRay>();
+                currentWeaponGunScript = newWeapon.GetComponent<WeaponBase>();
 
                 NetworkServer.Destroy(pickup.gameObject); // remove pickup
             }
@@ -130,7 +130,7 @@ public class WeaponHolder : NetworkBehaviour
 
         currentWeapon = weapon;
 
-        if (weapon.TryGetComponent<WeaponRay>(out var gunScript))
+        if (weapon.TryGetComponent<WeaponBase>(out var gunScript))
         {
             currentWeaponGunScript = gunScript;
             currentWeaponGunScript.HandRigidbody = recoilBone.GetComponent<Rigidbody>();
