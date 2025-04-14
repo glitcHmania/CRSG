@@ -12,7 +12,7 @@ public class WeaponHolder : NetworkBehaviour
     private Vector3 initialArmRotation;
     private RagdollControl ragdollControl;
     private GameObject currentWeapon;
-    private Weapon currentWeaponGunScript;
+    private WeaponBase currentWeaponGunScript;
 
     private void Start()
     {
@@ -116,7 +116,7 @@ public class WeaponHolder : NetworkBehaviour
                 // Equip weapon AFTER client has authority
                 RpcEquipWeapon(newWeapon); // tells client to attach it locally
                 currentWeapon = newWeapon; // server keeps track too
-                currentWeaponGunScript = newWeapon.GetComponent<Weapon>();
+                currentWeaponGunScript = newWeapon.GetComponent<WeaponRay>();
 
                 NetworkServer.Destroy(pickup.gameObject); // remove pickup
             }
@@ -130,7 +130,7 @@ public class WeaponHolder : NetworkBehaviour
 
         currentWeapon = weapon;
 
-        if (weapon.TryGetComponent<Weapon>(out var gunScript))
+        if (weapon.TryGetComponent<WeaponRay>(out var gunScript))
         {
             currentWeaponGunScript = gunScript;
             currentWeaponGunScript.HandRigidbody = recoilBone.GetComponent<Rigidbody>();
