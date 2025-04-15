@@ -922,6 +922,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5882155198792178596}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 223574458662870419}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4419815717529161684}
@@ -3401,6 +3404,24 @@ MonoBehaviour:
   leftForeArmJoint: {fileID: 1380890681972881484}
   rightForeArmJoint: {fileID: 5653926879502385173}
   spineJoint: {fileID: 8214332939447216057}
+--- !u!114 &223574458662870419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8415338635620679260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef1ccbfb6d5e4eb4a84637b760c5aa92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  chatUI: {fileID: 0}
+  chatText: {fileID: 0}
+  chatInput: {fileID: 0}
 --- !u!1 &8578548780879289607 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}

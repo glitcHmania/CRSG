@@ -71,7 +71,6 @@ public class JointControl : MonoBehaviour
         else if (spineJoint.targetRotation != defaultSpineTargetRotation)
         {
             spineJoint.targetRotation = defaultSpineTargetRotation;
-            hips.GetComponent<ConfigurableJoint>().targetRotation = Quaternion.Euler(0, 0, 0);
         }
 
 
@@ -136,20 +135,17 @@ public class JointControl : MonoBehaviour
 
     private void MoveBackward()
     {
-        hips.GetComponent<ConfigurableJoint>().targetRotation = Quaternion.Euler(-20f, 0, 0);
         MoveForward();
     }
 
 
     private void MoveLeft()
     {
-        hips.GetComponent<ConfigurableJoint>().targetRotation = Quaternion.Euler(-20f, 0, 0);
         MoveForward();
     }
 
     private void MoveRight()
     {
-        hips.GetComponent<ConfigurableJoint>().targetRotation = Quaternion.Euler(-20f, 0, 0);
         MoveForward();
     }
 
