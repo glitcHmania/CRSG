@@ -53,6 +53,7 @@ public class ChatBehaviour : NetworkBehaviour
                 chatInput.ActivateInputField();
                 chatInput.Select();
                 EventSystem.current.SetSelectedGameObject(chatInput.gameObject);
+                Cursor.lockState = CursorLockMode.None;
 
             }
             else
@@ -70,6 +71,7 @@ public class ChatBehaviour : NetworkBehaviour
                 chatInput.DeactivateInputField();
                 chatInput.interactable = false;
                 EventSystem.current.SetSelectedGameObject(null);
+                Cursor.lockState = CursorLockMode.Locked;
             }
         }
     }
