@@ -23,6 +23,7 @@ public class WeaponHolder : NetworkBehaviour
     void Update()
     {
         if (!isLocalPlayer) return;
+        if (ChatBehaviour.Instance.IsInputActive) return;
 
         HandleInput();
         HandleAiming();

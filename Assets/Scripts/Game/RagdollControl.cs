@@ -31,6 +31,8 @@ public class RagdollControl : MonoBehaviour
 
     private void Update()
     {
+        if (ChatBehaviour.Instance.IsInputActive) return;
+
         if (playerState.isRagdoll && playerState.isGrounded)
         {
             ragdollTimer.Update();

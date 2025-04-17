@@ -47,6 +47,8 @@ public class Movement : NetworkBehaviour
         if (!isLocalPlayer) return;
         if (playerState.isRagdoll) return;
         if (!Application.isFocused) return;
+        if (ChatBehaviour.Instance.IsInputActive) return;
+
 
         if (playerState.isAiming)
         {

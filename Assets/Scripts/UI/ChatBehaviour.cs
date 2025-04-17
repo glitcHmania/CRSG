@@ -3,33 +3,51 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class ChatBehaviour : NetworkBehaviour
 {
+    public static ChatBehaviour Instance { get; private set; }
+
     [SerializeField] private GameObject chatUI = null;
-    [SerializeField] private TMP_Text chatText = null;
-    [SerializeField] private TMP_InputField chatInput = null;
+    [SerializeField] private ScrollRect scrollRect = null;
+    [SerializeField] private TMP_InputField inputField = null;
+
+    private TMP_Text chatText = null;
+    private Image scrollRectImage = null;
+    private Image inputFieldImage = null;
+    private Color scrollRectOpenColor = new Color(0, 0, 0, 0.4f);
+    private Color scrollRectClosedColor = new Color(0, 0, 0, 0);
+    private Color inputFieldOpenColor = new Color(0, 0, 0, 0.7f);
+    private Color inputFieldClosedColor = new Color(0, 0, 0, 0);
 
     private static event Action<string> OnMessage;
 
     private bool isInputActive = false;
+    public bool IsInputActive => isInputActive;
 
     public override void OnStartAuthority()
     {
+        Instance = this;
+
         chatUI = GameObject.FindWithTag("ChatUI");
-        chatText = chatUI.GetComponentInChildren<TMP_Text>();
-        chatInput = chatUI.GetComponentInChildren<TMP_InputField>();
+        inputField = chatUI.GetComponentInChildren<TMP_InputField>(true);
+        scrollRect = chatUI.GetComponentInChildren<ScrollRect>(true);
+        chatText = scrollRect.gameObject.GetComponentInChildren<TMP_Text>();
+
+        scrollRectImage = scrollRect.gameObject.GetComponent<Image>();
+        inputFieldImage = inputField.gameObject.GetComponent<Image>();
 
         chatUI.SetActive(true);
         OnMessage += HandleMessage;
 
-        // Disable input field until activated
-        chatInput.interactable = false;
+        inputField.interactable = false;
     }
 
     [ClientCallback]
     private void OnDestroy()
     {
+        if (Instance == this) Instance = null;
         if (!isOwned) return;
         OnMessage -= HandleMessage;
     }
@@ -41,37 +59,41 @@ public class ChatBehaviour : NetworkBehaviour
 
     private void Update()
     {
-        if (!isOwned || !chatUI.activeSelf) return;
+        if (!isOwned) return;
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
             if (!isInputActive)
             {
-                // Activate the input field and focus it
-                isInputActive = true;
-                chatInput.interactable = true;
-                chatInput.ActivateInputField();
-                chatInput.Select();
-                EventSystem.current.SetSelectedGameObject(chatInput.gameObject);
-                Cursor.lockState = CursorLockMode.None;
+                scrollRectImage.color = scrollRectOpenColor;
+                inputFieldImage.color = inputFieldOpenColor;
 
+                isInputActive = true;
+                inputField.interactable = true;
+                inputField.ActivateInputField();
+                inputField.Select();
+                EventSystem.current.SetSelectedGameObject(inputField.gameObject);
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             }
             else
             {
-                // Try sending the message
-                string message = chatInput.text.Trim();
+                string message = inputField.text.Trim();
                 if (!string.IsNullOrEmpty(message))
                 {
                     Send(message);
                 }
 
-                // Deactivate input
                 isInputActive = false;
-                chatInput.text = string.Empty;
-                chatInput.DeactivateInputField();
-                chatInput.interactable = false;
+                inputField.text = string.Empty;
+                inputField.DeactivateInputField();
+                inputField.interactable = false;
                 EventSystem.current.SetSelectedGameObject(null);
                 Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+
+                scrollRectImage.color = scrollRectClosedColor;
+                inputFieldImage.color = inputFieldClosedColor;
             }
         }
     }
@@ -88,11 +110,9 @@ public class ChatBehaviour : NetworkBehaviour
         CmdSendMessage(message);
     }
 
-
     [Command]
     private void CmdSendMessage(string message)
     {
-        //string playerName = SteamFriends.GetPersonaName();
         string playerName = connectionToClient.connectionId.ToString();
         RpcHandleMessage($"[Player {playerName}]: {message}");
     }

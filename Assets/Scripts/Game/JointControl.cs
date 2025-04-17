@@ -47,6 +47,8 @@ public class JointControl : MonoBehaviour
 
     void Update()
     {
+        if (ChatBehaviour.Instance.IsInputActive) return;
+
         RaycastHit hit;
         if (Physics.Raycast(hips.transform.position, -hips.transform.up, out hit, 10f, LayerMask.GetMask("Ground")))
         {
