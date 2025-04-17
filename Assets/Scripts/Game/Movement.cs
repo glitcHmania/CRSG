@@ -105,8 +105,8 @@ public class Movement : NetworkBehaviour
     void FixedUpdate()
     {
         if (!isLocalPlayer) return;
-
         if (playerState.isRagdoll) return;
+        if (ChatBehaviour.Instance.IsInputActive) return;
 
         float speed = playerState.movementState == PlayerState.Movement.Running ? moveSpeed * runMultiplier : moveSpeed;
 
