@@ -169,6 +169,9 @@ MonoBehaviour:
   rotationSpeed: 5
   minYAngle: -80
   maxYAngle: 10
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 183
 --- !u!1 &8292016055041033889
 GameObject:
   m_ObjectHideFlags: 0
@@ -3668,8 +3671,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   chatUI: {fileID: 0}
-  chatText: {fileID: 0}
-  chatInput: {fileID: 0}
+  scrollRect: {fileID: 0}
+  inputField: {fileID: 0}
 --- !u!1 &8578548780879289607 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}

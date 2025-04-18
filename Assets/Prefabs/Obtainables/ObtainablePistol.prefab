@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6040818575161680709}
   - component: {fileID: 4983481482715329854}
   - component: {fileID: -4699540882630230374}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ObtainablePistol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8943150031060234070}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -136,6 +136,18 @@ PrefabInstance:
     - target: {fileID: 1193953125369175018, guid: 7d39067bead4bc14aa0b451564aa5198, type: 3}
       propertyPath: m_Name
       value: vfx_LootDrop_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1193953125369175018, guid: 7d39067bead4bc14aa0b451564aa5198, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2093778772504465130, guid: 7d39067bead4bc14aa0b451564aa5198, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4075590944164389794, guid: 7d39067bead4bc14aa0b451564aa5198, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4380190821754405079, guid: 7d39067bead4bc14aa0b451564aa5198, type: 3}
       propertyPath: m_LocalScale.x
@@ -192,6 +204,14 @@ PrefabInstance:
     - target: {fileID: 4380190821754405079, guid: 7d39067bead4bc14aa0b451564aa5198, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8180813692532357303, guid: 7d39067bead4bc14aa0b451564aa5198, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219333140960049697, guid: 7d39067bead4bc14aa0b451564aa5198, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

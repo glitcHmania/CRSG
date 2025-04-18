@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 497295788584749301}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 6040818575161680709}
   - component: {fileID: 4983481482715329854}
   - component: {fileID: -4699540882630230374}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ObtainableSniper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133,9 +133,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 497295788584749301}
     m_Modifications:
+    - target: {fileID: 852947831494304669, guid: e953460ff16e0a6459684f9b77202b5c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1696204563373084951, guid: e953460ff16e0a6459684f9b77202b5c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1943286446490004412, guid: e953460ff16e0a6459684f9b77202b5c, type: 3}
       propertyPath: m_Name
       value: vfx_LootDrop_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 1943286446490004412, guid: e953460ff16e0a6459684f9b77202b5c, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5674383046283250234, guid: e953460ff16e0a6459684f9b77202b5c, type: 3}
       propertyPath: m_LocalScale.x
@@ -192,6 +204,14 @@ PrefabInstance:
     - target: {fileID: 5674383046283250234, guid: e953460ff16e0a6459684f9b77202b5c, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6153189848992024842, guid: e953460ff16e0a6459684f9b77202b5c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6687076216537280699, guid: e953460ff16e0a6459684f9b77202b5c, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
