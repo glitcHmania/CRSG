@@ -14,6 +14,9 @@ public class WeaponHolder : NetworkBehaviour
     private GameObject currentWeapon;
     private Weapon currentWeaponGunScript;
 
+    [SyncVar(hook = nameof(OnWeaponChanged))]
+    private NetworkIdentity currentWeaponNetIdentity;
+
     private void Start()
     {
         initialArmRotation = armJoint.targetRotation.eulerAngles;
@@ -31,20 +34,21 @@ public class WeaponHolder : NetworkBehaviour
 
     private void HandleInput()
     {
-        if (playerState.isArmed && currentWeaponGunScript.isAutomatic)
+        if (playerState.isArmed && currentWeaponGunScript?.isAutomatic == true)
         {
-            if (Input.GetMouseButton(0) && currentWeaponGunScript != null)
+            if (Input.GetMouseButton(0))
             {
                 CmdShoot();
             }
         }
         else
         {
-            if (Input.GetMouseButtonDown(0) && currentWeaponGunScript != null)
+            if (Input.GetMouseButtonDown(0))
             {
                 CmdShoot();
             }
         }
+
         if (Input.GetKeyDown(KeyCode.R) && currentWeaponGunScript != null)
         {
             CmdReload();
@@ -56,7 +60,6 @@ public class WeaponHolder : NetworkBehaviour
         if (Input.GetMouseButton(1))
         {
             playerState.isAiming = true;
-            //ragdollControl.SetRagdollStiffness(1000f);
 
             if (playerState.isArmed)
             {
@@ -65,7 +68,6 @@ public class WeaponHolder : NetworkBehaviour
         }
         else if (Input.GetMouseButtonUp(1))
         {
-            //ragdollControl.ResetRagdollStifness();
             playerState.isAiming = false;
 
             if (playerState.isArmed)
@@ -73,76 +75,71 @@ public class WeaponHolder : NetworkBehaviour
                 armJoint.targetRotation = Quaternion.Euler(initialArmRotation);
             }
         }
-
     }
 
     [Command]
     private void CmdShoot()
     {
-        if (currentWeaponGunScript != null)
-        {
-            currentWeaponGunScript.Shoot(connectionToClient);
-        }
+        currentWeaponGunScript?.Shoot(connectionToClient);
     }
 
     [Command]
     private void CmdReload()
     {
-        if (currentWeaponGunScript != null)
-        {
-            currentWeaponGunScript.Reload();
-        }
+        currentWeaponGunScript?.Reload();
     }
 
     public void TryPickupWeapon(ObtainableWeapon pickup)
     {
-        // This runs on the client, but the player has authority over itself
         CmdTryPickupWeapon(pickup.netIdentity);
     }
-
 
     [Command]
     void CmdTryPickupWeapon(NetworkIdentity pickupNetIdentity)
     {
-        if (pickupNetIdentity != null)
+        if (pickupNetIdentity == null) return;
+
+        var pickup = pickupNetIdentity.GetComponent<ObtainableWeapon>();
+        if (pickup == null || pickup.weaponPrefab == null) return;
+
+        GameObject newWeapon = Instantiate(pickup.weaponPrefab);
+        NetworkServer.Spawn(newWeapon, connectionToClient);
+
+        currentWeaponNetIdentity = newWeapon.GetComponent<NetworkIdentity>(); // triggers hook
+        NetworkServer.Destroy(pickup.gameObject);
+    }
+
+    private void OnWeaponChanged(NetworkIdentity oldWeapon, NetworkIdentity newWeapon)
+    {
+        if (newWeapon != null)
         {
-            var pickup = pickupNetIdentity.GetComponent<ObtainableWeapon>();
-            if (pickup != null && pickup.weaponPrefab != null)
-            {
-                GameObject newWeapon = Instantiate(pickup.weaponPrefab);
-
-                // Give this player (client) authority over the weapon
-                NetworkServer.Spawn(newWeapon, connectionToClient);
-
-                // Equip weapon AFTER client has authority
-                RpcEquipWeapon(newWeapon); // tells client to attach it locally
-                currentWeapon = newWeapon; // server keeps track too
-                currentWeaponGunScript = newWeapon.GetComponent<Weapon>();
-
-                NetworkServer.Destroy(pickup.gameObject); // remove pickup
-            }
+            EquipWeapon(newWeapon.gameObject);
         }
     }
 
-    [ClientRpc]
-    void RpcEquipWeapon(GameObject weapon)
+    private void EquipWeapon(GameObject weaponObj)
     {
-        if (weapon == null) return;
+        currentWeapon = weaponObj;
 
-        currentWeapon = weapon;
-
-        if (weapon.TryGetComponent<Weapon>(out var gunScript))
+        if (weaponObj.TryGetComponent<Weapon>(out var gunScript))
         {
             currentWeaponGunScript = gunScript;
             currentWeaponGunScript.HandRigidbody = recoilBone.GetComponent<Rigidbody>();
             currentWeaponGunScript.playerState = playerState;
         }
 
-        weapon.transform.SetParent(weaponBone.transform);
-        weapon.transform.localPosition = Vector3.zero;
-        weapon.transform.localRotation = Quaternion.identity;
+        weaponObj.transform.SetParent(weaponBone.transform);
+        weaponObj.transform.localPosition = Vector3.zero;
+        weaponObj.transform.localRotation = Quaternion.identity;
 
         playerState.isArmed = true;
     }
 
+    public override void OnStopClient()
+    {
+        if (currentWeapon != null)
+        {
+            currentWeapon.transform.SetParent(null);
+        }
+    }
 }
