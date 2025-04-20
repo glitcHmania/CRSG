@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using Mono.CecilX.Cil;
 using UnityEngine;
 
 public class WeaponHolder : NetworkBehaviour
@@ -12,6 +13,7 @@ public class WeaponHolder : NetworkBehaviour
     private Vector3 initialArmRotation;
     private RagdollControl ragdollControl;
     private GameObject currentWeapon;
+    private GameObject heldObtainable;
     private Weapon currentWeaponGunScript;
 
     [SyncVar(hook = nameof(OnWeaponChanged))]
@@ -106,10 +108,14 @@ public class WeaponHolder : NetworkBehaviour
         NetworkServer.Spawn(newWeapon, connectionToClient);
 
         currentWeaponNetIdentity = newWeapon.GetComponent<NetworkIdentity>(); // triggers hook
-        NetworkServer.Destroy(pickup.gameObject);
-    }
+        
+        pickup.gameObject.SetActive(false);
+        heldObtainable = pickup.gameObject; 
+		//NetworkServer.Destroy(pickup.gameObject);
+		//Destroy(pickup.gameObject); // Destroy the pickup object
+	}
 
-    private void OnWeaponChanged(NetworkIdentity oldWeapon, NetworkIdentity newWeapon)
+	private void OnWeaponChanged(NetworkIdentity oldWeapon, NetworkIdentity newWeapon)
     {
         if (newWeapon != null)
         {
@@ -119,7 +125,14 @@ public class WeaponHolder : NetworkBehaviour
 
     private void EquipWeapon(GameObject weaponObj)
     {
-        currentWeapon = weaponObj;
+		if (currentWeapon != null)
+		{
+			currentWeapon.transform.SetParent(null);
+			Destroy(currentWeapon);
+            heldObtainable.SetActive(true);
+		}
+
+		currentWeapon = weaponObj;
 
         if (weaponObj.TryGetComponent<Weapon>(out var gunScript))
         {
