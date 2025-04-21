@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BallThrower : MonoBehaviour
@@ -19,7 +17,7 @@ public class BallThrower : MonoBehaviour
     {
         if (ballPrefab == null)
         {
-            Debug.LogError("Ball prefab is not assigned!");
+            //Debug.LogError("Ball prefab is not assigned!");
             return;
         }
 

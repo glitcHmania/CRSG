@@ -1,28 +1,53 @@
-using Mirror;
 using UnityEngine;
 
-public class CameraMovement : NetworkBehaviour
+public class CameraMovement : MonoBehaviour
 {
-    public Camera shoulderCamera;
-    void Start()
+    [Header("References")]
+    public Transform target;
+    public Vector3 offset = new Vector3(0f, 0f, -4f);
+    public float rotationSpeed = 5f;
+    public float minYAngle = -30f;
+    public float maxYAngle = 60f;
+
+    public LayerMask collisionMask;
+
+    private float currentYaw = 0f;
+    private float currentPitch = 20f;
+
+    private float mouseY;
+    private float mouseX;
+
+    private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-
-        if (!isLocalPlayer)
-        {
-            shoulderCamera.gameObject.SetActive(false);
-            shoulderCamera.GetComponent<AudioListener>().enabled = false;
-        }
-        else
-        {
-            shoulderCamera.gameObject.SetActive(true);
-            shoulderCamera.tag = "MainCamera";
-        }
+        Cursor.visible = false;
     }
 
-    // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * 2);
+        if (target == null) return;
+
+        if (!ChatBehaviour.Instance.IsInputActive)
+        {
+            mouseX = Input.GetAxis("Mouse X");
+            mouseY = Input.GetAxis("Mouse Y");
+        }
+
+        currentYaw += mouseX * rotationSpeed;
+        currentPitch -= mouseY * rotationSpeed;
+        currentPitch = Mathf.Clamp(currentPitch, minYAngle, maxYAngle);
+
+        Quaternion rotation = Quaternion.Euler(currentPitch, currentYaw, 0);
+        Vector3 desiredPosition = target.position + rotation * offset;
+
+        transform.position = desiredPosition;
+        transform.LookAt(target.position + Vector3.up * 1.5f);
+
+        Physics.Raycast(target.position, (desiredPosition - target.position).normalized, out RaycastHit hit, Vector3.Distance(target.position, transform.position), collisionMask);
+        if (hit.collider != null)
+        {
+            transform.position = hit.point;
+        }
+
     }
 }
