@@ -129,6 +129,7 @@ public class WeaponHolder : NetworkBehaviour
 		{
 			currentWeapon.transform.SetParent(null);
 			Destroy(currentWeapon);
+            currentWeapon.GetComponent<Weapon>().ClearPool();
             heldObtainable.SetActive(true);
 		}
 

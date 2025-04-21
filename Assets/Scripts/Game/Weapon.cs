@@ -146,4 +146,9 @@ public class Weapon : NetworkBehaviour
         BulletTrail trail = trailPool.Get();
         trail.Init(start, end, (t) => trailPool.Return(t));
     }
+
+    public void ClearPool()
+    {
+        trailPool.Clear();
+    }
 }
