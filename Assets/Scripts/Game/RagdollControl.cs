@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class RagdollControl : MonoBehaviour
+public class RagdollController : MonoBehaviour
 {
     [Header("References")]
     public PlayerState playerState;
@@ -14,19 +14,18 @@ public class RagdollControl : MonoBehaviour
     public float ragdollDuration;
     public float ragdollStiffness;
 
-    private float initialXPositionSpring;
-    private float initialYZPositionDamper;
+    private float initialXSpring;
+    private float initialYZSpring;
     private Timer ragdollTimer;
-
 
     private void Start()
     {
         playerState.isRagdoll = false;
 
-        initialXPositionSpring = hipJoint.angularXDrive.positionSpring;
-        initialYZPositionDamper = hipJoint.angularYZDrive.positionSpring;
+        initialXSpring = hipJoint.angularXDrive.positionSpring;
+        initialYZSpring = hipJoint.angularYZDrive.positionSpring;
 
-        ragdollTimer = new Timer(ragdollDuration, DeactivateRagdoll);
+        ragdollTimer = new Timer(ragdollDuration, DisableRagdoll);
     }
 
     private void Update()
@@ -42,17 +41,17 @@ public class RagdollControl : MonoBehaviour
         {
             if (playerState.isRagdoll)
             {
-                DeactivateRagdoll();
+                DisableRagdoll();
             }
             else
             {
-                ActivateRagdoll();
+                EnableRagdoll();
             }
         }
 
         if (playerState.Numbness > 0)
         {
-            playerState.Numbness -= Time.deltaTime * 1f;
+            playerState.Numbness -= Time.deltaTime * 5f;
         }
         else
         {
@@ -61,51 +60,36 @@ public class RagdollControl : MonoBehaviour
 
         if (playerState.Numbness > 100f)
         {
-            ActivateRagdoll();
+            EnableRagdoll();
             playerState.Numbness = 0;
         }
     }
 
-    public void ActivateRagdoll()
+    public void EnableRagdoll()
     {
         playerState.isRagdoll = true;
 
         //hipsRigidbody.mass = 0.3f;
         //spineRigidbody.mass = 0.3f;
 
-        hipJoint.angularXDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
-        hipJoint.angularYZDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
-
-        foreach (var joint in otherJoints)
-        {
-            joint.angularXDrive = new JointDrive { positionSpring = ragdollStiffness, maximumForce = 3.402823e+38f };
-            joint.angularYZDrive = new JointDrive { positionSpring = ragdollStiffness, maximumForce = 3.402823e+38f };
-        }
-
-        foreach (var joint in legJoints)
-        {
-            joint.angularXDrive = new JointDrive { positionSpring = ragdollStiffness, maximumForce = 3.402823e+38f };
-            joint.angularYZDrive = new JointDrive { positionSpring = ragdollStiffness, maximumForce = 3.402823e+38f };
-        }
+        DisableBalance();
+        SetRagdollStiffness(ragdollStiffness);
     }
 
-    public void DeactivateRagdoll()
+    public void DisableRagdoll()
     {
         playerState.isRagdoll = false;
 
         //hipsRigidbody.mass = 2f;
         //spineRigidbody.mass = 1f;
 
-        ragdollTimer.Reset();
-
+        EnableBalance();
         ResetRagdollStifness();
+        ragdollTimer.Reset();
     }
 
     public void SetRagdollStiffness(float stiffness)
     {
-        hipJoint.angularXDrive = new JointDrive { positionSpring = stiffness, maximumForce = 3.402823e+38f };
-        hipJoint.angularYZDrive = new JointDrive { positionSpring = stiffness, maximumForce = 3.402823e+38f };
-
         foreach (var joint in otherJoints)
         {
             joint.angularXDrive = new JointDrive { positionSpring = stiffness, maximumForce = 3.402823e+38f };
@@ -121,9 +105,6 @@ public class RagdollControl : MonoBehaviour
 
     public void ResetRagdollStifness()
     {
-        hipJoint.angularXDrive = new JointDrive { positionSpring = initialXPositionSpring, maximumForce = 3.402823e+38f };
-        hipJoint.angularYZDrive = new JointDrive { positionSpring = initialYZPositionDamper, maximumForce = 3.402823e+38f };
-
         foreach (var joint in otherJoints)
         {
             joint.angularXDrive = new JointDrive { positionSpring = 100, maximumForce = 3.402823e+38f };
@@ -135,5 +116,17 @@ public class RagdollControl : MonoBehaviour
             joint.angularXDrive = new JointDrive { positionSpring = 1000, maximumForce = 3.402823e+38f };
             joint.angularYZDrive = new JointDrive { positionSpring = 1000, maximumForce = 3.402823e+38f };
         }
+    }
+
+    public void DisableBalance()
+    {
+        hipJoint.angularXDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
+        hipJoint.angularYZDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
+    }
+
+    public void EnableBalance()
+    {
+        hipJoint.angularXDrive = new JointDrive { positionSpring = initialXSpring, maximumForce = 3.402823e+38f };
+        hipJoint.angularYZDrive = new JointDrive { positionSpring = initialYZSpring, maximumForce = 3.402823e+38f };
     }
 }

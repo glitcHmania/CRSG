@@ -6,11 +6,10 @@ public class WeaponHolder : NetworkBehaviour
     [Header("References")]
     public GameObject recoilBone;
     public GameObject weaponBone;
-    public ConfigurableJoint armJoint;
     public PlayerState playerState;
 
     private Vector3 initialArmRotation;
-    private RagdollControl ragdollControl;
+    private RagdollController ragdollControl;
     private GameObject currentWeapon;
     private Weapon currentWeaponGunScript;
 
@@ -19,8 +18,7 @@ public class WeaponHolder : NetworkBehaviour
 
     private void Start()
     {
-        initialArmRotation = armJoint.targetRotation.eulerAngles;
-        ragdollControl = GetComponent<RagdollControl>();
+        ragdollControl = GetComponent<RagdollController>();
     }
 
     void Update()
@@ -60,20 +58,10 @@ public class WeaponHolder : NetworkBehaviour
         if (Input.GetMouseButton(1))
         {
             playerState.isAiming = true;
-
-            if (playerState.isArmed)
-            {
-                armJoint.targetRotation = Quaternion.Euler(0f, 45f, 300f);
-            }
         }
         else if (Input.GetMouseButtonUp(1))
         {
             playerState.isAiming = false;
-
-            if (playerState.isArmed)
-            {
-                armJoint.targetRotation = Quaternion.Euler(initialArmRotation);
-            }
         }
     }
 

@@ -8,7 +8,8 @@ public class PlayerState : NetworkBehaviour
         Idle,
         Walking,
         Running,
-        Jumping
+        Jumping,
+        Falling,
     }
 
     [SyncVar]
@@ -35,6 +36,7 @@ public class PlayerState : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         HandleMovementInput();
+        Debug.Log($"Movement State: {movementState}");
     }
 
     private void HandleMovementInput()
@@ -54,7 +56,7 @@ public class PlayerState : NetworkBehaviour
                 ? Movement.Running
                 : Movement.Walking;
         }
-        else
+        else if(isGrounded)
         {
             movementState = Movement.Idle;
         }

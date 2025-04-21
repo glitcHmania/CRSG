@@ -28,10 +28,10 @@ public class Explosive : MonoBehaviour
 
             if (collider.gameObject.layer == 6)
             {
-                var ragdoll = collider.GetComponentInParent<RagdollControl>();
+                var ragdoll = collider.GetComponentInParent<RagdollController>();
                 if (ragdoll != null)
                 {
-                    ragdoll.ActivateRagdoll();
+                    ragdoll.EnableRagdoll();
                 }
             }
 

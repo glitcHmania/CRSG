@@ -14,6 +14,9 @@ public class CameraMovement : MonoBehaviour
     private float currentYaw = 0f;
     private float currentPitch = 20f;
 
+    private float mouseY;
+    private float mouseX;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -24,8 +27,11 @@ public class CameraMovement : MonoBehaviour
     {
         if (target == null) return;
 
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
+        if (!ChatBehaviour.Instance.IsInputActive)
+        {
+            mouseX = Input.GetAxis("Mouse X");
+            mouseY = Input.GetAxis("Mouse Y");
+        }
 
         currentYaw += mouseX * rotationSpeed;
         currentPitch -= mouseY * rotationSpeed;

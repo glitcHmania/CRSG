@@ -4,27 +4,32 @@ using UnityEngine;
 public class Movement : NetworkBehaviour
 {
     [Header("References")]
-    public Transform root;
     public GameObject cam;
     public GameObject hip;
     public PlayerState playerState;
 
     [Header("Movement Settings")]
-    public float moveSpeed = 5f;
-    public float runMultiplier = 1.5f;
-    public float jumpForce = 5f;
-    public float rotationSpeed = 10f;
+    public float moveSpeed;
+    public float runMultiplier;
+    public float rotationSpeed;
+
+    [Header("Jump Settings")]
+    public float longJumpTime;
+    public float jumpForce;
 
     [Header("Ground Check")]
-    public float groundCheckDistance = 1.1f;
-    public float ungroundedTime = 0.1f;
-    public float maxGroundAngle = 30f;
+    public float groundCheckDistance;
+    public float ungroundedTime;
+    public float maxGroundAngle;
     public LayerMask groundMask;
 
     private Vector3 moveDir;
+    private Rigidbody mainRigidBody;
     private Rigidbody hipRigidBody;
-    private RagdollControl ragdollControl;
+    private RagdollController ragdollController;
     private Timer ungroundedTimer;
+    private Timer jumpTimer;
+    private Timer jumpHoldTimer;
 
     void Start()
     {
@@ -37,27 +42,27 @@ public class Movement : NetworkBehaviour
             cam.SetActive(true); // Only keep the local camera on
         }
 
+        mainRigidBody = GetComponent<Rigidbody>();
         hipRigidBody = hip.GetComponent<Rigidbody>();
-        ragdollControl = GetComponent<RagdollControl>();
-        ungroundedTimer = new Timer(ungroundedTime, () => ragdollControl.ActivateRagdoll());
+        ragdollController = GetComponent<RagdollController>();
+        ungroundedTimer = new Timer(ungroundedTime, () => ragdollController.EnableRagdoll());
+        jumpTimer = new Timer(1f);
+        jumpHoldTimer = new Timer(longJumpTime);
+
     }
 
     void Update()
     {
         if (!isLocalPlayer) return;
-        if (playerState.isRagdoll) return;
         if (!Application.isFocused) return;
-        if (ChatBehaviour.Instance.IsInputActive) return;
-
 
         if (playerState.isAiming)
         {
-            root.rotation = Quaternion.Euler(0, cam.transform.eulerAngles.y, 0);
+            mainRigidBody.rotation = Quaternion.Euler(0, cam.transform.eulerAngles.y, 0);
             moveDir = Vector3.zero;
         }
-        else
+        else if (playerState.movementState != PlayerState.Movement.Jumping)
         {
-
             float h = Input.GetAxisRaw("Horizontal");
             float v = Input.GetAxisRaw("Vertical");
 
@@ -71,7 +76,33 @@ public class Movement : NetworkBehaviour
 
             moveDir = (camForward * v + camRight * h).normalized;
         }
+        else
+        {
+            moveDir = Vector3.zero;
+        }
 
+
+        jumpTimer.Update();
+        if (Input.GetKey(KeyCode.Space) && playerState.isGrounded)
+        {
+            jumpHoldTimer.Update();
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space) && playerState.isGrounded)
+        {
+            if (jumpHoldTimer.IsFinished)
+            {
+                ragdollController.DisableBalance();
+                mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * jumpForce * 1.5f, ForceMode.Impulse);
+            }
+            else
+            {
+                mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * jumpForce, ForceMode.Impulse);
+            }
+
+            jumpTimer.Reset();
+            jumpHoldTimer.Reset();
+        }
 
         //raycast to check if the player is grounded and take the normal of the surface
         if (Physics.Raycast(hip.transform.position, Vector3.down, out RaycastHit hit, groundCheckDistance, groundMask))
@@ -79,12 +110,22 @@ public class Movement : NetworkBehaviour
             Vector3 groundNormal = hit.normal;
             float angle = Vector3.Angle(Vector3.up, groundNormal);
 
-            //if raycast hits an object and the angle is less than the max ground angle, the player is grounded
-            playerState.isGrounded = angle <= maxGroundAngle;
+            if (angle <= maxGroundAngle)
+            {
+                playerState.isGrounded = true;
+                if (jumpTimer.IsFinished)
+                {
+                    if (!playerState.isRagdoll)
+                    {
+                        ragdollController.EnableBalance();
+                    }
+                }
+            }
         }
         else
         {
             playerState.isGrounded = false;
+            playerState.movementState = PlayerState.Movement.Falling;
         }
 
         if (playerState.isGrounded)
@@ -96,17 +137,12 @@ public class Movement : NetworkBehaviour
             ungroundedTimer.Update();
         }
 
-        if (Input.GetKeyUp(KeyCode.Space) && playerState.isGrounded)
-        {
-            hipRigidBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
     }
 
     void FixedUpdate()
     {
         if (!isLocalPlayer) return;
         if (playerState.isRagdoll) return;
-        if (ChatBehaviour.Instance.IsInputActive) return;
 
         float speed = playerState.movementState == PlayerState.Movement.Running ? moveSpeed * runMultiplier : moveSpeed;
 
@@ -131,10 +167,10 @@ public class Movement : NetworkBehaviour
             hipRigidBody.velocity = new Vector3(velocity.x, hipRigidBody.velocity.y, velocity.z);
         }
 
-        if (moveDir != Vector3.zero && root != null)
+        if (moveDir != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(moveDir);
-            root.rotation = Quaternion.Slerp(root.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
+            mainRigidBody.rotation = Quaternion.Slerp(mainRigidBody.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
         }
     }
 
