@@ -31,20 +31,23 @@ public class JointController : MonoBehaviour
     public ConfigurableJoint rightArmJoint;
     public ConfigurableJoint rightForeArmJoint;
 
-    [Header("Spine Joint")]
+    [Header("Other Joints")]
     public ConfigurableJoint spineJoint;
+    public ConfigurableJoint hipJoint;
+    public ConfigurableJoint headJoint;
 
     private float currentSpeed;
     private float currentSlope;
     private float currentStepHeight;
     private Quaternion defaultSpineTargetRotation;
     private Chronometer stepChronometer;
-    public RagdollController ragdollController;
+    private Quaternion initialHeadLocalRotation;
 
     private void Start()
     {
         defaultSpineTargetRotation = spineJoint.targetRotation;
         stepChronometer = new Chronometer();
+        initialHeadLocalRotation = headJoint.transform.localRotation;
     }
 
     void Update()
@@ -54,6 +57,10 @@ public class JointController : MonoBehaviour
         {
             currentSlope = Vector3.Angle(hips.transform.up, hit.transform.up); // calculate slope angle for step height adjustment
         }
+
+        //rotating the head to the direction of camera
+        Quaternion localTargetRotation = Quaternion.Inverse(headJoint.transform.parent.rotation) * Quaternion.LookRotation(cam.transform.forward, Vector3.up);
+        headJoint.targetRotation = Quaternion.Inverse(localTargetRotation) * initialHeadLocalRotation;
 
         if (playerState.movementState == PlayerState.Movement.Running)
         {
@@ -87,7 +94,7 @@ public class JointController : MonoBehaviour
             {
                 MoveForward();
                 SwingArms();
-                ResetArms();
+                ResetUpperArms();
             }
             else
             {
@@ -126,7 +133,7 @@ public class JointController : MonoBehaviour
 
             if (!playerState.isAiming)
             {
-                ResetArms();
+                ResetUpperArms();
             }
 
             stepChronometer.Reset();
@@ -227,20 +234,18 @@ public class JointController : MonoBehaviour
 
     private void ResetLeftArm()
     {
-        leftArmJoint.targetRotation = Quaternion.Euler(300, 0, 0);
         leftForeArmJoint.targetRotation = Quaternion.Euler(0, 0, 30);
     }
 
     private void ResetRightArm()
     {
-        rightArmJoint.targetRotation = Quaternion.Euler(300, 0, 0);
         rightForeArmJoint.targetRotation = Quaternion.Euler(0, 0, 330);
     }
 
-    private void ResetArms()
+    private void ResetUpperArms()
     {
-        ResetLeftArm();
-        ResetRightArm();
+        rightArmJoint.targetRotation = Quaternion.Euler(300, 0, 0);
+        leftArmJoint.targetRotation = Quaternion.Euler(300, 0, 0);
     }
 
     private void ResetLeftLeg()

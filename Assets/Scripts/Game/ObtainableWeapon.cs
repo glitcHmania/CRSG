@@ -1,5 +1,4 @@
 using Mirror;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ObtainableWeapon : NetworkBehaviour
@@ -34,8 +33,7 @@ public class ObtainableWeapon : NetworkBehaviour
 
     void Update()
     {
-		Debug.Log(gameObject.name);
-		if (modelInstance != null)
+        if (modelInstance != null)
         {
             float bobOffset = Mathf.Sin(Time.time * bobFrequency) * bobAmplitude;
             Vector3 pos = modelOffset;
@@ -54,13 +52,13 @@ public class ObtainableWeapon : NetworkBehaviour
         }
     }
 
-    public void Drop() 
+    public void Drop()
     {
         modelInstance = gameObject;
         weaponPrefab = gameObject;
-		modelInstance.transform.rotation = Quaternion.identity;
+        modelInstance.transform.rotation = Quaternion.identity;
         //transform.AddComponent<BoxCollider>().isTrigger = true;
         //transform.AddComponent<NetworkIdentity>();
-		
-	}
+
+    }
 }

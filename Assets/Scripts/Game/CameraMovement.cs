@@ -43,7 +43,7 @@ public class CameraMovement : MonoBehaviour
         transform.position = desiredPosition;
         transform.LookAt(target.position + Vector3.up * 1.5f);
 
-        Physics.Raycast(target.position, (desiredPosition - target.position).normalized, out RaycastHit hit, Vector3.Distance(target.position, transform.position), collisionMask);
+        Physics.Raycast(target.position + new Vector3(0f, 1f), (desiredPosition - target.position).normalized, out RaycastHit hit, Vector3.Distance(target.position, transform.position), collisionMask);
         if (hit.collider != null)
         {
             transform.position = hit.point;

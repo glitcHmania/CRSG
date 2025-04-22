@@ -36,7 +36,6 @@ public class PlayerState : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         HandleMovementInput();
-        Debug.Log($"Movement State: {movementState}");
     }
 
     private void HandleMovementInput()
@@ -56,7 +55,7 @@ public class PlayerState : NetworkBehaviour
                 ? Movement.Running
                 : Movement.Walking;
         }
-        else if(isGrounded)
+        else if (isGrounded)
         {
             movementState = Movement.Idle;
         }

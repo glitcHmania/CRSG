@@ -31,6 +31,13 @@ public class Movement : NetworkBehaviour
     private Timer jumpTimer;
     private Timer jumpHoldTimer;
 
+    //public override void OnStartLocalPlayer()
+    //{
+    //    base.OnStartLocalPlayer();
+
+    //    CmdRequestAuthority(GetComponent<NetworkIdentity>());
+    //}
+
     void Start()
     {
         if (!isLocalPlayer)
@@ -58,7 +65,8 @@ public class Movement : NetworkBehaviour
 
         if (playerState.isAiming)
         {
-            mainRigidBody.rotation = Quaternion.Euler(0, cam.transform.eulerAngles.y, 0);
+            mainRigidBody.MoveRotation(Quaternion.Slerp(mainRigidBody.rotation, Quaternion.Euler(0, cam.transform.eulerAngles.y, 0), 5f * Time.deltaTime));
+
             moveDir = Vector3.zero;
         }
         else if (playerState.movementState != PlayerState.Movement.Jumping)
@@ -172,6 +180,12 @@ public class Movement : NetworkBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(moveDir);
             mainRigidBody.rotation = Quaternion.Slerp(mainRigidBody.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
         }
+    }
+
+    [Command]
+    void CmdRequestAuthority(NetworkIdentity target)
+    {
+        target.AssignClientAuthority(connectionToClient);
     }
 
     void OnDrawGizmosSelected()
