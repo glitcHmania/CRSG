@@ -144,7 +144,6 @@ public class Movement : NetworkBehaviour
         {
             ungroundedTimer.Update();
         }
-
     }
 
     void FixedUpdate()

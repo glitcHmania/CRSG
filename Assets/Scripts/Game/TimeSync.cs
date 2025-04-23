@@ -9,9 +9,4 @@ public class TimeSync : NetworkBehaviour
     {
         serverStartTime = Time.time;
     }
-    void Update()
-    {
-        Debug.Log($"server Time: {serverStartTime} local Time: {NetworkTime.time}");
-    }
-
 }
