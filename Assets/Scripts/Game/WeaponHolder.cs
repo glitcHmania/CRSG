@@ -79,6 +79,8 @@ public class WeaponHolder : NetworkBehaviour
 
     private void UpdateBulletCountText()
     {
+        if (!isLocalPlayer) return;
+
         if (currentWeapon == null || currentWeaponGunScript == null)
         {
             bulletUI.text = "";
