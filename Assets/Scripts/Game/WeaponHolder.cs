@@ -10,22 +10,18 @@ public class WeaponHolder : NetworkBehaviour
     public GameObject recoilBone;
     public GameObject weaponBone;
     public PlayerState playerState;
-    public Canvas PlayerUI;
 
-    private Vector3 initialArmRotation;
-    private RagdollController ragdollControl;
     private GameObject currentWeapon;
     private GameObject heldObtainable;
     private Weapon currentWeaponGunScript;
+    private TextMeshProUGUI bulletUI;
 
     [SyncVar(hook = nameof(OnWeaponChanged))]
     private NetworkIdentity currentWeaponNetIdentity;
 
-
-
     private void Start()
     {
-        ragdollControl = GetComponent<RagdollController>();
+        bulletUI = GameObject.FindGameObjectWithTag("PlayerUI").transform.Find("BulletCountText").GetComponent<TextMeshProUGUI>();
         UpdateBulletCountText();
     }
 
@@ -83,14 +79,13 @@ public class WeaponHolder : NetworkBehaviour
 
     private void UpdateBulletCountText()
     {
-        TextMeshProUGUI bulletUi = PlayerUI.transform.Find("BulletCountText").GetComponent<TextMeshProUGUI>();
         if (currentWeapon == null || currentWeaponGunScript == null)
         {
-            bulletUi.text = "";
+            bulletUI.text = "";
         }
         else
         {
-            bulletUi.text = $"{currentWeaponGunScript.BulletCount}/∞";
+            bulletUI.text = $"{currentWeaponGunScript.BulletCount}/∞";
         }
 
     }
