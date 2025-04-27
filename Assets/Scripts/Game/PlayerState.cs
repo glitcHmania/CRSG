@@ -25,6 +25,9 @@ public class PlayerState : NetworkBehaviour
     public bool isRagdoll;
 
     [SyncVar]
+    public bool isUnbalanced;
+
+    [SyncVar]
     public bool isArmed;
 
     [SyncVar]

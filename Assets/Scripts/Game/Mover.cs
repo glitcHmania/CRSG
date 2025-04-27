@@ -4,13 +4,12 @@ using Mirror;
 [RequireComponent(typeof(Rigidbody))]
 public class Mover : NetworkBehaviour
 {
-    [SerializeField] private Vector3 moveDirection = Vector3.forward;
-    [SerializeField] private float moveSpeed = 2f;
-    [SerializeField] private float moveDistance = 5f;
+    [Header("Settings")]
+    public Vector3 moveDirection = Vector3.forward;
+    public float moveSpeed = 2f;
+    public float moveDistance = 5f;
 
-    [SyncVar]
-    private Vector3 syncedStartPos;
-
+    [SyncVar] private Vector3 syncedStartPos;
     private Rigidbody rb;
     private TimeSync timeSync;
 
