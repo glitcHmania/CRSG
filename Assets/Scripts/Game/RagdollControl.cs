@@ -14,16 +14,16 @@ public class RagdollController : MonoBehaviour
     public float ragdollDuration;
     public float ragdollStiffness;
 
-    private float initialHipSpring;
-    private float initialLegSpring;
+    private float initialXSpring;
+    private float initialYZSpring;
     private Timer ragdollTimer;
 
     private void Start()
     {
         playerState.isRagdoll = false;
 
-        initialHipSpring = hipJoint.angularXDrive.positionSpring;
-        initialLegSpring = legJoints[0].angularXDrive.positionSpring;
+        initialXSpring = hipJoint.angularXDrive.positionSpring;
+        initialYZSpring = hipJoint.angularYZDrive.positionSpring;
 
         ragdollTimer = new Timer(ragdollDuration, DisableRagdoll);
     }
@@ -68,7 +68,6 @@ public class RagdollController : MonoBehaviour
     public void EnableRagdoll()
     {
         playerState.isRagdoll = true;
-        playerState.isUnbalanced = true;
 
         //hipsRigidbody.mass = 0.3f;
         //spineRigidbody.mass = 0.3f;
@@ -80,7 +79,6 @@ public class RagdollController : MonoBehaviour
     public void DisableRagdoll()
     {
         playerState.isRagdoll = false;
-        playerState.isUnbalanced = false;
 
         //hipsRigidbody.mass = 2f;
         //spineRigidbody.mass = 1f;
@@ -115,22 +113,20 @@ public class RagdollController : MonoBehaviour
 
         foreach (var joint in legJoints)
         {
-            joint.angularXDrive = new JointDrive { positionSpring = initialLegSpring, maximumForce = 3.402823e+38f };
-            joint.angularYZDrive = new JointDrive { positionSpring = initialLegSpring, maximumForce = 3.402823e+38f };
+            joint.angularXDrive = new JointDrive { positionSpring = 1000, maximumForce = 3.402823e+38f };
+            joint.angularYZDrive = new JointDrive { positionSpring = 1000, maximumForce = 3.402823e+38f };
         }
     }
 
     public void DisableBalance()
     {
-        playerState.isUnbalanced = true;
         hipJoint.angularXDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
         hipJoint.angularYZDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
     }
 
     public void EnableBalance()
     {
-        playerState.isUnbalanced = false;
-        hipJoint.angularXDrive = new JointDrive { positionSpring = initialHipSpring, maximumForce = 3.402823e+38f };
-        hipJoint.angularYZDrive = new JointDrive { positionSpring = initialHipSpring, maximumForce = 3.402823e+38f };
+        hipJoint.angularXDrive = new JointDrive { positionSpring = initialXSpring, maximumForce = 3.402823e+38f };
+        hipJoint.angularYZDrive = new JointDrive { positionSpring = initialYZSpring, maximumForce = 3.402823e+38f };
     }
 }

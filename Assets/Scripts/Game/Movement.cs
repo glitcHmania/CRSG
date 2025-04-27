@@ -52,7 +52,7 @@ public class Movement : NetworkBehaviour
         mainRigidBody = GetComponent<Rigidbody>();
         hipRigidBody = hip.GetComponent<Rigidbody>();
         ragdollController = GetComponent<RagdollController>();
-        ungroundedTimer = new Timer(ungroundedTime, () => ragdollController.DisableBalance());
+        ungroundedTimer = new Timer(ungroundedTime, () => ragdollController.EnableRagdoll());
         jumpTimer = new Timer(1f);
         jumpHoldTimer = new Timer(longJumpTime);
 
@@ -144,18 +144,6 @@ public class Movement : NetworkBehaviour
         {
             ungroundedTimer.Update();
         }
-    }
-
-    public void AddForceToPlayer( Vector3 direction, float force, ForceMode forceMode = ForceMode.Impulse)
-    {
-        if (!isLocalPlayer) return;
-        mainRigidBody.AddForce(direction * force, forceMode);
-    }
-
-    public void AddExplosionForceToPlayer(Vector3 position, float force, float radius)
-    {
-        if (!isLocalPlayer) return;
-        mainRigidBody.AddExplosionForce(force, position, radius);
     }
 
     void FixedUpdate()
