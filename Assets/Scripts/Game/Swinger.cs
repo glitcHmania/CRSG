@@ -1,17 +1,15 @@
 using Mirror;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Swinger : NetworkBehaviour
 {
     [Header("Settings")]
-    public float swingSpeed = 10f;
-    public float swingAmount = 30f;
-    public Vector3 swingAxis = Vector3.up;
-    public float rotationLerpSpeed = 5f;
-    public float ragdollThreshold = 5f;
+    [SerializeField] private float swingSpeed = 10f;
+    [SerializeField] private float swingAmount = 30f;
+    [SerializeField] private Vector3 swingAxis = Vector3.up;
+    [SerializeField] private float rotationLerpSpeed = 5f;
+    [SerializeField] private float ragdollThreshold = 5f;
 
     [SyncVar] private Quaternion syncedStartRotation;
     private Rigidbody rb;
@@ -34,10 +32,10 @@ public class Swinger : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (timeSync == null || timeSync.serverStartTime <= 0f)
+        if (timeSync == null || timeSync.ServerStartTime <= 0f)
             return;
 
-        float elapsed = (float)(NetworkTime.time - timeSync.serverStartTime);
+        float elapsed = (float)(NetworkTime.time - timeSync.ServerStartTime);
         float angle = swingSpeed * elapsed;
 
         float swingAngle = Mathf.Sin(angle) * swingAmount;

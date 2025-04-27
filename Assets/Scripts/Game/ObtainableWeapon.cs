@@ -3,24 +3,27 @@ using UnityEngine;
 
 public class ObtainableWeapon : NetworkBehaviour
 {
-    public GameObject weaponPrefab;
-    public Vector3 modelOffset = Vector3.zero;
-    public float bobAmplitude = 0.25f;
-    public float bobFrequency = 2f;
-    public float rotationSpeed = 50f;
+    [Header("References")]
+    public GameObject WeaponPrefab;
+
+    [Header("Settings")]
+    [SerializeField] private Vector3 modelOffset = Vector3.zero;
+    [SerializeField] private float bobAmplitude = 0.25f;
+    [SerializeField] private float bobFrequency = 2f;
+    [SerializeField] private float rotationSpeed = 50f;
 
     private GameObject modelInstance;
     private float startY;
 
     void Start()
     {
-        if (weaponPrefab != null)
+        if (WeaponPrefab != null)
         {
-            Transform model = weaponPrefab.transform.Find("Model");
+            Transform model = WeaponPrefab.transform.Find("Model");
             if (model != null)
             {
                 modelInstance = Instantiate(model.gameObject, transform);
-                //modelInstance.transform.localPosition = modelOffset;
+                modelInstance.transform.localPosition = modelOffset;
                 modelInstance.transform.localRotation = Quaternion.identity;
                 startY = modelInstance.transform.localPosition.y;
             }
@@ -55,7 +58,7 @@ public class ObtainableWeapon : NetworkBehaviour
     public void Drop()
     {
         modelInstance = gameObject;
-        weaponPrefab = gameObject;
+        WeaponPrefab = gameObject;
         modelInstance.transform.rotation = Quaternion.identity;
         //transform.AddComponent<BoxCollider>().isTrigger = true;
         //transform.AddComponent<NetworkIdentity>();

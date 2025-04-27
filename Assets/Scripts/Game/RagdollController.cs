@@ -3,16 +3,16 @@
 public class RagdollController : MonoBehaviour
 {
     [Header("References")]
-    public PlayerState playerState;
-    public Rigidbody hipsRigidbody;
-    public Rigidbody spineRigidbody;
-    public ConfigurableJoint hipJoint;
-    public ConfigurableJoint[] legJoints;
-    public ConfigurableJoint[] otherJoints;
+    [SerializeField] private PlayerState playerState;
+    [SerializeField] private Rigidbody hipsRigidbody;
+    [SerializeField] private Rigidbody spineRigidbody;
+    [SerializeField] private ConfigurableJoint hipJoint;
+    [SerializeField] private ConfigurableJoint[] legJoints;
+    [SerializeField] private ConfigurableJoint[] otherJoints;
 
     [Header("Settings")]
-    public float ragdollDuration;
-    public float ragdollStiffness;
+    [SerializeField] private float ragdollDuration;
+    [SerializeField] private float ragdollStiffness;
 
     private float initialHipSpring;
     private float initialLegSpring;
@@ -20,7 +20,7 @@ public class RagdollController : MonoBehaviour
 
     private void Start()
     {
-        playerState.isRagdoll = false;
+        playerState.IsRagdoll = false;
 
         initialHipSpring = hipJoint.angularXDrive.positionSpring;
         initialLegSpring = legJoints[0].angularXDrive.positionSpring;
@@ -32,14 +32,14 @@ public class RagdollController : MonoBehaviour
     {
         if (ChatBehaviour.Instance.IsInputActive) return;
 
-        if (playerState.isRagdoll && playerState.isGrounded)
+        if (playerState.IsRagdoll && playerState.IsGrounded)
         {
             ragdollTimer.Update();
         }
 
         if (Input.GetKeyDown(KeyCode.G))
         {
-            if (playerState.isRagdoll)
+            if (playerState.IsRagdoll)
             {
                 DisableRagdoll();
             }
@@ -67,8 +67,8 @@ public class RagdollController : MonoBehaviour
 
     public void EnableRagdoll()
     {
-        playerState.isRagdoll = true;
-        playerState.isUnbalanced = true;
+        playerState.IsRagdoll = true;
+        playerState.IsUnbalanced = true;
 
         //hipsRigidbody.mass = 0.3f;
         //spineRigidbody.mass = 0.3f;
@@ -79,8 +79,8 @@ public class RagdollController : MonoBehaviour
 
     public void DisableRagdoll()
     {
-        playerState.isRagdoll = false;
-        playerState.isUnbalanced = false;
+        playerState.IsRagdoll = false;
+        playerState.IsUnbalanced = false;
 
         //hipsRigidbody.mass = 2f;
         //spineRigidbody.mass = 1f;
@@ -122,14 +122,14 @@ public class RagdollController : MonoBehaviour
 
     public void DisableBalance()
     {
-        playerState.isUnbalanced = true;
+        playerState.IsUnbalanced = true;
         hipJoint.angularXDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
         hipJoint.angularYZDrive = new JointDrive { positionSpring = 0, maximumForce = 3.402823e+38f };
     }
 
     public void EnableBalance()
     {
-        playerState.isUnbalanced = false;
+        playerState.IsUnbalanced = false;
         hipJoint.angularXDrive = new JointDrive { positionSpring = initialHipSpring, maximumForce = 3.402823e+38f };
         hipJoint.angularYZDrive = new JointDrive { positionSpring = initialHipSpring, maximumForce = 3.402823e+38f };
     }

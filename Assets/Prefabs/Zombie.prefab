@@ -106,13 +106,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 9188074739379872998}
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 8215
   offset: {x: 0, y: 3, z: -1}
   rotationSpeed: 5
   minYAngle: -70
   maxYAngle: 10
-  collisionMask:
-    serializedVersion: 2
-    m_Bits: 8215
 --- !u!1 &8292016055041033889
 GameObject:
   m_ObjectHideFlags: 0
@@ -1809,13 +1809,13 @@ ConfigurableJoint:
   m_AngularXDrive:
     serializedVersion: 4
     positionSpring: 10
-    positionDamper: 0
+    positionDamper: 1
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_AngularYZDrive:
     serializedVersion: 4
     positionSpring: 10
-    positionDamper: 0
+    positionDamper: 1
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_SlerpDrive:
@@ -2291,7 +2291,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4311917604382387781}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7ce4de679212a2549974f2315e8e13e9, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2611,7 +2611,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5393420517641593754}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7ce4de679212a2549974f2315e8e13e9, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2867,7 +2867,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5932833963332583693}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7ce4de679212a2549974f2315e8e13e9, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3412,7 +3412,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7682386085153092832}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7ce4de679212a2549974f2315e8e13e9, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3519,7 +3519,6 @@ MonoBehaviour:
   recoilBone: {fileID: 287997504604421362}
   weaponBone: {fileID: 8292016055041033889}
   playerState: {fileID: -8150470886946853929}
-  PlayerUI: {fileID: 0}
 --- !u!114 &-8150470886946853929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3535,12 +3534,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  movementState: 0
-  isAiming: 0
-  isGrounded: 0
-  isRagdoll: 0
-  isUnbalanced: 0
-  isArmed: 0
+  MovementState: 0
+  IsAiming: 0
+  IsGrounded: 0
+  IsRagdoll: 0
+  IsUnbalanced: 0
+  IsArmed: 0
   Numbness: 0
 --- !u!114 &7321850614008527734
 MonoBehaviour:

@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class TimeSync : NetworkBehaviour
 {
-    [SyncVar] public float serverStartTime;
+    [SyncVar] public float ServerStartTime;
 
     public override void OnStartServer()
     {
-        serverStartTime = Time.time;
+        ServerStartTime = Time.time;
     }
 }

@@ -5,8 +5,8 @@ using Mirror;
 public class Rotator : NetworkBehaviour
 {
     [Header("Settings")]
-    public float speed = 10f;
-    public Vector3 rotationAxis = Vector3.up;
+    [SerializeField] private float speed = 10f;
+    [SerializeField] private Vector3 rotationAxis = Vector3.up;
 
     [SyncVar] private Quaternion syncedStartRotation;
     private Rigidbody rb;
@@ -26,10 +26,10 @@ public class Rotator : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (timeSync == null || timeSync.serverStartTime <= 0f)
+        if (timeSync == null || timeSync.ServerStartTime <= 0f)
             return;
 
-        float elapsed = (float)(NetworkTime.time - timeSync.serverStartTime);
+        float elapsed = (float)(NetworkTime.time - timeSync.ServerStartTime);
         float angle = speed * elapsed;
 
         Quaternion targetRotation = Quaternion.AngleAxis(angle, rotationAxis.normalized);

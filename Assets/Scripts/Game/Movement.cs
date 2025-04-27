@@ -4,24 +4,24 @@ using UnityEngine;
 public class Movement : NetworkBehaviour
 {
     [Header("References")]
-    public GameObject cam;
-    public GameObject hip;
-    public PlayerState playerState;
+    [SerializeField] private GameObject cam;
+    [SerializeField] private GameObject hip;
+    [SerializeField] private PlayerState playerState;
 
     [Header("Movement Settings")]
-    public float moveSpeed;
-    public float runMultiplier;
-    public float rotationSpeed;
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private float runMultiplier;
+    [SerializeField] private float rotationSpeed;
 
     [Header("Jump Settings")]
-    public float longJumpTime;
-    public float jumpForce;
+    [SerializeField] private float longJumpTime;
+    [SerializeField] private float jumpForce;
 
     [Header("Ground Check")]
-    public float groundCheckDistance;
-    public float ungroundedTime;
-    public float maxGroundAngle;
-    public LayerMask groundMask;
+    [SerializeField] private float groundCheckDistance;
+    [SerializeField] private float ungroundedTime;
+    [SerializeField] private float maxGroundAngle;
+    [SerializeField] private LayerMask groundMask;
 
     private Vector3 moveDir;
     private Rigidbody mainRigidBody;
@@ -63,13 +63,13 @@ public class Movement : NetworkBehaviour
         if (!isLocalPlayer) return;
         if (!Application.isFocused) return;
 
-        if (playerState.isAiming)
+        if (playerState.IsAiming)
         {
             mainRigidBody.MoveRotation(Quaternion.Slerp(mainRigidBody.rotation, Quaternion.Euler(0, cam.transform.eulerAngles.y, 0), 5f * Time.deltaTime));
 
             moveDir = Vector3.zero;
         }
-        else if (playerState.movementState != PlayerState.Movement.Jumping)
+        else if (playerState.MovementState != PlayerState.Movement.Jumping)
         {
             float h = Input.GetAxisRaw("Horizontal");
             float v = Input.GetAxisRaw("Vertical");
@@ -91,12 +91,12 @@ public class Movement : NetworkBehaviour
 
 
         jumpTimer.Update();
-        if (Input.GetKey(KeyCode.Space) && playerState.isGrounded)
+        if (Input.GetKey(KeyCode.Space) && playerState.IsGrounded)
         {
             jumpHoldTimer.Update();
         }
 
-        if (Input.GetKeyUp(KeyCode.Space) && playerState.isGrounded)
+        if (Input.GetKeyUp(KeyCode.Space) && playerState.IsGrounded)
         {
             if (jumpHoldTimer.IsFinished)
             {
@@ -120,10 +120,10 @@ public class Movement : NetworkBehaviour
 
             if (angle <= maxGroundAngle)
             {
-                playerState.isGrounded = true;
+                playerState.IsGrounded = true;
                 if (jumpTimer.IsFinished)
                 {
-                    if (!playerState.isRagdoll)
+                    if (!playerState.IsRagdoll)
                     {
                         ragdollController.EnableBalance();
                     }
@@ -132,11 +132,11 @@ public class Movement : NetworkBehaviour
         }
         else
         {
-            playerState.isGrounded = false;
-            playerState.movementState = PlayerState.Movement.Falling;
+            playerState.IsGrounded = false;
+            playerState.MovementState = PlayerState.Movement.Falling;
         }
 
-        if (playerState.isGrounded)
+        if (playerState.IsGrounded)
         {
             ungroundedTimer.Reset();
         }
@@ -161,11 +161,11 @@ public class Movement : NetworkBehaviour
     void FixedUpdate()
     {
         if (!isLocalPlayer) return;
-        if (playerState.isRagdoll) return;
+        if (playerState.IsRagdoll) return;
 
-        float speed = playerState.movementState == PlayerState.Movement.Running ? moveSpeed * runMultiplier : moveSpeed;
+        float speed = playerState.MovementState == PlayerState.Movement.Running ? moveSpeed * runMultiplier : moveSpeed;
 
-        if (playerState.isAiming)
+        if (playerState.IsAiming)
         {
             float horizontal = Input.GetAxisRaw("Horizontal");
             float vertical = Input.GetAxisRaw("Vertical");

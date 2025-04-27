@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class FadeDestroy : MonoBehaviour
 {
-    public GameObject fadeTarget;
-    public float lifeTime = 3.0f;
+    [Header("References")]
+    [SerializeField] private GameObject fadeTarget;
+
+    [Header("Settings")]
+    [SerializeField] private float lifeTime = 3.0f;
 
     private Timer timer;
     private Renderer rendererComponent;

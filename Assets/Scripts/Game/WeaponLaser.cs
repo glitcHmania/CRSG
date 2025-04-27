@@ -3,12 +3,12 @@ using UnityEngine;
 [RequireComponent(typeof(LineRenderer))]
 public class WeaponLaser : MonoBehaviour
 {
-    [Header("Laser Settings")]
-    public float maxDistance = 100f;
-    [Range(0f, 1f)] public float alpha = 0.5f;
-    public Color laserColor = Color.red;
-    public float laserWidth = 0.05f;
-    public bool laserEnabled = true;
+    [Header("Settings")]
+    [SerializeField] private float maxDistance = 100f;
+    [SerializeField] [Range(0f, 1f)] private float alpha = 0.5f;
+    [SerializeField] private Color laserColor = Color.red;
+    [SerializeField] private float laserWidth = 0.05f;
+    [SerializeField] private bool laserEnabled = true;
 
     private LineRenderer lineRenderer;
     private Material laserMaterial;

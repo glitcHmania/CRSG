@@ -3,7 +3,7 @@ using UnityEngine;
 public class Bouncer : MonoBehaviour
 {
     [Header("Settings")]
-    public float bounceForce = 10f;
+    [SerializeField] private float bounceForce = 10f;
 
     private void OnTriggerEnter(Collider other)
     {

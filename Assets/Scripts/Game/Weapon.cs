@@ -4,28 +4,30 @@ using UnityEngine;
 public class Weapon : NetworkBehaviour
 {
     [Header("References")]
-    public PlayerState playerState;
+    public PlayerState PlayerState;
     public Rigidbody HandRigidbody;
-    public Transform MuzzleTransform;
+    [SerializeField] private Transform muzzleTransform;
+    [SerializeField] private GameObject laser;
 
     [Header("Weapon Settings")]
-    public int Power;
-    public int MagazineSize;
+    public bool IsAutomatic;
     public int BulletCount;
-    public float Range;
-    public float ReloadTime;
-    public float recoilMultiplier;
-    public float RecoverTime;
-    public bool isAutomatic = false;
-    public bool infiniteAmmo = false;
+    [SerializeField] private int power;
+    [SerializeField] private int magazineSize;
+    [SerializeField] private float range;
+    [SerializeField] private float reloadTime;
+    [SerializeField] private float recoilMultiplier;
+    [SerializeField] private float numbnessAmount;
+    [SerializeField] private float recoverTime;
+    [SerializeField] private bool infiniteAmmo = false;
 
     [Header("Bullet Trail Settings")]
-    public BulletTrail bulletTrailPrefab;
-    public int trailPoolSize = 10;
+    [SerializeField] private BulletTrail bulletTrailPrefab;
+    [SerializeField] private int trailPoolSize = 10;
 
     [Header("Particle System")]
-    public ParticleSystem muzzleFlash;
-    public ParticleSystem stoneImpactEffect;
+    [SerializeField] private ParticleSystem muzzleFlash;
+    [SerializeField] private ParticleSystem stoneImpactEffect;
 
     private bool isAvailable = true;
     private Timer recoverTimer;
@@ -34,10 +36,10 @@ public class Weapon : NetworkBehaviour
 
     void Awake()
     {
-        recoverTimer = new Timer(RecoverTime, () => isAvailable = true);
-        reloadTimer = new Timer(ReloadTime, () =>
+        recoverTimer = new Timer(recoverTime, () => isAvailable = true);
+        reloadTimer = new Timer(reloadTime, () =>
         {
-            BulletCount = MagazineSize;
+            BulletCount = magazineSize;
             isAvailable = true;
         });
 
@@ -73,10 +75,10 @@ public class Weapon : NetworkBehaviour
 
         TargetApplyRecoil(ownerConn); //  Only client will apply force
 
-        Vector3 hitPoint = MuzzleTransform.position + MuzzleTransform.forward * Range;
-        Ray ray = new Ray(MuzzleTransform.position, MuzzleTransform.forward);
+        Vector3 hitPoint = muzzleTransform.position + muzzleTransform.forward * range;
+        Ray ray = new Ray(muzzleTransform.position, muzzleTransform.forward);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, Range))
+        if (Physics.Raycast(ray, out RaycastHit hit, range))
         {
             hitPoint = hit.point;
             if (hit.collider)
@@ -85,15 +87,15 @@ public class Weapon : NetworkBehaviour
 
                 if (hitIdentity?.connectionToClient != null) // it's a client-owned object
                 {
-                    Vector3 forceDir = (hit.point - MuzzleTransform.position).normalized;
-                    TargetApplyImpactForce(hitIdentity.connectionToClient, forceDir, Power);
+                    Vector3 forceDir = (hit.point - muzzleTransform.position).normalized;
+                    TargetApplyImpactForce(hitIdentity.connectionToClient, forceDir, power);
                 }
 
                 RpcSpawnImpact(hit.point, hit.normal);
             }
         }
 
-        RpcSpawnTrail(MuzzleTransform.position, hitPoint);
+        RpcSpawnTrail(muzzleTransform.position, hitPoint);
 
         if (!infiniteAmmo)
         {
@@ -105,8 +107,13 @@ public class Weapon : NetworkBehaviour
     void TargetApplyImpactForce(NetworkConnection target, Vector3 forceDirection, float power)
     {
         // Find the Rigidbody again on the client and apply force
-        if (Physics.Raycast(MuzzleTransform.position, MuzzleTransform.forward, out RaycastHit hit, Range))
+        if (Physics.Raycast(muzzleTransform.position, muzzleTransform.forward, out RaycastHit hit, range))
         {
+            var rc = hit.collider.gameObject.GetComponentInParent<RagdollController>();
+            if (rc  != null)
+            {
+                rc.EnableRagdoll();
+            }
             if (hit.collider.TryGetComponent(out Rigidbody rb))
             {
                 rb.AddForce(forceDirection * power, ForceMode.Impulse);
@@ -119,10 +126,10 @@ public class Weapon : NetworkBehaviour
     {
         if (HandRigidbody != null)
         {
-            HandRigidbody.AddForce(-transform.forward * Power * recoilMultiplier, ForceMode.Impulse);
+            HandRigidbody.AddForce(-transform.forward * power * recoilMultiplier, ForceMode.Impulse);
         }
 
-        playerState.Numbness += 0.1f * Power;
+        PlayerState.Numbness += numbnessAmount;
     }
 
     [ClientRpc]

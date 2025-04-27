@@ -3,12 +3,12 @@
 public class Explosive : MonoBehaviour
 {
     [Header("References")]
-    public GameObject explosionEffect;
+    [SerializeField] private GameObject explosionEffect;
 
     [Header("Settings")]
-    public float radius = 5f;
-    public float force = 700f;
-    public float upwardsModifier = 0f;
+    [SerializeField] private float radius = 5f;
+    [SerializeField] private float force = 700f;
+    [SerializeField] private float upwardsModifier = 0f;
 
     private void Update()
     {

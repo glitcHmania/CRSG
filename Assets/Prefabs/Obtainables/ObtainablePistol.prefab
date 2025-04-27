@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 2349670444129837435}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.700112, y: 2.186988, z: -8.199474}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -50,7 +50,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  weaponPrefab: {fileID: 6219196561423381161, guid: 21e3b97009c20894bbf354a7e6eadcfe, type: 3}
+  WeaponPrefab: {fileID: 6219196561423381161, guid: 21e3b97009c20894bbf354a7e6eadcfe, type: 3}
   modelOffset: {x: 0, y: 0, z: 0}
   bobAmplitude: 0.12
   bobFrequency: 2

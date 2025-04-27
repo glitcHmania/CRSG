@@ -5,9 +5,9 @@ using Mirror;
 public class Mover : NetworkBehaviour
 {
     [Header("Settings")]
-    public Vector3 moveDirection = Vector3.forward;
-    public float moveSpeed = 2f;
-    public float moveDistance = 5f;
+    [SerializeField] private Vector3 moveDirection = Vector3.forward;
+    [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private float moveDistance = 5f;
 
     [SyncVar] private Vector3 syncedStartPos;
     private Rigidbody rb;
@@ -27,10 +27,10 @@ public class Mover : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (timeSync == null || timeSync.serverStartTime <= 0f)
+        if (timeSync == null || timeSync.ServerStartTime <= 0f)
             return;
 
-        float elapsed = (float)(NetworkTime.time - timeSync.serverStartTime);
+        float elapsed = (float)(NetworkTime.time - timeSync.ServerStartTime);
         float offset = Mathf.PingPong(elapsed * moveSpeed, moveDistance);
         Vector3 currentPos = syncedStartPos + moveDirection.normalized * offset;
 

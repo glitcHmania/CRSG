@@ -3,38 +3,38 @@
 public class JointController : MonoBehaviour
 {
     [Header("References")]
-    public PlayerState playerState;
-    public GameObject hips;
-    public Camera cam;
+    [SerializeField] private PlayerState playerState;
+    [SerializeField] private GameObject hips;
+    [SerializeField] private Camera cam;
 
     [Header("Speed Settings")]
-    public float walkSpeed;
-    public float sprintSpeed;
+    [SerializeField] private float walkSpeed;
+    [SerializeField] private float sprintSpeed;
 
     [Header("Step Settings")]
-    public float stepHeight;
+    [SerializeField] private float stepHeight;
 
     [Header("Arm Settings")]
-    public float armSwingHeight;
+    [SerializeField] private float armSwingHeight;
 
     [Header("Leg Joints")]
-    public ConfigurableJoint leftUpLegJoint;
-    public ConfigurableJoint leftLegJoint;
-    public ConfigurableJoint leftFootJoint;
-    public ConfigurableJoint rightUpLegJoint;
-    public ConfigurableJoint rightLegJoint;
-    public ConfigurableJoint rightFootJoint;
+    [SerializeField] private ConfigurableJoint leftUpLegJoint;
+    [SerializeField] private ConfigurableJoint leftLegJoint;
+    [SerializeField] private ConfigurableJoint leftFootJoint;
+    [SerializeField] private ConfigurableJoint rightUpLegJoint;
+    [SerializeField] private ConfigurableJoint rightLegJoint;
+    [SerializeField] private ConfigurableJoint rightFootJoint;
 
     [Header("Arm Joints")]
-    public ConfigurableJoint leftArmJoint;
-    public ConfigurableJoint leftForeArmJoint;
-    public ConfigurableJoint rightArmJoint;
-    public ConfigurableJoint rightForeArmJoint;
+    [SerializeField] private ConfigurableJoint leftArmJoint;
+    [SerializeField] private ConfigurableJoint leftForeArmJoint;
+    [SerializeField] private ConfigurableJoint rightArmJoint;
+    [SerializeField] private ConfigurableJoint rightForeArmJoint;
 
     [Header("Other Joints")]
-    public ConfigurableJoint spineJoint;
-    public ConfigurableJoint hipJoint;
-    public ConfigurableJoint headJoint;
+    [SerializeField] private ConfigurableJoint spineJoint;
+    [SerializeField] private ConfigurableJoint hipJoint;
+    [SerializeField] private ConfigurableJoint headJoint;
 
     private float currentSpeed;
     private float currentSlope;
@@ -58,7 +58,7 @@ public class JointController : MonoBehaviour
             currentSlope = Vector3.Angle(hips.transform.up, hit.transform.up); // calculate slope angle for step height adjustment
         }
 
-        if (!playerState.isRagdoll && !playerState.isUnbalanced)
+        if (!playerState.IsRagdoll && !playerState.IsUnbalanced)
         {
             //rotating the head to the direction of camera
             Quaternion localTargetRotation = Quaternion.Inverse(headJoint.transform.parent.rotation) * Quaternion.LookRotation(cam.transform.forward, Vector3.up);
@@ -66,23 +66,21 @@ public class JointController : MonoBehaviour
 
         }
 
-        if (playerState.movementState == PlayerState.Movement.Running)
+        if (playerState.MovementState == PlayerState.Movement.Running)
         {
             currentSpeed = sprintSpeed;
             currentStepHeight = stepHeight + 20f;
-            hipJoint.targetRotation = Quaternion.Euler(-10, 0, 0); // reset hip rotation
         }
         else
         {
             currentSpeed = walkSpeed;
             currentStepHeight = stepHeight;
-            hipJoint.targetRotation = Quaternion.Euler(0, 0, 0); // reset hip rotation
         }
 
-        if (playerState.isAiming)
+        if (playerState.IsAiming)
         {
             spineJoint.targetRotation = Quaternion.Euler(-cam.transform.eulerAngles.x, 0f, 0f); // rotate spine to aim
-            if (playerState.isArmed)
+            if (playerState.IsArmed)
             {
                 RotateArmToAim(rightArmJoint, rightForeArmJoint);
             }
@@ -96,7 +94,7 @@ public class JointController : MonoBehaviour
         {
             stepChronometer.Update();
 
-            if (!playerState.isAiming)
+            if (!playerState.IsAiming)
             {
                 MoveForward();
                 SwingArms();
@@ -123,12 +121,12 @@ public class JointController : MonoBehaviour
             }
 
         }
-        else if (playerState.movementState == PlayerState.Movement.Jumping)
+        else if (playerState.MovementState == PlayerState.Movement.Jumping)
         {
             BendLeg(leftUpLegJoint, leftLegJoint);
             BendLeg(rightUpLegJoint, rightLegJoint);
         }
-        else if (playerState.movementState == PlayerState.Movement.Falling)
+        else if (playerState.MovementState == PlayerState.Movement.Falling)
         {
             BendLeg(leftUpLegJoint, leftLegJoint);
             BendLeg(rightUpLegJoint, rightLegJoint);
@@ -138,7 +136,7 @@ public class JointController : MonoBehaviour
         {
             ResetLegs();
 
-            if (!playerState.isAiming)
+            if (!playerState.IsAiming)
             {
                 ResetUpperArms();
             }

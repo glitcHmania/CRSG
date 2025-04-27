@@ -3,11 +3,10 @@ using UnityEngine;
 
 public class IgnoreCollision : NetworkBehaviour
 {
-    [SerializeField]
-    Collider ThisCollider;
+    [Header("References")]
+    [SerializeField] private Collider ThisCollider;
+    [SerializeField] private Collider[] ColliderToIgnore;
 
-    [SerializeField]
-    Collider[] ColliderToIgnore;
     void Start()
     {
         foreach (Collider collider in ColliderToIgnore)

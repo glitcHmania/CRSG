@@ -1,15 +1,13 @@
 using Mirror;
-using Mono.CecilX.Cil;
-using System;
 using TMPro;
 using UnityEngine;
 
 public class WeaponHolder : NetworkBehaviour
 {
     [Header("References")]
-    public GameObject recoilBone;
-    public GameObject weaponBone;
-    public PlayerState playerState;
+    [SerializeField] private GameObject recoilBone;
+    [SerializeField] private GameObject weaponBone;
+    [SerializeField] private PlayerState playerState;
 
     private GameObject currentWeapon;
     private GameObject heldObtainable;
@@ -36,7 +34,7 @@ public class WeaponHolder : NetworkBehaviour
 
     private void HandleInput()
     {
-        if (playerState.isArmed && currentWeaponGunScript?.isAutomatic == true)
+        if (playerState.IsArmed && currentWeaponGunScript?.IsAutomatic == true)
         {
             if (Input.GetMouseButton(0))
             {
@@ -61,11 +59,11 @@ public class WeaponHolder : NetworkBehaviour
     {
         if (Input.GetMouseButton(1))
         {
-            playerState.isAiming = true;
+            playerState.IsAiming = true;
         }
         else if (Input.GetMouseButtonUp(1))
         {
-            playerState.isAiming = false;
+            playerState.IsAiming = false;
         }
     }
 
@@ -74,7 +72,7 @@ public class WeaponHolder : NetworkBehaviour
     {
         currentWeaponGunScript?.Shoot(connectionToClient);
         UpdateBulletCountText();
-        
+
     }
 
     private void UpdateBulletCountText()
@@ -110,9 +108,9 @@ public class WeaponHolder : NetworkBehaviour
         if (pickupNetIdentity == null) return;
 
         var pickup = pickupNetIdentity.GetComponent<ObtainableWeapon>();
-        if (pickup == null || pickup.weaponPrefab == null) return;
+        if (pickup == null || pickup.WeaponPrefab == null) return;
 
-        GameObject newWeapon = Instantiate(pickup.weaponPrefab);
+        GameObject newWeapon = Instantiate(pickup.WeaponPrefab);
         NetworkServer.Spawn(newWeapon, connectionToClient);
 
         currentWeaponNetIdentity = newWeapon.GetComponent<NetworkIdentity>(); // triggers hook
@@ -147,14 +145,19 @@ public class WeaponHolder : NetworkBehaviour
         {
             currentWeaponGunScript = gunScript;
             currentWeaponGunScript.HandRigidbody = recoilBone.GetComponent<Rigidbody>();
-            currentWeaponGunScript.playerState = playerState;
+            currentWeaponGunScript.PlayerState = playerState;
         }
 
         weaponObj.transform.SetParent(weaponBone.transform);
         weaponObj.transform.localPosition = Vector3.zero;
         weaponObj.transform.localRotation = Quaternion.identity;
 
-        playerState.isArmed = true;
+        foreach (Collider collider in GetComponentsInChildren<Collider>())
+        {
+            Physics.IgnoreCollision(currentWeapon.GetComponentInChildren<Collider>(), collider, true);
+        }
+
+        playerState.IsArmed = true;
         UpdateBulletCountText();
     }
 

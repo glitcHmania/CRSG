@@ -12,28 +12,15 @@ public class PlayerState : NetworkBehaviour
         Falling,
     }
 
-    [SyncVar]
-    public Movement movementState;
+    [SyncVar] public Movement MovementState;
+    [SyncVar] public bool IsAiming;
+    [SyncVar] public bool IsGrounded;
+    [SyncVar] public bool IsRagdoll;
+    [SyncVar] public bool IsUnbalanced;
+    [SyncVar] public bool IsArmed;
+    [SyncVar] public float Numbness;
 
-    [SyncVar]
-    public bool isAiming;
-
-    [SyncVar]
-    public bool isGrounded;
-
-    [SyncVar]
-    public bool isRagdoll;
-
-    [SyncVar]
-    public bool isUnbalanced;
-
-    [SyncVar]
-    public bool isArmed;
-
-    [SyncVar]
-    public float Numbness;
-
-    public bool IsMoving => (movementState == Movement.Walking || movementState == Movement.Running) && movementState != Movement.Jumping;
+    public bool IsMoving => (MovementState == Movement.Walking || MovementState == Movement.Running) && MovementState != Movement.Jumping;
 
     private void Update()
     {
@@ -45,7 +32,7 @@ public class PlayerState : NetworkBehaviour
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            movementState = Movement.Jumping;
+            MovementState = Movement.Jumping;
             return;
         }
 
@@ -54,13 +41,13 @@ public class PlayerState : NetworkBehaviour
 
         if (hasInput)
         {
-            movementState = Input.GetKey(KeyCode.LeftShift)
+            MovementState = Input.GetKey(KeyCode.LeftShift)
                 ? Movement.Running
                 : Movement.Walking;
         }
-        else if (isGrounded)
+        else if (IsGrounded)
         {
-            movementState = Movement.Idle;
+            MovementState = Movement.Idle;
         }
     }
 }

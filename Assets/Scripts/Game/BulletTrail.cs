@@ -3,14 +3,16 @@ using UnityEngine;
 
 public class BulletTrail : MonoBehaviour
 {
-    private TrailRenderer trail;
-    private Vector3 target;
-    private Action<BulletTrail> onFinish;
+    [Header("References")]
+    [SerializeField] private TrailRenderer trail;
+    [SerializeField] private Vector3 target;
+    [SerializeField] private Action<BulletTrail> onFinish;
+    [SerializeField] private Color endColor;
+    [SerializeField] private Color startColor;
 
-    public Color endColor;
-    public Color startColor;
-    public float speed = 300f;
-    public float fadeDuration = 0.5f;
+    [Header("Settings")]
+    [SerializeField] private float speed = 300f;
+    [SerializeField] private float fadeDuration = 0.5f;
 
     private bool isMoving = false;
     private float fadeTimer = 0f;

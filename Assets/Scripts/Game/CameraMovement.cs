@@ -3,17 +3,17 @@ using UnityEngine;
 public class CameraMovement : MonoBehaviour
 {
     [Header("References")]
-    public Transform target;
-    public Vector3 offset = new Vector3(0f, 0f, -4f);
-    public float rotationSpeed = 5f;
-    public float minYAngle = -30f;
-    public float maxYAngle = 60f;
+    [SerializeField] private Transform target;
+    [SerializeField] private LayerMask collisionMask;
 
-    public LayerMask collisionMask;
+    [Header("Settings")]
+    [SerializeField] private Vector3 offset = new Vector3(0f, 0f, -4f);
+    [SerializeField] private float rotationSpeed = 5f;
+    [SerializeField] private float minYAngle = -30f;
+    [SerializeField] private float maxYAngle = 60f;
 
     private float currentYaw = 0f;
     private float currentPitch = 20f;
-
     private float mouseY;
     private float mouseX;
 
