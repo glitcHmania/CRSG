@@ -3519,6 +3519,7 @@ MonoBehaviour:
   recoilBone: {fileID: 287997504604421362}
   weaponBone: {fileID: 8292016055041033889}
   playerState: {fileID: -8150470886946853929}
+  PlayerUI: {fileID: 0}
 --- !u!114 &-8150470886946853929
 MonoBehaviour:
   m_ObjectHideFlags: 0

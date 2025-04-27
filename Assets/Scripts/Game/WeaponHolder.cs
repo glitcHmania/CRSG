@@ -1,4 +1,6 @@
 using Mirror;
+using Mono.CecilX.Cil;
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -9,18 +11,18 @@ public class WeaponHolder : NetworkBehaviour
     public GameObject weaponBone;
     public PlayerState playerState;
 
-    private Vector3 initialArmRotation;
-    private RagdollController ragdollControl;
     private GameObject currentWeapon;
     private GameObject heldObtainable;
     private Weapon currentWeaponGunScript;
+    private TextMeshProUGUI bulletUI;
 
     [SyncVar(hook = nameof(OnWeaponChanged))]
     private NetworkIdentity currentWeaponNetIdentity;
 
     private void Start()
     {
-        ragdollControl = GetComponent<RagdollController>();
+        bulletUI = GameObject.FindGameObjectWithTag("PlayerUI").transform.Find("BulletCountText").GetComponent<TextMeshProUGUI>();
+        UpdateBulletCountText();
     }
 
     void Update()
@@ -72,13 +74,29 @@ public class WeaponHolder : NetworkBehaviour
     {
         currentWeaponGunScript?.Shoot(connectionToClient);
         UpdateBulletCountText();
+        
+    }
+
+    private void UpdateBulletCountText()
+    {
+        if (!isLocalPlayer) return;
+
+        if (currentWeapon == null || currentWeaponGunScript == null)
+        {
+            bulletUI.text = "";
+        }
+        else
+        {
+            bulletUI.text = $"{currentWeaponGunScript.BulletCount}/∞";
+        }
 
     }
 
     [Command]
     private void CmdReload()
     {
-        currentWeaponGunScript?.Reload();
+        currentWeaponGunScript?.Reload(); // callback lazım
+        UpdateBulletCountText();
     }
 
     public void TryPickupWeapon(ObtainableWeapon pickup)
@@ -137,6 +155,7 @@ public class WeaponHolder : NetworkBehaviour
         weaponObj.transform.localRotation = Quaternion.identity;
 
         playerState.isArmed = true;
+        UpdateBulletCountText();
     }
 
     public override void OnStopClient()
