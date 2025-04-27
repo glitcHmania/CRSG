@@ -4,12 +4,11 @@ using Mirror;
 [RequireComponent(typeof(Rigidbody))]
 public class Rotator : NetworkBehaviour
 {
-    [SerializeField] private float speed = 10f;
-    [SerializeField] private Vector3 rotationAxis = Vector3.up;
+    [Header("Settings")]
+    public float speed = 10f;
+    public Vector3 rotationAxis = Vector3.up;
 
-    [SyncVar]
-    private Quaternion syncedStartRotation;
-
+    [SyncVar] private Quaternion syncedStartRotation;
     private Rigidbody rb;
     private TimeSync timeSync;
 

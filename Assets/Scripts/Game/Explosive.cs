@@ -2,8 +2,10 @@
 
 public class Explosive : MonoBehaviour
 {
+    [Header("References")]
     public GameObject explosionEffect;
 
+    [Header("Settings")]
     public float radius = 5f;
     public float force = 700f;
     public float upwardsModifier = 0f;
@@ -26,15 +28,19 @@ public class Explosive : MonoBehaviour
         {
             if (collider == null || collider.gameObject == null) continue;
 
-            if (collider.gameObject.layer == 6)
+            if (collider.gameObject.layer > 5 && collider.gameObject.layer < 13)
             {
                 var ragdoll = collider.GetComponentInParent<RagdollController>();
                 if (ragdoll != null)
                 {
                     ragdoll.EnableRagdoll();
+                    break;
                 }
             }
+        }
 
+        foreach (var collider in colliders)
+        {
             Rigidbody rb = collider.GetComponent<Rigidbody>();
             if (rb != null)
             {

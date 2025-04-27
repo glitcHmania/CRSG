@@ -58,19 +58,25 @@ public class JointController : MonoBehaviour
             currentSlope = Vector3.Angle(hips.transform.up, hit.transform.up); // calculate slope angle for step height adjustment
         }
 
-        //rotating the head to the direction of camera
-        Quaternion localTargetRotation = Quaternion.Inverse(headJoint.transform.parent.rotation) * Quaternion.LookRotation(cam.transform.forward, Vector3.up);
-        headJoint.targetRotation = Quaternion.Inverse(localTargetRotation) * initialHeadLocalRotation;
+        if (!playerState.isRagdoll && !playerState.isUnbalanced)
+        {
+            //rotating the head to the direction of camera
+            Quaternion localTargetRotation = Quaternion.Inverse(headJoint.transform.parent.rotation) * Quaternion.LookRotation(cam.transform.forward, Vector3.up);
+            headJoint.targetRotation = Quaternion.Inverse(localTargetRotation) * initialHeadLocalRotation;
+
+        }
 
         if (playerState.movementState == PlayerState.Movement.Running)
         {
             currentSpeed = sprintSpeed;
             currentStepHeight = stepHeight + 20f;
+            hipJoint.targetRotation = Quaternion.Euler(-10, 0, 0); // reset hip rotation
         }
         else
         {
             currentSpeed = walkSpeed;
             currentStepHeight = stepHeight;
+            hipJoint.targetRotation = Quaternion.Euler(0, 0, 0); // reset hip rotation
         }
 
         if (playerState.isAiming)
@@ -124,7 +130,8 @@ public class JointController : MonoBehaviour
         }
         else if (playerState.movementState == PlayerState.Movement.Falling)
         {
-            MoveForward();
+            BendLeg(leftUpLegJoint, leftLegJoint);
+            BendLeg(rightUpLegJoint, rightLegJoint);
             RaiseArms(leftArmJoint, rightArmJoint);
         }
         else

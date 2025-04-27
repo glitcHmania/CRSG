@@ -1,5 +1,5 @@
-﻿using Mirror;
-using Mono.CecilX.Cil;
+using Mirror;
+using TMPro;
 using UnityEngine;
 
 public class WeaponHolder : NetworkBehaviour
@@ -71,6 +71,8 @@ public class WeaponHolder : NetworkBehaviour
     private void CmdShoot()
     {
         currentWeaponGunScript?.Shoot(connectionToClient);
+        UpdateBulletCountText();
+
     }
 
     [Command]
@@ -96,14 +98,14 @@ public class WeaponHolder : NetworkBehaviour
         NetworkServer.Spawn(newWeapon, connectionToClient);
 
         currentWeaponNetIdentity = newWeapon.GetComponent<NetworkIdentity>(); // triggers hook
-        
-        pickup.gameObject.SetActive(false);
-        heldObtainable = pickup.gameObject; 
-		//NetworkServer.Destroy(pickup.gameObject);
-		//Destroy(pickup.gameObject); // Destroy the pickup object
-	}
 
-	private void OnWeaponChanged(NetworkIdentity oldWeapon, NetworkIdentity newWeapon)
+        pickup.gameObject.SetActive(false);
+        heldObtainable = pickup.gameObject;
+        //NetworkServer.Destroy(pickup.gameObject);
+        //Destroy(pickup.gameObject); // Destroy the pickup object
+    }
+
+    private void OnWeaponChanged(NetworkIdentity oldWeapon, NetworkIdentity newWeapon)
     {
         if (newWeapon != null)
         {
@@ -113,15 +115,15 @@ public class WeaponHolder : NetworkBehaviour
 
     private void EquipWeapon(GameObject weaponObj)
     {
-		if (currentWeapon != null)
-		{
-			currentWeapon.transform.SetParent(null);
-			Destroy(currentWeapon);
+        if (currentWeapon != null)
+        {
+            currentWeapon.transform.SetParent(null);
+            Destroy(currentWeapon);
             currentWeapon.GetComponent<Weapon>().ClearPool();
             heldObtainable.SetActive(true);
-		}
+        }
 
-		currentWeapon = weaponObj;
+        currentWeapon = weaponObj;
 
         if (weaponObj.TryGetComponent<Weapon>(out var gunScript))
         {
