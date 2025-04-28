@@ -58,6 +58,17 @@ public class RagdollController : MonoBehaviour
             }
         }
 
+        if (playerState.IsAiming && !playerState.IsRagdoll && !playerState.IsUnbalanced)
+        {
+            joints[1].angularXDrive = new JointDrive { positionSpring = 350f, positionDamper = initialDamperValues[1], maximumForce = 3.402823e+38f };
+            joints[1].angularYZDrive = new JointDrive { positionSpring = 350f, positionDamper = initialDamperValues[1], maximumForce = 3.402823e+38f };
+        }
+        else
+        {
+            joints[1].angularXDrive = new JointDrive { positionSpring = initialSpringValues[1], positionDamper = initialDamperValues[1], maximumForce = 3.402823e+38f };
+            joints[1].angularYZDrive = new JointDrive { positionSpring = initialSpringValues[1], positionDamper = initialDamperValues[1], maximumForce = 3.402823e+38f };
+        }
+
         if (playerState.Numbness > 0)
         {
             playerState.Numbness -= Time.deltaTime * 5f;
