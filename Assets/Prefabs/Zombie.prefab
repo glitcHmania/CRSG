@@ -3600,7 +3600,7 @@ MonoBehaviour:
   - {fileID: 5653926879502385173}
   - {fileID: 8699569115064483695}
   ragdollDuration: 2.5
-  ragdollStiffness: 25
+  ragdollStiffness: 18
 --- !u!114 &5882155198792178596
 MonoBehaviour:
   m_ObjectHideFlags: 0

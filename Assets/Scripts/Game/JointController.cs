@@ -63,7 +63,6 @@ public class JointController : MonoBehaviour
             //rotating the head to the direction of camera
             Quaternion localTargetRotation = Quaternion.Inverse(headJoint.transform.parent.rotation) * Quaternion.LookRotation(cam.transform.forward, Vector3.up);
             headJoint.targetRotation = Quaternion.Inverse(localTargetRotation) * initialHeadLocalRotation;
-
         }
 
         if (playerState.MovementState == PlayerState.Movement.Running)

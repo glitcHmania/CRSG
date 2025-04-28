@@ -93,8 +93,8 @@ public class RagdollController : MonoBehaviour
         //hipsRigidbody.mass = 0.3f;
         //spineRigidbody.mass = 0.3f;
 
-        DisableBalance();
         SetRagdollStiffness(ragdollStiffness);
+        DisableBalance();
     }
 
     public void DisableRagdoll()
@@ -105,8 +105,8 @@ public class RagdollController : MonoBehaviour
         //hipsRigidbody.mass = 2f;
         //spineRigidbody.mass = 1f;
 
-        EnableBalance();
         ResetRagdollStifness();
+        EnableBalance();
         ragdollTimer.Reset();
     }
 

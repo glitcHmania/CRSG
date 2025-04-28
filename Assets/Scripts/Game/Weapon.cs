@@ -50,6 +50,11 @@ public class Weapon : NetworkBehaviour
     {
         recoverTimer.Update();
         reloadTimer.Update();
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            laser.SetActive(!laser.activeSelf);
+        }
     }
 
     public void Reload()
@@ -113,10 +118,17 @@ public class Weapon : NetworkBehaviour
             if (rc  != null)
             {
                 rc.EnableRagdoll();
+                rc.SetRagdollStiffness(1000f);
             }
-            if (hit.collider.TryGetComponent(out Rigidbody rb))
+
+            var movementScript = hit.collider.gameObject.GetComponentInParent<Movement>();
+            if(movementScript != null)
             {
-                rb.AddForce(forceDirection * power, ForceMode.Impulse);
+                movementScript.AddForceToPlayer(forceDirection, power);
+            }
+            else
+            {
+                Debug.LogWarning("No Movement script found on the hit object.");
             }
         }
     }

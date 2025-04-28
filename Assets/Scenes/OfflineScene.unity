@@ -1091,7 +1091,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &453651273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1197,6 +1197,67 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 293711148942500218, guid: 011e47083bf0ec64e808882e9b012dd8, type: 3}
   m_PrefabInstance: {fileID: 478328409}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &480615802
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -4699540882630230374, guid: 061144dc8129018468cc06789c262398, type: 3}
+      propertyPath: sceneId
+      value: 3481952521
+      objectReference: {fileID: 0}
+    - target: {fileID: 1696730685791098962, guid: 061144dc8129018468cc06789c262398, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 31.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1696730685791098962, guid: 061144dc8129018468cc06789c262398, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 21.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1696730685791098962, guid: 061144dc8129018468cc06789c262398, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -79.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1696730685791098962, guid: 061144dc8129018468cc06789c262398, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1696730685791098962, guid: 061144dc8129018468cc06789c262398, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1696730685791098962, guid: 061144dc8129018468cc06789c262398, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1696730685791098962, guid: 061144dc8129018468cc06789c262398, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1696730685791098962, guid: 061144dc8129018468cc06789c262398, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1696730685791098962, guid: 061144dc8129018468cc06789c262398, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1696730685791098962, guid: 061144dc8129018468cc06789c262398, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2349670444129837435, guid: 061144dc8129018468cc06789c262398, type: 3}
+      propertyPath: m_Name
+      value: ObtainableSniper (2)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 061144dc8129018468cc06789c262398, type: 3}
 --- !u!1 &508928843
 GameObject:
   m_ObjectHideFlags: 0
@@ -1275,7 +1336,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &646962333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2244,7 +2305,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &849213693
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3169,7 +3230,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1905533647}
   m_HandleRect: {fileID: 1905533646}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3398,7 +3459,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1827431791}
   m_HandleRect: {fileID: 1827431790}
   m_Direction: 2
-  m_Value: -0.0000017996456
+  m_Value: -0.0000017096634
   m_Size: 0.4910478
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -6090,6 +6151,7 @@ SceneRoots:
   - {fileID: 142533537}
   - {fileID: 1593604456}
   - {fileID: 205790709}
+  - {fileID: 480615802}
   - {fileID: 183531963}
   - {fileID: 1377418893}
   - {fileID: 210571816}

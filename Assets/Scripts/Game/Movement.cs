@@ -61,7 +61,6 @@ public class Movement : NetworkBehaviour
     void Update()
     {
         if (!isLocalPlayer) return;
-        if (!Application.isFocused) return;
 
         if (playerState.IsAiming)
         {

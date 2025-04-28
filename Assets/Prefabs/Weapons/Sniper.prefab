@@ -89,11 +89,12 @@ MonoBehaviour:
   laser: {fileID: 7473784515348345783}
   IsAutomatic: 0
   BulletCount: 3
-  power: 200
+  power: 400
   magazineSize: 3
   range: 200
   reloadTime: 3
-  recoilMultiplier: 0.3
+  recoilMultiplier: 0.05
+  numbnessAmount: 0
   recoverTime: 1
   infiniteAmmo: 1
   bulletTrailPrefab: {fileID: 8483647679569776263, guid: 2414faf7e632ab743a3474446c779a74, type: 3}
