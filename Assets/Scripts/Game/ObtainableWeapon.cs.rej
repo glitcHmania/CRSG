@@ -1,0 +1,49 @@
+diff a/Assets/Scripts/Game/ObtainableWeapon.cs b/Assets/Scripts/Game/ObtainableWeapon.cs	(rejected hunks)
+@@ -21,7 +21,7 @@
+             if (model != null)
+             {
+                 modelInstance = Instantiate(model.gameObject, transform);
+-                modelInstance.transform.localPosition = modelOffset;
++                //modelInstance.transform.localPosition = modelOffset;
+                 modelInstance.transform.localRotation = Quaternion.identity;
+                 startY = modelInstance.transform.localPosition.y;
+             }
+@@ -34,12 +34,13 @@
+ 
+     void Update()
+     {
+-        if (modelInstance != null)
++		Debug.Log(gameObject.name);
++		if (modelInstance != null)
+         {
+             float bobOffset = Mathf.Sin(Time.time * bobFrequency) * bobAmplitude;
+             Vector3 pos = modelOffset;
+             pos.y = startY + bobOffset;
+-            modelInstance.transform.localPosition = pos;
++            //modelInstance.transform.localPosition = pos;
+ 
+             modelInstance.transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
+         }
+@@ -49,11 +50,17 @@
+     {
+         if (other.CompareTag("Player"))
+         {
+-            WeaponHolder holder = other.GetComponentInParent<WeaponHolder>();
+-            if (holder != null)
+-            {
+-                holder.TryPickupWeapon(this);
+-            }
++            other.GetComponentInParent<WeaponHolder>()?.TryPickupWeapon(this);
+         }
+     }
++
++    public void Drop() 
++    {
++        modelInstance = gameObject;
++        weaponPrefab = gameObject;
++		modelInstance.transform.rotation = Quaternion.identity;
++        //transform.AddComponent<BoxCollider>().isTrigger = true;
++        //transform.AddComponent<NetworkIdentity>();
++		
++	}
+ }

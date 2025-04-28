@@ -70,11 +70,13 @@ public class JointController : MonoBehaviour
         {
             currentSpeed = sprintSpeed;
             currentStepHeight = stepHeight + 20f;
+            hipJoint.targetRotation = Quaternion.Euler(-15f, 0, 0); // reset hip rotation when running
         }
         else
         {
             currentSpeed = walkSpeed;
             currentStepHeight = stepHeight;
+            hipJoint.targetRotation = Quaternion.Euler(0, 0, 0); // reset hip rotation when running
         }
 
         if (playerState.IsAiming)
@@ -164,24 +166,24 @@ public class JointController : MonoBehaviour
 
     private void MoveBackward()
     {
-        var legSwing = Mathf.Sin(stepChronometer.Elapsed * currentSpeed) * (currentStepHeight * 0.6f + currentSlope * 2f);
+        var legSwing = Mathf.Sin(stepChronometer.Elapsed * currentSpeed) * (currentStepHeight + currentSlope * 2f);
 
-        leftUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-legSwing, 0), 0, 0);
-        rightUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(legSwing, 0), 0, 0);
+        leftUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(-legSwing * 0.4f, 0), 0, 0);
+        rightUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Max(legSwing * 0.4f, 0), 0, 0);
 
         if (legSwing < 0)
         {
-            leftLegJoint.targetRotation = Quaternion.Euler(-legSwing, 0, 0);
+            leftLegJoint.targetRotation = Quaternion.Euler(-legSwing * 1.5f , 0, 0);
         }
         else
         {
-            rightLegJoint.targetRotation = Quaternion.Euler(legSwing, 0, 0);
+            rightLegJoint.targetRotation = Quaternion.Euler(legSwing * 1.5f, 0, 0);
         }
     }
 
     private void MoveLeft()
     {
-        var legSwing = Mathf.Sin(stepChronometer.Elapsed * currentSpeed) * (currentStepHeight + currentSlope * 2f);
+        var legSwing = Mathf.Sin(stepChronometer.Elapsed * currentSpeed) * (currentStepHeight * 0.8f + currentSlope * 2f);
         leftUpLegJoint.targetRotation = Quaternion.Euler(0, 0, Mathf.Max(legSwing, 0));
 
         if (legSwing < 0)
@@ -197,7 +199,7 @@ public class JointController : MonoBehaviour
 
     private void MoveRight()
     {
-        var legSwing = Mathf.Sin(stepChronometer.Elapsed * currentSpeed) * (currentStepHeight + currentSlope * 2f);
+        var legSwing = Mathf.Sin(stepChronometer.Elapsed * currentSpeed) * (currentStepHeight * 0.8f + currentSlope * 2f);
         rightUpLegJoint.targetRotation = Quaternion.Euler(0, 0, Mathf.Min(-legSwing, 0));
 
         if (legSwing < 0)

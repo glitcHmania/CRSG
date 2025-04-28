@@ -10,7 +10,6 @@ public class WeaponHolder : NetworkBehaviour
     [SerializeField] private PlayerState playerState;
 
     private GameObject currentWeapon;
-    private GameObject heldObtainable;
     private Weapon currentWeaponGunScript;
     private TextMeshProUGUI bulletUI;
 
@@ -115,10 +114,8 @@ public class WeaponHolder : NetworkBehaviour
 
         currentWeaponNetIdentity = newWeapon.GetComponent<NetworkIdentity>(); // triggers hook
 
-        pickup.gameObject.SetActive(false);
-        heldObtainable = pickup.gameObject;
-        //NetworkServer.Destroy(pickup.gameObject);
-        //Destroy(pickup.gameObject); // Destroy the pickup object
+        NetworkServer.Destroy(pickup.gameObject);
+        Destroy(pickup.gameObject);
     }
 
     private void OnWeaponChanged(NetworkIdentity oldWeapon, NetworkIdentity newWeapon)
@@ -131,14 +128,6 @@ public class WeaponHolder : NetworkBehaviour
 
     private void EquipWeapon(GameObject weaponObj)
     {
-        if (currentWeapon != null)
-        {
-            currentWeapon.transform.SetParent(null);
-            Destroy(currentWeapon);
-            currentWeapon.GetComponent<Weapon>().ClearPool();
-            heldObtainable.SetActive(true);
-        }
-
         currentWeapon = weaponObj;
 
         if (weaponObj.TryGetComponent<Weapon>(out var gunScript))

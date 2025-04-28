@@ -41,7 +41,7 @@ public class ObtainableWeapon : NetworkBehaviour
             float bobOffset = Mathf.Sin(Time.time * bobFrequency) * bobAmplitude;
             Vector3 pos = modelOffset;
             pos.y = startY + bobOffset;
-            //modelInstance.transform.localPosition = pos;
+            modelInstance.transform.localPosition = pos;
 
             modelInstance.transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
         }
@@ -53,15 +53,5 @@ public class ObtainableWeapon : NetworkBehaviour
         {
             other.GetComponentInParent<WeaponHolder>()?.TryPickupWeapon(this);
         }
-    }
-
-    public void Drop()
-    {
-        modelInstance = gameObject;
-        WeaponPrefab = gameObject;
-        modelInstance.transform.rotation = Quaternion.identity;
-        //transform.AddComponent<BoxCollider>().isTrigger = true;
-        //transform.AddComponent<NetworkIdentity>();
-
     }
 }
