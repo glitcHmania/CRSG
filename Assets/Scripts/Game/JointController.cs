@@ -127,7 +127,7 @@ public class JointController : MonoBehaviour
             BendLeg(leftUpLegJoint, leftLegJoint);
             BendLeg(rightUpLegJoint, rightLegJoint);
         }
-        else if (playerState.MovementState == PlayerState.Movement.Falling)
+        else if (playerState.MovementState == PlayerState.Movement.Falling || playerState.IsRagdoll)
         {
             BendLeg(leftUpLegJoint, leftLegJoint);
             BendLeg(rightUpLegJoint, rightLegJoint);
@@ -172,7 +172,7 @@ public class JointController : MonoBehaviour
 
         if (legSwing < 0)
         {
-            leftLegJoint.targetRotation = Quaternion.Euler(-legSwing * 1.5f , 0, 0);
+            leftLegJoint.targetRotation = Quaternion.Euler(-legSwing * 1.5f, 0, 0);
         }
         else
         {

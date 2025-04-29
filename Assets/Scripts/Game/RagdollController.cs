@@ -93,7 +93,7 @@ public class RagdollController : MonoBehaviour
         //hipsRigidbody.mass = 0.3f;
         //spineRigidbody.mass = 0.3f;
 
-        SetRagdollStiffness(ragdollStiffness);
+        SetRagdollStiffnessWithoutBalance(ragdollStiffness);
         DisableBalance();
     }
 
@@ -110,12 +110,21 @@ public class RagdollController : MonoBehaviour
         ragdollTimer.Reset();
     }
 
-    public void SetRagdollStiffness(float stiffness)
+    public void SetRagdollStiffnessWithBalance(float stiffness)
     {
         foreach (var joint in joints)
         {
             joint.angularXDrive = new JointDrive { positionSpring = stiffness, maximumForce = 3.402823e+38f };
             joint.angularYZDrive = new JointDrive { positionSpring = stiffness, maximumForce = 3.402823e+38f };
+        }
+    }
+
+    public void SetRagdollStiffnessWithoutBalance(float stiffness)
+    {
+        for (int i = 1; i < joints.Length; i++)
+        {
+            joints[i].angularXDrive = new JointDrive { positionSpring = stiffness, positionDamper = initialDamperValues[i], maximumForce = 3.402823e+38f };
+            joints[i].angularYZDrive = new JointDrive { positionSpring = stiffness, positionDamper = initialDamperValues[i], maximumForce = 3.402823e+38f };
         }
     }
 

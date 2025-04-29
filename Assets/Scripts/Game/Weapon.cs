@@ -118,7 +118,7 @@ public class Weapon : NetworkBehaviour
             if (rc  != null)
             {
                 rc.EnableRagdoll();
-                rc.SetRagdollStiffness(1000f);
+                rc.SetRagdollStiffnessWithoutBalance(1000f);
             }
 
             var movementScript = hit.collider.gameObject.GetComponentInParent<Movement>();
