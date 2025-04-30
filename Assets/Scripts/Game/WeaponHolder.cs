@@ -14,6 +14,7 @@ public class WeaponHolder : NetworkBehaviour
     private GameObject currentWeaponPrefab;
     private GameObject currentObtainableWeaponPrefab;
     private TextMeshProUGUI bulletUI;
+    private TextMeshProUGUI reloadText;
     private Timer pickUpTimer;
 
     [SyncVar(hook = nameof(OnWeaponChanged))]
@@ -21,7 +22,11 @@ public class WeaponHolder : NetworkBehaviour
 
     private void Start()
     {
-        bulletUI = GameObject.FindGameObjectWithTag("PlayerUI").transform.Find("BulletCountText").GetComponent<TextMeshProUGUI>();
+        var pui = GameObject.FindGameObjectWithTag("PlayerUI");
+        bulletUI = pui.transform.Find("BulletCountText").GetComponent<TextMeshProUGUI>();
+        bulletUI.enabled = false;
+        reloadText = pui.transform.Find("ReloadText").GetComponent<TextMeshProUGUI>();
+        reloadText.enabled = false;
         pickUpTimer = new Timer(2f);
         UpdateBulletCountText();
     }
@@ -34,6 +39,12 @@ public class WeaponHolder : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.H))
         {
             CmdDropWeapon();
+        }
+
+        if (currentWeaponGunScript != null && reloadText.enabled && currentWeaponGunScript.reloadTimer.IsFinished)
+        {
+            reloadText.enabled = false;
+            UpdateBulletCountText();
         }
 
         HandleInput();
@@ -82,29 +93,23 @@ public class WeaponHolder : NetworkBehaviour
     {
         currentWeaponGunScript?.Shoot(connectionToClient);
         UpdateBulletCountText();
-
     }
 
-    private void UpdateBulletCountText()
+    public void UpdateBulletCountText()
     {
         if (!isLocalPlayer) return;
 
-        if (currentWeapon == null || currentWeaponGunScript == null)
-        {
-            bulletUI.text = "";
-        }
-        else
+        if (currentWeapon != null && currentWeaponGunScript != null)
         {
             bulletUI.text = $"{currentWeaponGunScript.BulletCount}/∞";
         }
-
     }
 
     [Command]
     private void CmdReload()
     {
         currentWeaponGunScript?.Reload(); // callback lazım
-        UpdateBulletCountText();
+        reloadText.enabled = true;
     }
 
     public void TryPickupWeapon(ObtainableWeapon pickup)
@@ -129,6 +134,8 @@ public class WeaponHolder : NetworkBehaviour
     {
         if (pickupNetIdentity == null) return;
 
+        bulletUI.enabled = true;
+
         pickUpTimer.Reset();
 
         var pickup = pickupNetIdentity.GetComponent<ObtainableWeapon>();
@@ -152,6 +159,8 @@ public class WeaponHolder : NetworkBehaviour
     private void CmdDropWeapon()
     {
         if (currentWeapon == null || currentWeaponPrefab == null || currentObtainableWeaponPrefab == null) return;
+
+        bulletUI.enabled = false;
 
         GameObject drop = Instantiate(currentObtainableWeaponPrefab, transform.position  + transform.up + transform.forward * 4f, Quaternion.identity);
 

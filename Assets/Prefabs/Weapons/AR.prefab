@@ -248,9 +248,9 @@ MonoBehaviour:
   range: 100
   reloadTime: 2
   recoilMultiplier: 0.05
-  numbnessAmount: 2
-  recoverTime: 0.2
-  infiniteAmmo: 1
+  numbnessAmount: 1
+  recoverTime: 0.1
+  infiniteAmmo: 0
   bulletTrailPrefab: {fileID: 8483647679569776263, guid: 2414faf7e632ab743a3474446c779a74, type: 3}
   trailPoolSize: 10
   muzzleFlash: {fileID: 7534688564351721480}

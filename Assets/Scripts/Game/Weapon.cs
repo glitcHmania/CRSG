@@ -10,6 +10,7 @@ public class Weapon : NetworkBehaviour
     [HideInInspector]
     public PlayerState PlayerState;
     public Rigidbody HandRigidbody;
+    public Timer reloadTimer;
 
     [Header("Weapon Settings")]
     public bool IsAutomatic;
@@ -33,7 +34,6 @@ public class Weapon : NetworkBehaviour
 
     private bool isAvailable = true;
     private Timer recoverTimer;
-    private Timer reloadTimer;
     private ObjectPool<BulletTrail> trailPool;
 
     void Awake()
