@@ -62,6 +62,14 @@ public class Movement : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
 
+        if (Input.GetKey(KeyCode.M))
+        {
+            //reset main rigidbody velocity
+            mainRigidBody.velocity = Vector3.zero;
+
+            gameObject.transform.position = new Vector3(-1, 1.5f, -8);
+        }
+
         if (playerState.IsAiming)
         {
             mainRigidBody.MoveRotation(Quaternion.Slerp(mainRigidBody.rotation, Quaternion.Euler(0, cam.transform.eulerAngles.y, 0), 5f * Time.deltaTime));
@@ -145,7 +153,7 @@ public class Movement : NetworkBehaviour
         }
     }
 
-    public void AddForceToPlayer( Vector3 direction, float force, ForceMode forceMode = ForceMode.Impulse)
+    public void AddForceToPlayer(Vector3 direction, float force, ForceMode forceMode = ForceMode.Impulse)
     {
         if (!isLocalPlayer) return;
         mainRigidBody.AddForce(direction * force, forceMode);

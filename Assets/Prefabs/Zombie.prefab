@@ -1144,6 +1144,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3135921509060577837, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6539532043948642791}
+    - targetCorrespondingSourceObject: {fileID: 3135921509060577837, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 994573195781943581}
     - targetCorrespondingSourceObject: {fileID: -6170625038081293824, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3413155456252019654}
@@ -3256,6 +3259,24 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &994573195781943581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020512023720708384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fa4b67e668ced24d8abfcc30f5532f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  ThisCollider: {fileID: 5676740558075174054}
+  ColliderToIgnore:
+  - {fileID: 735306419801939327}
 --- !u!4 &6596727678643174670 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2559285840627121667, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
@@ -3563,7 +3584,7 @@ MonoBehaviour:
   runMultiplier: 1.4
   rotationSpeed: 6
   longJumpTime: 1
-  jumpForce: 100
+  jumpForce: 150
   groundCheckDistance: 1.5
   ungroundedTime: 1.5
   maxGroundAngle: 30

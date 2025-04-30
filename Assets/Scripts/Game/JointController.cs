@@ -131,7 +131,10 @@ public class JointController : MonoBehaviour
         {
             BendLeg(leftUpLegJoint, leftLegJoint);
             BendLeg(rightUpLegJoint, rightLegJoint);
-            RaiseArms(leftArmJoint, rightArmJoint);
+            if (!playerState.IsAiming)
+            {
+                RaiseArms(leftArmJoint, rightArmJoint);
+            }
         }
         else
         {

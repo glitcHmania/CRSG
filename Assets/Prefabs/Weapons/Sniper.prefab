@@ -93,7 +93,7 @@ MonoBehaviour:
   magazineSize: 3
   range: 200
   reloadTime: 3
-  recoilMultiplier: 0.2
+  recoilMultiplier: 0.5
   numbnessAmount: 0
   recoverTime: 1
   infiniteAmmo: 0
@@ -267,11 +267,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8f877cf330b96449a48498922c25a6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDistance: 100
-  alpha: 0.5
+  maxDistance: 500
+  alpha: 1
   laserColor: {r: 1, g: 0, b: 0, a: 0.5176471}
   laserWidth: 0.005
   laserEnabled: 1
+  laserShader: {fileID: 202, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!1001 &3566661192098838077
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -55,7 +55,7 @@ public class WeaponHolder : NetworkBehaviour
 
     private void HandleInput()
     {
-        if (playerState.IsArmed && currentWeaponGunScript?.IsAutomatic == true)
+        if (playerState.IsArmed && playerState.IsAiming && currentWeaponGunScript?.IsAutomatic == true)
         {
             if (Input.GetMouseButton(0))
             {

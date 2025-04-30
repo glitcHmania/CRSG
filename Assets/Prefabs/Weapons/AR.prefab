@@ -123,7 +123,7 @@ LineRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: -1
+      m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
@@ -149,11 +149,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8f877cf330b96449a48498922c25a6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDistance: 100
-  alpha: 0.5
+  maxDistance: 500
+  alpha: 0.577
   laserColor: {r: 1, g: 0, b: 0, a: 0.5176471}
   laserWidth: 0.005
   laserEnabled: 1
+  laserShader: {fileID: 202, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!1 &5629045766404183405
 GameObject:
   m_ObjectHideFlags: 0
