@@ -82,7 +82,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  WeaponPrefab: {fileID: 6219196561423381161, guid: 51dda304934507b48943f8a0a7e19f80, type: 3}
+  prefabReference: {fileID: 11400000, guid: 4ef7844f674f4364f89589a4149c5cc8, type: 2}
   modelOffset: {x: 0, y: 0, z: 0}
   bobAmplitude: 0.12
   bobFrequency: 2
@@ -106,7 +106,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.5, y: 1.5, z: 1.5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &-4699540882630230374
 MonoBehaviour:

@@ -82,7 +82,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  WeaponPrefab: {fileID: 6219196561423381161, guid: baf36d00e7b25ea47873e02337cdd91f, type: 3}
+  prefabReference: {fileID: 11400000, guid: 121c2ea642bb2de43b6480937ca96fd9, type: 2}
   modelOffset: {x: 0, y: 0, z: 0}
   bobAmplitude: 0.12
   bobFrequency: 2

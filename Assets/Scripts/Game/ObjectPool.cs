@@ -44,7 +44,8 @@ public class ObjectPool<T> where T : MonoBehaviour
         while (pool.Count > 0)
         {
             var obj = pool.Dequeue();
-            GameObject.Destroy(obj.gameObject);
+            if(obj != null)
+                GameObject.Destroy(obj.gameObject);
         }
     }
 }

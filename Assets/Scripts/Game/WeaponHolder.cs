@@ -11,7 +11,10 @@ public class WeaponHolder : NetworkBehaviour
 
     private GameObject currentWeapon;
     private Weapon currentWeaponGunScript;
+    private GameObject currentWeaponPrefab;
+    private GameObject currentObtainableWeaponPrefab;
     private TextMeshProUGUI bulletUI;
+    private Timer pickUpTimer;
 
     [SyncVar(hook = nameof(OnWeaponChanged))]
     private NetworkIdentity currentWeaponNetIdentity;
@@ -19,6 +22,7 @@ public class WeaponHolder : NetworkBehaviour
     private void Start()
     {
         bulletUI = GameObject.FindGameObjectWithTag("PlayerUI").transform.Find("BulletCountText").GetComponent<TextMeshProUGUI>();
+        pickUpTimer = new Timer(2f);
         UpdateBulletCountText();
     }
 
@@ -27,8 +31,15 @@ public class WeaponHolder : NetworkBehaviour
         if (!isLocalPlayer) return;
         if (ChatBehaviour.Instance.IsInputActive) return;
 
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            CmdDropWeapon();
+        }
+
         HandleInput();
         HandleAiming();
+
+        pickUpTimer.Update();
     }
 
     private void HandleInput()
@@ -98,6 +109,18 @@ public class WeaponHolder : NetworkBehaviour
 
     public void TryPickupWeapon(ObtainableWeapon pickup)
     {
+        if(!isOwned) return;
+
+        if(!pickUpTimer.IsFinished)
+        {
+            return;
+        }
+
+        if (playerState.IsArmed)
+        {
+            CmdDropWeapon();
+        }
+
         CmdTryPickupWeapon(pickup.netIdentity);
     }
 
@@ -106,16 +129,53 @@ public class WeaponHolder : NetworkBehaviour
     {
         if (pickupNetIdentity == null) return;
 
-        var pickup = pickupNetIdentity.GetComponent<ObtainableWeapon>();
-        if (pickup == null || pickup.WeaponPrefab == null) return;
+        pickUpTimer.Reset();
 
-        GameObject newWeapon = Instantiate(pickup.WeaponPrefab);
+        var pickup = pickupNetIdentity.GetComponent<ObtainableWeapon>();
+        if (pickup == null || pickup.prefabReference == null) return;
+
+        // Store prefab references
+        currentWeaponPrefab = pickup.prefabReference.weaponPrefab;
+        currentObtainableWeaponPrefab = pickup.prefabReference.obtainableWeaponPrefab;
+
+        GameObject newWeapon = Instantiate(currentWeaponPrefab);
         NetworkServer.Spawn(newWeapon, connectionToClient);
 
-        currentWeaponNetIdentity = newWeapon.GetComponent<NetworkIdentity>(); // triggers hook
+        currentWeaponNetIdentity = newWeapon.GetComponent<NetworkIdentity>();
 
+        // Now safe to destroy
         NetworkServer.Destroy(pickup.gameObject);
         Destroy(pickup.gameObject);
+    }
+
+    [Command]
+    private void CmdDropWeapon()
+    {
+        if (currentWeapon == null || currentWeaponPrefab == null || currentObtainableWeaponPrefab == null) return;
+
+        GameObject drop = Instantiate(currentObtainableWeaponPrefab, transform.position  + transform.up + transform.forward * 4f, Quaternion.identity);
+
+        var obtainable = drop.GetComponent<ObtainableWeapon>();
+        if (obtainable != null && obtainable.prefabReference != null)
+        {
+            // Re-assign the weapon prefab into the pickup
+            obtainable.prefabReference.weaponPrefab = currentWeaponPrefab;
+            obtainable.prefabReference.obtainableWeaponPrefab = currentObtainableWeaponPrefab;
+        }
+
+        NetworkServer.Spawn(drop);
+
+        NetworkServer.Destroy(currentWeapon);
+        Destroy(currentWeapon);
+
+        currentWeapon = null;
+        currentWeaponGunScript = null;
+        currentWeaponNetIdentity = null;
+        currentWeaponPrefab = null;
+        currentObtainableWeaponPrefab = null;
+
+        playerState.IsArmed = false;
+        UpdateBulletCountText();
     }
 
     private void OnWeaponChanged(NetworkIdentity oldWeapon, NetworkIdentity newWeapon)
@@ -140,6 +200,8 @@ public class WeaponHolder : NetworkBehaviour
         weaponObj.transform.SetParent(weaponBone.transform);
         weaponObj.transform.localPosition = Vector3.zero;
         weaponObj.transform.localRotation = Quaternion.identity;
+
+        weaponObj.GetComponentInChildren<Collider>().enabled = true;
 
         foreach (Collider collider in GetComponentsInChildren<Collider>())
         {

@@ -40,7 +40,7 @@ public class Mover : NetworkBehaviour
         Vector3 velocity = (currentPos - lastPos) / Time.fixedDeltaTime;
 
         rb.MovePosition(currentPos);
-        rb.velocity = velocity;
+        //rb.velocity = velocity;
     }
 
 }

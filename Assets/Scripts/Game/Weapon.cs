@@ -4,10 +4,12 @@ using UnityEngine;
 public class Weapon : NetworkBehaviour
 {
     [Header("References")]
-    public PlayerState PlayerState;
-    public Rigidbody HandRigidbody;
     [SerializeField] private Transform muzzleTransform;
     [SerializeField] private GameObject laser;
+
+    [HideInInspector]
+    public PlayerState PlayerState;
+    public Rigidbody HandRigidbody;
 
     [Header("Weapon Settings")]
     public bool IsAutomatic;
@@ -44,6 +46,11 @@ public class Weapon : NetworkBehaviour
         });
 
         trailPool = new ObjectPool<BulletTrail>(bulletTrailPrefab, trailPoolSize);
+    }
+
+    private void OnDestroy()
+    {
+        ClearPool();
     }
 
     void Update()

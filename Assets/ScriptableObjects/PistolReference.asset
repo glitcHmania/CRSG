@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7caf155207fa06c459c22cdb519ecd5c, type: 3}
+  m_Name: PistolReference
+  m_EditorClassIdentifier: 
+  weaponPrefab: {fileID: 6219196561423381161, guid: 21e3b97009c20894bbf354a7e6eadcfe, type: 3}
+  obtainableWeaponPrefab: {fileID: 2349670444129837435, guid: bd634cc413ba82546983f2498a795a8a, type: 3}

@@ -237,10 +237,10 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  PlayerState: {fileID: 0}
-  HandRigidbody: {fileID: 0}
   muzzleTransform: {fileID: 9077244307745308885}
   laser: {fileID: 1498856379543725439}
+  PlayerState: {fileID: 0}
+  HandRigidbody: {fileID: 0}
   IsAutomatic: 0
   BulletCount: 10
   power: 200
@@ -354,14 +354,14 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7173815278906741782, guid: e7461e3cb4dfd384ea54841be167ca84, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2254842186161011447}
+      addedObject: {fileID: 1151291163578456685}
   m_SourcePrefab: {fileID: 100100000, guid: e7461e3cb4dfd384ea54841be167ca84, type: 3}
 --- !u!1 &5976788570507665963 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7173815278906741782, guid: e7461e3cb4dfd384ea54841be167ca84, type: 3}
   m_PrefabInstance: {fileID: 3566661192098838077}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &2254842186161011447
+--- !u!65 &1151291163578456685
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

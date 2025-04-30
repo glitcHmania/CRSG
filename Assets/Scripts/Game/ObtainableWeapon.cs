@@ -3,8 +3,10 @@ using UnityEngine;
 
 public class ObtainableWeapon : NetworkBehaviour
 {
-    [Header("References")]
-    public GameObject WeaponPrefab;
+    [Header("Prefab Mapping")]
+    public WeaponPrefabReference prefabReference;
+    public GameObject WeaponPrefab => prefabReference?.weaponPrefab;
+    public GameObject SelfPrefab => prefabReference?.obtainableWeaponPrefab;
 
     [Header("Settings")]
     [SerializeField] private Vector3 modelOffset = Vector3.zero;
@@ -17,12 +19,17 @@ public class ObtainableWeapon : NetworkBehaviour
 
     void Start()
     {
+        // Only instantiate model if it's NOT already there
+        if (modelInstance != null || transform.childCount > 1)
+            return;
+
         if (WeaponPrefab != null)
         {
             Transform model = WeaponPrefab.transform.Find("Model");
             if (model != null)
             {
                 modelInstance = Instantiate(model.gameObject, transform);
+                modelInstance.GetComponent<Collider>().enabled = false; // Disable collider on the model instance
                 modelInstance.transform.localPosition = modelOffset;
                 modelInstance.transform.localRotation = Quaternion.identity;
                 startY = modelInstance.transform.localPosition.y;
