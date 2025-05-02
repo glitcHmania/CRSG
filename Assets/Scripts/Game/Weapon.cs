@@ -9,20 +9,22 @@ public class Weapon : NetworkBehaviour
 
     [HideInInspector]
     public PlayerState PlayerState;
+    public Movement Movement;
     public Rigidbody HandRigidbody;
     public Timer reloadTimer;
 
     [Header("Weapon Settings")]
     public bool IsAutomatic;
     public int BulletCount;
+    public int MagazineSize;
     [SerializeField] private int power;
-    [SerializeField] private int magazineSize;
     [SerializeField] private float range;
     [SerializeField] private float reloadTime;
     [SerializeField] private float recoilMultiplier;
     [SerializeField] private float numbnessAmount;
     [SerializeField] private float recoverTime;
     [SerializeField] private bool infiniteAmmo = false;
+    [SerializeField] private bool movementWeapon = false;
 
     [Header("Bullet Trail Settings")]
     [SerializeField] private BulletTrail bulletTrailPrefab;
@@ -41,7 +43,7 @@ public class Weapon : NetworkBehaviour
         recoverTimer = new Timer(recoverTime, () => isAvailable = true);
         reloadTimer = new Timer(reloadTime, () =>
         {
-            BulletCount = magazineSize;
+            BulletCount = MagazineSize;
             isAvailable = true;
         });
 
@@ -58,19 +60,26 @@ public class Weapon : NetworkBehaviour
         recoverTimer.Update();
         reloadTimer.Update();
 
-        if (Input.GetKeyDown(KeyCode.L))
+        #region Input
+        if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
         {
-            laser.SetActive(!laser.activeSelf);
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                laser.SetActive(!laser.activeSelf);
+            }
         }
+        #endregion
     }
 
     public void Reload()
     {
         if (!isServer) return;
-        if (!isAvailable) return;
 
-        isAvailable = false;
-        reloadTimer.Reset();
+        if(isAvailable)
+        {
+            isAvailable = false;
+            reloadTimer.Reset();
+        }
     }
 
     public void Shoot(NetworkConnectionToClient ownerConn)
@@ -122,14 +131,14 @@ public class Weapon : NetworkBehaviour
         if (Physics.Raycast(muzzleTransform.position, muzzleTransform.forward, out RaycastHit hit, range))
         {
             var rc = hit.collider.gameObject.GetComponentInParent<RagdollController>();
-            if (rc  != null)
+            if (rc != null)
             {
                 rc.EnableRagdoll();
                 rc.SetRagdollStiffnessWithoutBalance(1000f);
             }
 
             var movementScript = hit.collider.gameObject.GetComponentInParent<Movement>();
-            if(movementScript != null)
+            if (movementScript != null)
             {
                 movementScript.AddForceToPlayer(forceDirection, power);
             }
@@ -143,9 +152,16 @@ public class Weapon : NetworkBehaviour
     [TargetRpc]
     private void TargetApplyRecoil(NetworkConnection target)
     {
-        if (HandRigidbody != null)
+        if(movementWeapon)
         {
-            HandRigidbody.AddForce(-transform.forward * power * recoilMultiplier, ForceMode.Impulse);
+            Movement.AddForceToPlayer(-transform.forward, power * recoilMultiplier, ForceMode.Impulse);
+        }
+        else
+        {
+            if (HandRigidbody != null)
+            {
+                HandRigidbody.AddForce(-transform.forward * power * recoilMultiplier, ForceMode.Impulse);
+            }
         }
 
         PlayerState.Numbness += numbnessAmount;

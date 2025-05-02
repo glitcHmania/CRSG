@@ -18,6 +18,7 @@ public class PlayerState : NetworkBehaviour
     [SyncVar] public bool IsRagdoll;
     [SyncVar] public bool IsUnbalanced;
     [SyncVar] public bool IsArmed;
+    [SyncVar] public bool IsBouncing;
     [SyncVar] public float Numbness;
 
     public bool IsMoving => (MovementState == Movement.Walking || MovementState == Movement.Running) && MovementState != Movement.Jumping;
@@ -25,19 +26,20 @@ public class PlayerState : NetworkBehaviour
     private void Update()
     {
         if (!isLocalPlayer) return;
+
         HandleMovementInput();
     }
 
     private void HandleMovementInput()
     {
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space) && Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
         {
             MovementState = Movement.Jumping;
             return;
         }
 
-        bool hasInput = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||
-                        Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D);
+        bool hasInput = (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||
+                        Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) && Application.isFocused && !ChatBehaviour.Instance.IsInputActive;
 
         if (hasInput)
         {

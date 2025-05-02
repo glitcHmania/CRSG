@@ -34,12 +34,19 @@ public class WeaponHolder : NetworkBehaviour
     void Update()
     {
         if (!isLocalPlayer) return;
-        if (ChatBehaviour.Instance.IsInputActive) return;
 
-        if (Input.GetKeyDown(KeyCode.H))
+        #region Input
+        if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
         {
-            CmdDropWeapon();
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                CmdDropWeapon();
+            }
+
+            HandleInput();
+            HandleAiming();
         }
+        #endregion
 
         if (currentWeaponGunScript != null && reloadText.enabled && currentWeaponGunScript.reloadTimer.IsFinished)
         {
@@ -47,30 +54,30 @@ public class WeaponHolder : NetworkBehaviour
             UpdateBulletCountText();
         }
 
-        HandleInput();
-        HandleAiming();
-
         pickUpTimer.Update();
     }
 
     private void HandleInput()
     {
-        if (playerState.IsArmed && playerState.IsAiming && currentWeaponGunScript?.IsAutomatic == true)
+        if(playerState.IsArmed && playerState.IsAiming)
         {
-            if (Input.GetMouseButton(0))
+            if(currentWeaponGunScript.IsAutomatic == true)
             {
-                CmdShoot();
+                if (Input.GetMouseButton(0))
+                {
+                    CmdShoot();
+                }
             }
-        }
-        else
-        {
-            if (Input.GetMouseButtonDown(0))
+            else
             {
-                CmdShoot();
+                if (Input.GetMouseButtonDown(0))
+                {
+                    CmdShoot();
+                }
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.R) && currentWeaponGunScript != null)
+        if (Input.GetKeyDown(KeyCode.R) && currentWeaponGunScript != null && currentWeaponGunScript.BulletCount != currentWeaponGunScript.MagazineSize)
         {
             CmdReload();
         }
@@ -114,9 +121,9 @@ public class WeaponHolder : NetworkBehaviour
 
     public void TryPickupWeapon(ObtainableWeapon pickup)
     {
-        if(!isOwned) return;
+        if (!isOwned) return;
 
-        if(!pickUpTimer.IsFinished)
+        if (!pickUpTimer.IsFinished)
         {
             return;
         }
@@ -162,7 +169,7 @@ public class WeaponHolder : NetworkBehaviour
 
         bulletUI.enabled = false;
 
-        GameObject drop = Instantiate(currentObtainableWeaponPrefab, transform.position  + transform.up + transform.forward * 4f, Quaternion.identity);
+        GameObject drop = Instantiate(currentObtainableWeaponPrefab, transform.position + transform.up + transform.forward * 4f, Quaternion.identity);
 
         var obtainable = drop.GetComponent<ObtainableWeapon>();
         if (obtainable != null && obtainable.prefabReference != null)
@@ -203,6 +210,7 @@ public class WeaponHolder : NetworkBehaviour
         {
             currentWeaponGunScript = gunScript;
             currentWeaponGunScript.HandRigidbody = recoilBone.GetComponent<Rigidbody>();
+            currentWeaponGunScript.Movement = GetComponent<Movement>();
             currentWeaponGunScript.PlayerState = playerState;
         }
 

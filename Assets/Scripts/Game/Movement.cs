@@ -31,13 +31,6 @@ public class Movement : NetworkBehaviour
     private Timer jumpTimer;
     private Timer jumpHoldTimer;
 
-    //public override void OnStartLocalPlayer()
-    //{
-    //    base.OnStartLocalPlayer();
-
-    //    CmdRequestAuthority(GetComponent<NetworkIdentity>());
-    //}
-
     void Start()
     {
         if (!isLocalPlayer)
@@ -52,7 +45,15 @@ public class Movement : NetworkBehaviour
         mainRigidBody = GetComponent<Rigidbody>();
         hipRigidBody = hip.GetComponent<Rigidbody>();
         ragdollController = GetComponent<RagdollController>();
-        ungroundedTimer = new Timer(ungroundedTime, () => ragdollController.DisableBalance());
+
+        ungroundedTimer = new Timer(ungroundedTime, () =>
+        {
+            if (!playerState.IsBouncing)
+            {
+                ragdollController.DisableBalance();
+            }
+        });
+
         jumpTimer = new Timer(1f);
         jumpHoldTimer = new Timer(longJumpTime);
 
@@ -61,14 +62,22 @@ public class Movement : NetworkBehaviour
     void Update()
     {
         if (!isLocalPlayer) return;
-
-        if (Input.GetKey(KeyCode.M))
+        Debug.Log(ChatBehaviour.Instance.IsInputActive);
+        #region Input
+        if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
         {
-            //reset main rigidbody velocity
-            mainRigidBody.velocity = Vector3.zero;
-
-            gameObject.transform.position = new Vector3(-1, 1.5f, -8);
+            if (Input.GetKey(KeyCode.M))
+            {
+                //reset all child rigidbodies velocity
+                foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
+                {
+                    rb.velocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                }
+                gameObject.transform.position = new Vector3(-1, 1.5f, -8);
+            }
         }
+        #endregion
 
         if (playerState.IsAiming)
         {
@@ -76,7 +85,7 @@ public class Movement : NetworkBehaviour
 
             moveDir = Vector3.zero;
         }
-        else if (playerState.MovementState != PlayerState.Movement.Jumping)
+        else
         {
             float h = Input.GetAxisRaw("Horizontal");
             float v = Input.GetAxisRaw("Vertical");
@@ -90,10 +99,6 @@ public class Movement : NetworkBehaviour
             camRight.Normalize();
 
             moveDir = (camForward * v + camRight * h).normalized;
-        }
-        else
-        {
-            moveDir = Vector3.zero;
         }
 
 
@@ -110,9 +115,13 @@ public class Movement : NetworkBehaviour
                 ragdollController.DisableBalance();
                 mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * jumpForce * 1.5f, ForceMode.Impulse);
             }
-            else
+            else if (playerState.MovementState == PlayerState.Movement.Running)
             {
                 mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * jumpForce, ForceMode.Impulse);
+            }
+            else
+            {
+                mainRigidBody.AddForce((Vector3.up).normalized * jumpForce, ForceMode.Impulse);
             }
 
             jumpTimer.Reset();
@@ -128,11 +137,17 @@ public class Movement : NetworkBehaviour
             if (angle <= maxGroundAngle)
             {
                 playerState.IsGrounded = true;
+
                 if (jumpTimer.IsFinished)
                 {
                     if (!playerState.IsRagdoll)
                     {
                         ragdollController.EnableBalance();
+                    }
+
+                    if (playerState.MovementState != PlayerState.Movement.Falling)
+                    {
+                        playerState.IsBouncing = false;
                     }
                 }
             }
@@ -172,25 +187,69 @@ public class Movement : NetworkBehaviour
 
         float speed = playerState.MovementState == PlayerState.Movement.Running ? moveSpeed * runMultiplier : moveSpeed;
 
-        if (playerState.IsAiming)
+        if (playerState.MovementState == PlayerState.Movement.Jumping)
         {
-            float horizontal = Input.GetAxisRaw("Horizontal");
-            float vertical = Input.GetAxisRaw("Vertical");
-            var movementInput = (hip.transform.forward * vertical + hip.transform.right * horizontal).normalized;
-
-            if (horizontal != 0)
+            hipRigidBody.velocity = new Vector3(0, hipRigidBody.velocity.y, 0);
+        }
+        else if (playerState.MovementState != PlayerState.Movement.Falling)
+        {
+            if (playerState.IsAiming)
             {
-                movementInput *= 0.3f;
-            }
+                float horizontal = Input.GetAxisRaw("Horizontal");
+                float vertical = Input.GetAxisRaw("Vertical");
+                var movementInput = (hip.transform.forward * vertical + hip.transform.right * horizontal).normalized;
 
-            Vector3 move = movementInput * speed;
-            Vector3 velocity = new Vector3(move.x, hipRigidBody.velocity.y, move.z);
-            hipRigidBody.velocity = velocity;
+                Vector3 move = movementInput * speed;
+                Vector3 velocity = new Vector3(move.x, hipRigidBody.velocity.y, move.z);
+                hipRigidBody.velocity = velocity;
+            }
+            else
+            {
+                Vector3 velocity = moveDir * speed;
+                hipRigidBody.velocity = new Vector3(velocity.x, hipRigidBody.velocity.y, velocity.z);
+            }
         }
         else
         {
             Vector3 velocity = moveDir * speed;
-            hipRigidBody.velocity = new Vector3(velocity.x, hipRigidBody.velocity.y, velocity.z);
+
+            // Current horizontal velocity (XZ plane)
+            Vector3 currentHorizontalVelocity = new Vector3(hipRigidBody.velocity.x, 0, hipRigidBody.velocity.z);
+
+            // Calculate intended change
+            Vector3 intendedVelocityChange = new Vector3(
+                velocity.x,
+                0,
+                velocity.z
+            );
+
+            // Only apply input if either:
+            // - Current speed is below the max speed
+            // - OR the input is trying to slow us down
+            bool isUnderSpeedLimit = currentHorizontalVelocity.magnitude < speed;
+            bool isTryingToSlowDown = Vector3.Dot(currentHorizontalVelocity.normalized, intendedVelocityChange.normalized) < 0f;
+
+            if (isUnderSpeedLimit || isTryingToSlowDown)
+            {
+                // Allow adding input
+                Vector3 newVelocity = new Vector3(
+                    hipRigidBody.velocity.x + velocity.x,
+                    hipRigidBody.velocity.y,
+                    hipRigidBody.velocity.z + velocity.z
+                );
+
+                hipRigidBody.velocity = newVelocity;
+            }
+            else
+            {
+                // Over speed and trying to speed up => ignore input
+                hipRigidBody.velocity = new Vector3(
+                    hipRigidBody.velocity.x,
+                    hipRigidBody.velocity.y,
+                    hipRigidBody.velocity.z
+                );
+            }
+
         }
 
         if (moveDir != Vector3.zero)
@@ -198,12 +257,6 @@ public class Movement : NetworkBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(moveDir);
             mainRigidBody.rotation = Quaternion.Slerp(mainRigidBody.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
         }
-    }
-
-    [Command]
-    void CmdRequestAuthority(NetworkIdentity target)
-    {
-        target.AssignClientAuthority(connectionToClient);
     }
 
     void OnDrawGizmosSelected()

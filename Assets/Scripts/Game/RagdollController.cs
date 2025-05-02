@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Mirror;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class RagdollController : MonoBehaviour
+public class RagdollController : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private PlayerState playerState;
@@ -39,23 +40,28 @@ public class RagdollController : MonoBehaviour
 
     private void Update()
     {
-        if (ChatBehaviour.Instance.IsInputActive) return;
+        if (!isLocalPlayer) return;
+
+        #region Input
+        if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
+        {
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                if (playerState.IsRagdoll)
+                {
+                    DisableRagdoll();
+                }
+                else
+                {
+                    EnableRagdoll();
+                }
+            }
+        }
+        #endregion
 
         if (playerState.IsRagdoll && playerState.IsGrounded)
         {
             ragdollTimer.Update();
-        }
-
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            if (playerState.IsRagdoll)
-            {
-                DisableRagdoll();
-            }
-            else
-            {
-                EnableRagdoll();
-            }
         }
 
         if (playerState.IsAiming && !playerState.IsRagdoll && !playerState.IsUnbalanced)

@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Mirror;
+using UnityEngine;
 
-public class JointController : MonoBehaviour
+public class JointController : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private PlayerState playerState;
@@ -52,6 +53,8 @@ public class JointController : MonoBehaviour
 
     void Update()
     {
+        if (!isLocalPlayer) return;
+
         RaycastHit hit;
         if (Physics.Raycast(hips.transform.position, -hips.transform.up, out hit, 10f, LayerMask.GetMask("Ground")))
         {
@@ -91,7 +94,7 @@ public class JointController : MonoBehaviour
             spineJoint.targetRotation = defaultSpineTargetRotation; // reset spine rotation if not aiming
         }
 
-        if (playerState.IsMoving && !ChatBehaviour.Instance.IsInputActive)
+        if (playerState.IsMoving)
         {
             stepChronometer.Update();
 
@@ -101,8 +104,9 @@ public class JointController : MonoBehaviour
                 SwingArms();
                 ResetUpperArms();
             }
-            else
+            else if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
             {
+                #region Input
                 if (Input.GetKey(KeyCode.W))
                 {
                     MoveForward();
@@ -119,6 +123,7 @@ public class JointController : MonoBehaviour
                 {
                     MoveRight();
                 }
+                #endregion
             }
 
         }

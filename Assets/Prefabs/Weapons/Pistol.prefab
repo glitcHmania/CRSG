@@ -241,17 +241,19 @@ MonoBehaviour:
   muzzleTransform: {fileID: 9077244307745308885}
   laser: {fileID: 1498856379543725439}
   PlayerState: {fileID: 0}
+  Movement: {fileID: 0}
   HandRigidbody: {fileID: 0}
   IsAutomatic: 0
   BulletCount: 10
+  MagazineSize: 10
   power: 200
-  magazineSize: 10
   range: 50
   reloadTime: 1
   recoilMultiplier: 0.1
   numbnessAmount: 2
   recoverTime: 0.3
   infiniteAmmo: 0
+  movementWeapon: 0
   bulletTrailPrefab: {fileID: 8483647679569776263, guid: 2414faf7e632ab743a3474446c779a74, type: 3}
   trailPoolSize: 10
   muzzleFlash: {fileID: 7534688564351721480}
