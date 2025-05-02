@@ -9,9 +9,9 @@ public class RagdollController : NetworkBehaviour
     [SerializeField] private Rigidbody hipsRigidbody;
     [SerializeField] private Rigidbody spineRigidbody;
     [SerializeField] private ConfigurableJoint[] joints;
-    [SerializeField] private Collider[] legColliders;
-    [SerializeField] private PhysicMaterial noFrictionMaterial;
-    [SerializeField] private PhysicMaterial defaultMaterial;
+    //[SerializeField] private Collider[] legColliders;
+    //[SerializeField] private PhysicMaterial noFrictionMaterial;
+    //[SerializeField] private PhysicMaterial defaultMaterial;
 
     [Header("Settings")]
     [SerializeField] private float ragdollDuration;
@@ -67,20 +67,20 @@ public class RagdollController : NetworkBehaviour
             ragdollTimer.Update();
         }
 
-        if (playerState.MovementState == PlayerState.Movement.Falling && legColliders[0].material != noFrictionMaterial)
-        {
-            foreach (var collider in legColliders)
-            {
-                collider.material = noFrictionMaterial;
-            }
-        }
-        else if (playerState.MovementState != PlayerState.Movement.Falling && legColliders[0].material != defaultMaterial)
-        {
-            foreach (var collider in legColliders)
-            {
-                collider.material = defaultMaterial;
-            }
-        }
+        //if (playerState.MovementState == PlayerState.Movement.Falling && legColliders[0].material != noFrictionMaterial)
+        //{
+        //    foreach (var collider in legColliders)
+        //    {
+        //        collider.material = noFrictionMaterial;
+        //    }
+        //}
+        //else if (playerState.MovementState != PlayerState.Movement.Falling && legColliders[0].material != defaultMaterial)
+        //{
+        //    foreach (var collider in legColliders)
+        //    {
+        //        collider.material = defaultMaterial;
+        //    }
+        //}
 
         if (playerState.IsAiming && !playerState.IsRagdoll && !playerState.IsUnbalanced)
         {

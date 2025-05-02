@@ -9,7 +9,6 @@ public class Swinger : NetworkBehaviour
     [SerializeField] private float swingAmount = 30f;
     [SerializeField] private Vector3 swingAxis = Vector3.up;
     [SerializeField] private float rotationLerpSpeed = 5f;
-    [SerializeField] private float ragdollThreshold = 5f;
 
     [SyncVar] private Quaternion syncedStartRotation;
     private Rigidbody rb;
@@ -48,9 +47,7 @@ public class Swinger : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        float collisionForce = collision.relativeVelocity.magnitude;
-
-        if (collisionForce > ragdollThreshold && (collision.gameObject.layer == LayerMask.NameToLayer("PlayerSpine") || collision.gameObject.layer == LayerMask.NameToLayer("PlayerHip")))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("PlayerSpine") || collision.gameObject.layer == LayerMask.NameToLayer("PlayerHip"))
         {
             collision.gameObject.GetComponentInParent<RagdollController>().EnableRagdoll();
         }

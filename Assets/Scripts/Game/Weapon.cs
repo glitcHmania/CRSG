@@ -8,9 +8,9 @@ public class Weapon : NetworkBehaviour
     [SerializeField] private GameObject laser;
 
     [HideInInspector] public PlayerState PlayerState;
+    [HideInInspector] public WeaponHolder WeaponHolder;
     [HideInInspector] public Movement Movement;
     [HideInInspector] public Rigidbody HandRigidbody;
-    [HideInInspector] public Timer ReloadTimer;
 
     [SyncVar(hook = nameof(OnBulletCountChanged))]
     public int BulletCount;
@@ -20,15 +20,12 @@ public class Weapon : NetworkBehaviour
     {
         if (isOwned)
         {
-            // Only update UI if this client owns the player
-            var holder = GetComponentInParent<WeaponHolder>();
-            if (holder != null)
+            if (WeaponHolder != null)
             {
-                holder.UpdateBulletCountText();
+                WeaponHolder.UpdateBulletCountText();
             }
         }
     }
-
 
     [Header("Weapon Settings")]
     public bool IsAutomatic;
@@ -52,17 +49,25 @@ public class Weapon : NetworkBehaviour
 
     private Timer recoverTimer;
     private ObjectPool<BulletTrail> trailPool;
+    private Timer reloadTimer;
 
     void Awake()
     {
         recoverTimer = new Timer(recoverTime, () => IsAvailable = true, true);
-        ReloadTimer = new Timer(reloadTime, () =>
+        reloadTimer = new Timer(reloadTime, () =>
         {
             BulletCount = MagazineSize;
             IsAvailable = true;
+            WeaponHolder.UpdateBulletCountText();
+            WeaponHolder.TargetShowReloadText(WeaponHolder.gameObject.GetComponent<NetworkIdentity>().connectionToClient, false);
         }, true);
 
         trailPool = new ObjectPool<BulletTrail>(bulletTrailPrefab, trailPoolSize);
+    }
+
+    private void Start()
+    {
+        WeaponHolder?.UpdateBulletCountText();
     }
 
     private void OnDestroy()
@@ -73,7 +78,7 @@ public class Weapon : NetworkBehaviour
     void Update()
     {
         recoverTimer.Update();
-        ReloadTimer.Update();
+        reloadTimer.Update();
 
         #region Input
         if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
@@ -90,8 +95,9 @@ public class Weapon : NetworkBehaviour
     {
         if (IsAvailable)
         {
+            WeaponHolder.TargetShowReloadText(WeaponHolder.gameObject.GetComponent<NetworkIdentity>().connectionToClient, true);
             IsAvailable = false;
-            ReloadTimer.Reset();
+            reloadTimer.Reset();
         }
     }
 

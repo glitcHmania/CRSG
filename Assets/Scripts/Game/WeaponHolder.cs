@@ -26,7 +26,6 @@ public class WeaponHolder : NetworkBehaviour
         bulletUI.enabled = false;
         reloadText = pui.transform.Find("ReloadText").GetComponent<TextMeshProUGUI>();
         reloadText.enabled = false;
-        UpdateBulletCountText();
     }
 
     void Update()
@@ -45,12 +44,6 @@ public class WeaponHolder : NetworkBehaviour
             HandleAiming();
         }
         #endregion
-
-        if (isLocalPlayer && currentWeaponScript != null && currentWeaponScript.IsAvailable)
-        {
-            reloadText.enabled = false;
-            UpdateBulletCountText();
-        }
     }
 
     private void HandleInput()
@@ -105,28 +98,12 @@ public class WeaponHolder : NetworkBehaviour
             // Server knows BulletCount is 0, so ask client to reload
             TargetStartReload(connectionToClient);
         }
-
-        TargetUpdateBulletCountText(connectionToClient, currentWeaponScript.BulletCount);
     }
 
     [TargetRpc]
     private void TargetStartReload(NetworkConnection target)
     {
-        if (reloadText != null)
-        {
-            reloadText.enabled = true;
-        }
-
         CmdReload();
-    }
-
-    [TargetRpc]
-    private void TargetUpdateBulletCountText(NetworkConnection target, int bulletCount)
-    {
-        if (bulletUI != null)
-        {
-            bulletUI.text = $"{bulletCount}/∞";
-        }
     }
 
     public void UpdateBulletCountText()
@@ -135,20 +112,18 @@ public class WeaponHolder : NetworkBehaviour
         bulletUI.text = $"{currentWeaponScript.BulletCount}/∞";
     }
 
-
     [Command]
     private void CmdReload()
     {
         currentWeaponScript?.Reload();
-        TargetShowReloadText(connectionToClient);
     }
 
     [TargetRpc]
-    private void TargetShowReloadText(NetworkConnection target)
+    public void TargetShowReloadText(NetworkConnection target, bool show)
     {
         if (reloadText != null)
         {
-            reloadText.enabled = true;
+            reloadText.enabled = show;
         }
     }
 
@@ -255,6 +230,7 @@ public class WeaponHolder : NetworkBehaviour
             currentWeaponScript.HandRigidbody = recoilBone.GetComponent<Rigidbody>();
             currentWeaponScript.Movement = GetComponent<Movement>();
             currentWeaponScript.PlayerState = playerState;
+            currentWeaponScript.WeaponHolder = this;
         }
 
         weaponObj.transform.SetParent(weaponBone.transform);
@@ -269,7 +245,6 @@ public class WeaponHolder : NetworkBehaviour
         }
 
         playerState.IsArmed = true;
-        UpdateBulletCountText();
     }
 
     public override void OnStopClient()

@@ -67,7 +67,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 1000
-  field of view: 94
+  field of view: 90
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -1301,7 +1301,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 168700711247263374}
-  m_Material: {fileID: 13400000, guid: f4533ce691172614f8acd6dc84fcebd6, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1492,7 +1492,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 287997504604421362}
-  m_Material: {fileID: 13400000, guid: f4533ce691172614f8acd6dc84fcebd6, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1698,7 +1698,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2256155713053655145}
-  m_Material: {fileID: 13400000, guid: f4533ce691172614f8acd6dc84fcebd6, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1815,13 +1815,13 @@ ConfigurableJoint:
   m_AngularXDrive:
     serializedVersion: 4
     positionSpring: 10
-    positionDamper: 1
+    positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_AngularYZDrive:
     serializedVersion: 4
     positionSpring: 10
-    positionDamper: 1
+    positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_SlerpDrive:
@@ -1907,7 +1907,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3252415828649867142}
-  m_Material: {fileID: 13400000, guid: f4533ce691172614f8acd6dc84fcebd6, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2108,7 +2108,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3953321249163296208}
-  m_Material: {fileID: 13400000, guid: f4533ce691172614f8acd6dc84fcebd6, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2677,7 +2677,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5676028578061424198}
-  m_Material: {fileID: 13400000, guid: f4533ce691172614f8acd6dc84fcebd6, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3083,7 +3083,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6020512023720708384}
-  m_Material: {fileID: 13400000, guid: f4533ce691172614f8acd6dc84fcebd6, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3629,13 +3629,6 @@ MonoBehaviour:
   - {fileID: 7538621294356234979}
   - {fileID: 5653926879502385173}
   - {fileID: 8699569115064483695}
-  legColliders:
-  - {fileID: 3413155456252019654}
-  - {fileID: 3281724592065729899}
-  - {fileID: 8373620039869076146}
-  - {fileID: 4495540064562236521}
-  noFrictionMaterial: {fileID: 13400000, guid: f4533ce691172614f8acd6dc84fcebd6, type: 2}
-  defaultMaterial: {fileID: 13400000, guid: 8d7940ee229c6fc4587e219c3c8b281b, type: 2}
   ragdollDuration: 2.5
   ragdollStiffness: 25
 --- !u!114 &5882155198792178596
@@ -3812,7 +3805,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8578548780879289607}
-  m_Material: {fileID: 13400000, guid: f4533ce691172614f8acd6dc84fcebd6, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -4001,7 +3994,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8797502928376955211}
-  m_Material: {fileID: 13400000, guid: f4533ce691172614f8acd6dc84fcebd6, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
