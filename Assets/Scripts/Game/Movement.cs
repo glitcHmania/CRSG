@@ -16,6 +16,7 @@ public class Movement : NetworkBehaviour
     [Header("Jump Settings")]
     [SerializeField] private float longJumpTime;
     [SerializeField] private float jumpForce;
+    [SerializeField] private float jumpCooldown;
 
     [Header("Ground Check")]
     [SerializeField] private float groundCheckDistance;
@@ -30,7 +31,7 @@ public class Movement : NetworkBehaviour
     private Timer ungroundedTimer;
     private Timer jumpTimer;
     private Timer jumpHoldTimer;
-
+    private Timer jumpCooldownTimer;
     void Start()
     {
         if (!isLocalPlayer)
@@ -56,13 +57,13 @@ public class Movement : NetworkBehaviour
 
         jumpTimer = new Timer(1f);
         jumpHoldTimer = new Timer(longJumpTime);
-
+        jumpCooldownTimer = new Timer(jumpCooldown);
     }
 
     void Update()
     {
         if (!isLocalPlayer) return;
-        Debug.Log(ChatBehaviour.Instance.IsInputActive);
+
         #region Input
         if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
         {
@@ -101,31 +102,36 @@ public class Movement : NetworkBehaviour
             moveDir = (camForward * v + camRight * h).normalized;
         }
 
-
         jumpTimer.Update();
-        if (Input.GetKey(KeyCode.Space) && playerState.IsGrounded)
-        {
-            jumpHoldTimer.Update();
-        }
+        jumpCooldownTimer.Update();
 
-        if (Input.GetKeyUp(KeyCode.Space) && playerState.IsGrounded)
+        if (jumpCooldownTimer.IsFinished)
         {
-            if (jumpHoldTimer.IsFinished)
+            if (Input.GetKey(KeyCode.Space) && playerState.IsGrounded)
             {
-                ragdollController.DisableBalance();
-                mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * jumpForce * 1.5f, ForceMode.Impulse);
-            }
-            else if (playerState.MovementState == PlayerState.Movement.Running)
-            {
-                mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * jumpForce, ForceMode.Impulse);
-            }
-            else
-            {
-                mainRigidBody.AddForce((Vector3.up).normalized * jumpForce, ForceMode.Impulse);
+                jumpHoldTimer.Update();
             }
 
-            jumpTimer.Reset();
-            jumpHoldTimer.Reset();
+            if (Input.GetKeyUp(KeyCode.Space) && playerState.IsGrounded)
+            {
+                if (jumpHoldTimer.IsFinished)
+                {
+                    ragdollController.DisableBalance();
+                    mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * jumpForce * 1.5f, ForceMode.Impulse);
+                }
+                else if (playerState.MovementState == PlayerState.Movement.Running)
+                {
+                    mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * jumpForce, ForceMode.Impulse);
+                }
+                else
+                {
+                    mainRigidBody.AddForce((Vector3.up).normalized * jumpForce, ForceMode.Impulse);
+                }
+
+                jumpTimer.Reset();
+                jumpHoldTimer.Reset();
+                jumpCooldownTimer.Reset();
+            }
         }
 
         //raycast to check if the player is grounded and take the normal of the surface
@@ -249,7 +255,6 @@ public class Movement : NetworkBehaviour
                     hipRigidBody.velocity.z
                 );
             }
-
         }
 
         if (moveDir != Vector3.zero)

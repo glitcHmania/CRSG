@@ -7,15 +7,31 @@ public class Weapon : NetworkBehaviour
     [SerializeField] private Transform muzzleTransform;
     [SerializeField] private GameObject laser;
 
-    [HideInInspector]
-    public PlayerState PlayerState;
-    public Movement Movement;
-    public Rigidbody HandRigidbody;
-    public Timer reloadTimer;
+    [HideInInspector] public PlayerState PlayerState;
+    [HideInInspector] public Movement Movement;
+    [HideInInspector] public Rigidbody HandRigidbody;
+    [HideInInspector] public Timer ReloadTimer;
+
+    [SyncVar(hook = nameof(OnBulletCountChanged))]
+    public int BulletCount;
+    [SyncVar] public bool IsAvailable = true;
+
+    private void OnBulletCountChanged(int oldCount, int newCount)
+    {
+        if (isOwned)
+        {
+            // Only update UI if this client owns the player
+            var holder = GetComponentInParent<WeaponHolder>();
+            if (holder != null)
+            {
+                holder.UpdateBulletCountText();
+            }
+        }
+    }
+
 
     [Header("Weapon Settings")]
     public bool IsAutomatic;
-    public int BulletCount;
     public int MagazineSize;
     [SerializeField] private int power;
     [SerializeField] private float range;
@@ -34,18 +50,17 @@ public class Weapon : NetworkBehaviour
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] private ParticleSystem stoneImpactEffect;
 
-    private bool isAvailable = true;
     private Timer recoverTimer;
     private ObjectPool<BulletTrail> trailPool;
 
     void Awake()
     {
-        recoverTimer = new Timer(recoverTime, () => isAvailable = true);
-        reloadTimer = new Timer(reloadTime, () =>
+        recoverTimer = new Timer(recoverTime, () => IsAvailable = true, true);
+        ReloadTimer = new Timer(reloadTime, () =>
         {
             BulletCount = MagazineSize;
-            isAvailable = true;
-        });
+            IsAvailable = true;
+        }, true);
 
         trailPool = new ObjectPool<BulletTrail>(bulletTrailPrefab, trailPoolSize);
     }
@@ -58,7 +73,7 @@ public class Weapon : NetworkBehaviour
     void Update()
     {
         recoverTimer.Update();
-        reloadTimer.Update();
+        ReloadTimer.Update();
 
         #region Input
         if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
@@ -73,12 +88,10 @@ public class Weapon : NetworkBehaviour
 
     public void Reload()
     {
-        if (!isServer) return;
-
-        if(isAvailable)
+        if (IsAvailable)
         {
-            isAvailable = false;
-            reloadTimer.Reset();
+            IsAvailable = false;
+            ReloadTimer.Reset();
         }
     }
 
@@ -86,15 +99,14 @@ public class Weapon : NetworkBehaviour
     {
         if (!isServer) return;
 
-        if (!isAvailable || BulletCount <= 0)
+        if (!IsAvailable || BulletCount <= 0)
             return;
 
-        isAvailable = false;
+        IsAvailable = false;
         recoverTimer.Reset();
 
         RpcPlayMuzzleFlash();
-
-        TargetApplyRecoil(ownerConn); //  Only client will apply force
+        TargetApplyRecoil(ownerConn);
 
         Vector3 hitPoint = muzzleTransform.position + muzzleTransform.forward * range;
         Ray ray = new Ray(muzzleTransform.position, muzzleTransform.forward);
@@ -106,7 +118,7 @@ public class Weapon : NetworkBehaviour
             {
                 var hitIdentity = hit.collider.GetComponentInParent<NetworkIdentity>();
 
-                if (hitIdentity?.connectionToClient != null) // it's a client-owned object
+                if (hitIdentity?.connectionToClient != null)
                 {
                     Vector3 forceDir = (hit.point - muzzleTransform.position).normalized;
                     TargetApplyImpactForce(hitIdentity.connectionToClient, forceDir, power);
@@ -120,9 +132,10 @@ public class Weapon : NetworkBehaviour
 
         if (!infiniteAmmo)
         {
-            BulletCount--;
+            BulletCount--; // server modifies
         }
     }
+
 
     [TargetRpc]
     void TargetApplyImpactForce(NetworkConnection target, Vector3 forceDirection, float power)
@@ -152,7 +165,7 @@ public class Weapon : NetworkBehaviour
     [TargetRpc]
     private void TargetApplyRecoil(NetworkConnection target)
     {
-        if(movementWeapon)
+        if (movementWeapon)
         {
             Movement.AddForceToPlayer(-transform.forward, power * recoilMultiplier, ForceMode.Impulse);
         }

@@ -9,13 +9,12 @@ public class WeaponHolder : NetworkBehaviour
     [SerializeField] private GameObject weaponBone;
     [SerializeField] private PlayerState playerState;
 
-    private GameObject currentWeapon;
-    private Weapon currentWeaponGunScript;
+    private GameObject currentWeaponObject;
+    private Weapon currentWeaponScript;
     private GameObject currentWeaponPrefab;
     private GameObject currentObtainableWeaponPrefab;
     private TextMeshProUGUI bulletUI;
     private TextMeshProUGUI reloadText;
-    private Timer pickUpTimer;
 
     [SyncVar(hook = nameof(OnWeaponChanged))]
     private NetworkIdentity currentWeaponNetIdentity;
@@ -27,7 +26,6 @@ public class WeaponHolder : NetworkBehaviour
         bulletUI.enabled = false;
         reloadText = pui.transform.Find("ReloadText").GetComponent<TextMeshProUGUI>();
         reloadText.enabled = false;
-        pickUpTimer = new Timer(2f);
         UpdateBulletCountText();
     }
 
@@ -48,40 +46,42 @@ public class WeaponHolder : NetworkBehaviour
         }
         #endregion
 
-        if (currentWeaponGunScript != null && reloadText.enabled && currentWeaponGunScript.reloadTimer.IsFinished)
+        if (isLocalPlayer && currentWeaponScript != null && currentWeaponScript.IsAvailable)
         {
             reloadText.enabled = false;
             UpdateBulletCountText();
         }
-
-        pickUpTimer.Update();
     }
 
     private void HandleInput()
     {
-        if(playerState.IsArmed && playerState.IsAiming)
+        if (playerState.IsArmed && playerState.IsAiming)
         {
-            if(currentWeaponGunScript.IsAutomatic == true)
+            if (currentWeaponScript != null)
             {
-                if (Input.GetMouseButton(0))
+                if (currentWeaponScript.IsAutomatic && currentWeaponScript.IsAvailable)
                 {
-                    CmdShoot();
+                    if (Input.GetMouseButton(0))
+                    {
+                        CmdShoot();
+                    }
                 }
-            }
-            else
-            {
-                if (Input.GetMouseButtonDown(0))
+                else
                 {
-                    CmdShoot();
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        CmdShoot();
+                    }
                 }
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.R) && currentWeaponGunScript != null && currentWeaponGunScript.BulletCount != currentWeaponGunScript.MagazineSize)
+        if (Input.GetKeyDown(KeyCode.R))
         {
             CmdReload();
         }
     }
+
 
     private void HandleAiming()
     {
@@ -98,42 +98,68 @@ public class WeaponHolder : NetworkBehaviour
     [Command]
     private void CmdShoot()
     {
-        currentWeaponGunScript?.Shoot(connectionToClient);
-        UpdateBulletCountText();
+        currentWeaponScript.Shoot(connectionToClient);
+
+        if (currentWeaponScript.BulletCount == 0)
+        {
+            // Server knows BulletCount is 0, so ask client to reload
+            TargetStartReload(connectionToClient);
+        }
+
+        TargetUpdateBulletCountText(connectionToClient, currentWeaponScript.BulletCount);
+    }
+
+    [TargetRpc]
+    private void TargetStartReload(NetworkConnection target)
+    {
+        if (reloadText != null)
+        {
+            reloadText.enabled = true;
+        }
+
+        CmdReload();
+    }
+
+    [TargetRpc]
+    private void TargetUpdateBulletCountText(NetworkConnection target, int bulletCount)
+    {
+        if (bulletUI != null)
+        {
+            bulletUI.text = $"{bulletCount}/∞";
+        }
     }
 
     public void UpdateBulletCountText()
     {
-        if (!isLocalPlayer) return;
-
-        if (currentWeapon != null && currentWeaponGunScript != null)
-        {
-            bulletUI.text = $"{currentWeaponGunScript.BulletCount}/∞";
-        }
+        if (!isLocalPlayer || bulletUI == null || currentWeaponScript == null) return;
+        bulletUI.text = $"{currentWeaponScript.BulletCount}/∞";
     }
+
 
     [Command]
     private void CmdReload()
     {
-        currentWeaponGunScript?.Reload(); // callback lazım
-        reloadText.enabled = true;
+        currentWeaponScript?.Reload();
+        TargetShowReloadText(connectionToClient);
+    }
+
+    [TargetRpc]
+    private void TargetShowReloadText(NetworkConnection target)
+    {
+        if (reloadText != null)
+        {
+            reloadText.enabled = true;
+        }
     }
 
     public void TryPickupWeapon(ObtainableWeapon pickup)
     {
         if (!isOwned) return;
 
-        if (!pickUpTimer.IsFinished)
+        if (!playerState.IsArmed)
         {
-            return;
+            CmdTryPickupWeapon(pickup.netIdentity);
         }
-
-        if (playerState.IsArmed)
-        {
-            CmdDropWeapon();
-        }
-
-        CmdTryPickupWeapon(pickup.netIdentity);
     }
 
     [Command]
@@ -141,14 +167,9 @@ public class WeaponHolder : NetworkBehaviour
     {
         if (pickupNetIdentity == null) return;
 
-        bulletUI.enabled = true;
-
-        pickUpTimer.Reset();
-
         var pickup = pickupNetIdentity.GetComponent<ObtainableWeapon>();
         if (pickup == null || pickup.prefabReference == null) return;
 
-        // Store prefab references
         currentWeaponPrefab = pickup.prefabReference.weaponPrefab;
         currentObtainableWeaponPrefab = pickup.prefabReference.obtainableWeaponPrefab;
 
@@ -157,41 +178,51 @@ public class WeaponHolder : NetworkBehaviour
 
         currentWeaponNetIdentity = newWeapon.GetComponent<NetworkIdentity>();
 
-        // Now safe to destroy
         NetworkServer.Destroy(pickup.gameObject);
         Destroy(pickup.gameObject);
+
+        // Notify only local player to enable UI
+        TargetShowBulletUI(connectionToClient, true);
     }
 
     [Command]
     private void CmdDropWeapon()
     {
-        if (currentWeapon == null || currentWeaponPrefab == null || currentObtainableWeaponPrefab == null) return;
-
-        bulletUI.enabled = false;
+        if (currentWeaponObject == null || currentWeaponPrefab == null || currentObtainableWeaponPrefab == null) return;
 
         GameObject drop = Instantiate(currentObtainableWeaponPrefab, transform.position + transform.up + transform.forward * 4f, Quaternion.identity);
 
         var obtainable = drop.GetComponent<ObtainableWeapon>();
         if (obtainable != null && obtainable.prefabReference != null)
         {
-            // Re-assign the weapon prefab into the pickup
             obtainable.prefabReference.weaponPrefab = currentWeaponPrefab;
             obtainable.prefabReference.obtainableWeaponPrefab = currentObtainableWeaponPrefab;
         }
 
         NetworkServer.Spawn(drop);
 
-        NetworkServer.Destroy(currentWeapon);
-        Destroy(currentWeapon);
+        NetworkServer.Destroy(currentWeaponObject);
+        Destroy(currentWeaponObject);
 
-        currentWeapon = null;
-        currentWeaponGunScript = null;
+        currentWeaponObject = null;
+        currentWeaponScript = null;
         currentWeaponNetIdentity = null;
         currentWeaponPrefab = null;
         currentObtainableWeaponPrefab = null;
 
         playerState.IsArmed = false;
-        UpdateBulletCountText();
+
+        // Notify local player to disable UI
+        TargetShowBulletUI(connectionToClient, false);
+    }
+
+    [TargetRpc]
+    private void TargetShowBulletUI(NetworkConnection target, bool enabled)
+    {
+        if (bulletUI != null)
+        {
+            bulletUI.enabled = enabled;
+        }
     }
 
     private void OnWeaponChanged(NetworkIdentity oldWeapon, NetworkIdentity newWeapon)
@@ -200,18 +231,30 @@ public class WeaponHolder : NetworkBehaviour
         {
             EquipWeapon(newWeapon.gameObject);
         }
+        else
+        {
+            UnEquipWeapon();
+        }
     }
+    private void UnEquipWeapon()
+    {
+        currentWeaponObject = null;
+        currentWeaponScript = null;
+        currentWeaponPrefab = null;
+        currentObtainableWeaponPrefab = null;
+    }
+
 
     private void EquipWeapon(GameObject weaponObj)
     {
-        currentWeapon = weaponObj;
+        currentWeaponObject = weaponObj;
 
         if (weaponObj.TryGetComponent<Weapon>(out var gunScript))
         {
-            currentWeaponGunScript = gunScript;
-            currentWeaponGunScript.HandRigidbody = recoilBone.GetComponent<Rigidbody>();
-            currentWeaponGunScript.Movement = GetComponent<Movement>();
-            currentWeaponGunScript.PlayerState = playerState;
+            currentWeaponScript = gunScript;
+            currentWeaponScript.HandRigidbody = recoilBone.GetComponent<Rigidbody>();
+            currentWeaponScript.Movement = GetComponent<Movement>();
+            currentWeaponScript.PlayerState = playerState;
         }
 
         weaponObj.transform.SetParent(weaponBone.transform);
@@ -222,7 +265,7 @@ public class WeaponHolder : NetworkBehaviour
 
         foreach (Collider collider in GetComponentsInChildren<Collider>())
         {
-            Physics.IgnoreCollision(currentWeapon.GetComponentInChildren<Collider>(), collider, true);
+            Physics.IgnoreCollision(currentWeaponObject.GetComponentInChildren<Collider>(), collider, true);
         }
 
         playerState.IsArmed = true;
@@ -231,9 +274,9 @@ public class WeaponHolder : NetworkBehaviour
 
     public override void OnStopClient()
     {
-        if (currentWeapon != null)
+        if (currentWeaponObject != null)
         {
-            currentWeapon.transform.SetParent(null);
+            currentWeaponObject.transform.SetParent(null);
         }
     }
 }

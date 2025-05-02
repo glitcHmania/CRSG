@@ -3,21 +3,21 @@ using UnityEngine;
 
 public class Timer
 {
-    public float Duration { get; private set; }
-    public float Elapsed { get; private set; }
-    public bool IsFinished { get; private set; }
     public float RemainingTime { get; private set; }
+    public float Elapsed { get; private set; }
+    public float Duration { get; private set; }
+    public bool IsFinished { get; private set; }
 
     private float _startTime;
     private Action _onFinish;
     private bool _hasStarted;
 
-    public Timer(float duration, Action onFinish = null)
+    public Timer(float duration, Action onFinish = null, bool startFinished = false)
     {
         Duration = duration;
         _onFinish = onFinish;
         RemainingTime = duration;
-        IsFinished = false;
+        IsFinished = startFinished;
         _hasStarted = false;
     }
 

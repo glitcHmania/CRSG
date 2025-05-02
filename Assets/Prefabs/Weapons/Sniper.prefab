@@ -93,12 +93,15 @@ MonoBehaviour:
   MagazineSize: 3
   power: 400
   range: 200
-  reloadTime: 3
+  reloadTime: 2
   recoilMultiplier: 0.5
-  numbnessAmount: 0
+  numbnessAmount: 10
   recoverTime: 1
   infiniteAmmo: 0
   movementWeapon: 1
+  bulletMask:
+    serializedVersion: 2
+    m_Bits: 49143
   bulletTrailPrefab: {fileID: 8483647679569776263, guid: 2414faf7e632ab743a3474446c779a74, type: 3}
   trailPoolSize: 10
   muzzleFlash: {fileID: 7534688564351721480}

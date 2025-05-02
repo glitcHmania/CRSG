@@ -1,35 +1,33 @@
 using Mirror;
 using UnityEngine;
-
 public class ObtainableWeapon : NetworkBehaviour
 {
     [Header("Prefab Mapping")]
     public WeaponPrefabReference prefabReference;
     public GameObject WeaponPrefab => prefabReference?.weaponPrefab;
     public GameObject SelfPrefab => prefabReference?.obtainableWeaponPrefab;
-
     [Header("Settings")]
     [SerializeField] private Vector3 modelOffset = Vector3.zero;
     [SerializeField] private float bobAmplitude = 0.25f;
     [SerializeField] private float bobFrequency = 2f;
     [SerializeField] private float rotationSpeed = 50f;
-
     private GameObject modelInstance;
     private float startY;
-
     void Start()
     {
         // Only instantiate model if it's NOT already there
         if (modelInstance != null || transform.childCount > 1)
             return;
-
         if (WeaponPrefab != null)
         {
             Transform model = WeaponPrefab.transform.Find("Model");
             if (model != null)
             {
                 modelInstance = Instantiate(model.gameObject, transform);
-                modelInstance.GetComponent<Collider>().enabled = false; // Disable collider on the model instance
+                foreach (Collider collider in modelInstance.GetComponentsInChildren<Collider>())
+                {
+                    collider.enabled = false;
+                }
                 modelInstance.transform.localPosition = modelOffset;
                 modelInstance.transform.localRotation = Quaternion.identity;
                 startY = modelInstance.transform.localPosition.y;
@@ -40,7 +38,6 @@ public class ObtainableWeapon : NetworkBehaviour
             }
         }
     }
-
     void Update()
     {
         if (modelInstance != null)
@@ -49,11 +46,9 @@ public class ObtainableWeapon : NetworkBehaviour
             Vector3 pos = modelOffset;
             pos.y = startY + bobOffset;
             modelInstance.transform.localPosition = pos;
-
             modelInstance.transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
         }
     }
-
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
