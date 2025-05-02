@@ -19,6 +19,7 @@ public class PlayerState : NetworkBehaviour
     [SyncVar] public bool IsUnbalanced;
     [SyncVar] public bool IsArmed;
     [SyncVar] public bool IsBouncing;
+    [SyncVar] public bool IsCrouching;
     [SyncVar] public float Numbness;
 
     public bool IsMoving => (MovementState == Movement.Walking || MovementState == Movement.Running) && MovementState != Movement.Jumping;
@@ -36,6 +37,15 @@ public class PlayerState : NetworkBehaviour
         {
             MovementState = Movement.Jumping;
             return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            IsCrouching = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftControl))
+        {
+            IsCrouching = false;
         }
 
         bool hasInput = (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||

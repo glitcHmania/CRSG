@@ -3565,6 +3565,7 @@ MonoBehaviour:
   IsUnbalanced: 0
   IsArmed: 0
   IsBouncing: 0
+  IsCrouching: 0
   Numbness: 0
 --- !u!114 &7321850614008527734
 MonoBehaviour:
@@ -3589,7 +3590,7 @@ MonoBehaviour:
   rotationSpeed: 6
   longJumpTime: 1
   jumpForce: 120
-  groundCheckDistance: 1.5
+  groundCheckDistance: 1.6
   ungroundedTime: 2
   maxGroundAngle: 30
   groundMask:

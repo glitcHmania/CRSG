@@ -158,16 +158,33 @@ public class JointController : NetworkBehaviour
     {
         var legSwing = Mathf.Sin(stepChronometer.Elapsed * currentSpeed) * (currentStepHeight + currentSlope * 2f);
 
-        leftUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Min(legSwing, 0), 0, 0);
-        rightUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Min(-legSwing, 0), 0, 0);
-
-        if (legSwing < 0)
+        if(playerState.IsCrouching)
         {
-            leftLegJoint.targetRotation = Quaternion.Euler(-legSwing, 0, 0);
+            leftUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Min(legSwing, 0) - 70, 0, 0);
+            rightUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Min(-legSwing, 0) - 70, 0, 0);
+
+            if (legSwing < 0)
+            {
+                leftLegJoint.targetRotation = Quaternion.Euler(-legSwing + 100, 0, 0);
+            }
+            else
+            {
+                rightLegJoint.targetRotation = Quaternion.Euler(legSwing + 100, 0, 0);
+            }
         }
         else
         {
-            rightLegJoint.targetRotation = Quaternion.Euler(legSwing, 0, 0);
+            leftUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Min(legSwing, 0), 0, 0);
+            rightUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Min(-legSwing, 0), 0, 0);
+
+            if (legSwing < 0)
+            {
+                leftLegJoint.targetRotation = Quaternion.Euler(-legSwing, 0, 0);
+            }
+            else
+            {
+                rightLegJoint.targetRotation = Quaternion.Euler(legSwing, 0, 0);
+            }
         }
     }
 
@@ -276,7 +293,19 @@ public class JointController : NetworkBehaviour
 
     private void ResetLegs()
     {
-        ResetLeftLeg();
-        ResetRightLeg();
+        if(playerState.IsCrouching)
+        {
+            leftUpLegJoint.targetRotation = Quaternion.Euler(-70, 0, 0);
+            leftLegJoint.targetRotation = Quaternion.Euler(120, 0, 0);
+            rightUpLegJoint.targetRotation = Quaternion.Euler(-70, 0, 0);
+            rightLegJoint.targetRotation = Quaternion.Euler(120, 0, 0);
+        }
+        else
+        {
+            leftUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
+            leftLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
+            rightUpLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
+            rightLegJoint.targetRotation = Quaternion.Euler(0, 0, 0);
+        }
     }
 }
