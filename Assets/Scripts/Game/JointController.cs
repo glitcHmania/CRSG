@@ -89,7 +89,7 @@ public class JointController : NetworkBehaviour
                 RotateArmToAim(rightArmJoint, rightForeArmJoint);
             }
         }
-        else if (spineJoint.targetRotation != defaultSpineTargetRotation)
+        else if (!playerState.IsUnbalanced && spineJoint.targetRotation != defaultSpineTargetRotation)
         {
             spineJoint.targetRotation = defaultSpineTargetRotation; // reset spine rotation if not aiming
         }

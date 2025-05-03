@@ -9,9 +9,9 @@ public class RagdollController : NetworkBehaviour
     [SerializeField] private Rigidbody hipsRigidbody;
     [SerializeField] private Rigidbody spineRigidbody;
     [SerializeField] private ConfigurableJoint[] joints;
-    //[SerializeField] private Collider[] legColliders;
-    //[SerializeField] private PhysicMaterial noFrictionMaterial;
-    //[SerializeField] private PhysicMaterial defaultMaterial;
+    [SerializeField] private Collider[] legColliders;
+    [SerializeField] private PhysicMaterial noFrictionMaterial;
+    [SerializeField] private PhysicMaterial defaultMaterial;
 
     [Header("Settings")]
     [SerializeField] private float ragdollDuration;
@@ -20,6 +20,8 @@ public class RagdollController : NetworkBehaviour
     private List<float> initialSpringValues;
     private List<float> initialDamperValues;
     private Timer ragdollTimer;
+
+    private bool dirtyFlag = false;
 
     private void Start()
     {
@@ -67,30 +69,35 @@ public class RagdollController : NetworkBehaviour
             ragdollTimer.Update();
         }
 
-        //if (playerState.MovementState == PlayerState.Movement.Falling && legColliders[0].material != noFrictionMaterial)
-        //{
-        //    foreach (var collider in legColliders)
-        //    {
-        //        collider.material = noFrictionMaterial;
-        //    }
-        //}
-        //else if (playerState.MovementState != PlayerState.Movement.Falling && legColliders[0].material != defaultMaterial)
-        //{
-        //    foreach (var collider in legColliders)
-        //    {
-        //        collider.material = defaultMaterial;
-        //    }
-        //}
-
-        if (playerState.IsAiming && !playerState.IsRagdoll && !playerState.IsUnbalanced)
+        if (playerState.MovementState == PlayerState.Movement.Falling && legColliders[0].material != noFrictionMaterial)
         {
-            joints[1].angularXDrive = new JointDrive { positionSpring = 350f, positionDamper = initialDamperValues[1], maximumForce = 3.402823e+38f };
-            joints[1].angularYZDrive = new JointDrive { positionSpring = 350f, positionDamper = initialDamperValues[1], maximumForce = 3.402823e+38f };
+            foreach (var collider in legColliders)
+            {
+                collider.material = noFrictionMaterial;
+            }
         }
-        else
+        else if (playerState.MovementState != PlayerState.Movement.Falling && legColliders[0].material != defaultMaterial)
         {
-            joints[1].angularXDrive = new JointDrive { positionSpring = initialSpringValues[1], positionDamper = initialDamperValues[1], maximumForce = 3.402823e+38f };
-            joints[1].angularYZDrive = new JointDrive { positionSpring = initialSpringValues[1], positionDamper = initialDamperValues[1], maximumForce = 3.402823e+38f };
+            foreach (var collider in legColliders)
+            {
+                collider.material = defaultMaterial;
+            }
+        }
+
+        if (!playerState.IsRagdoll && !playerState.IsUnbalanced)
+        {
+            if (playerState.IsAiming)
+            {
+                joints[1].angularXDrive = new JointDrive { positionSpring = 350f, positionDamper = initialDamperValues[1], maximumForce = 3.402823e+38f };
+                joints[1].angularYZDrive = new JointDrive { positionSpring = 350f, positionDamper = initialDamperValues[1], maximumForce = 3.402823e+38f };
+                dirtyFlag = true;
+            }
+            else if (dirtyFlag)
+            {
+                joints[1].angularXDrive = new JointDrive { positionSpring = initialSpringValues[1], positionDamper = initialDamperValues[1], maximumForce = 3.402823e+38f };
+                joints[1].angularYZDrive = new JointDrive { positionSpring = initialSpringValues[1], positionDamper = initialDamperValues[1], maximumForce = 3.402823e+38f };
+                dirtyFlag = false;
+            }
         }
 
         if (playerState.Numbness > 0)
