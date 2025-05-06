@@ -1,5 +1,6 @@
 ﻿using Mirror;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Weapon : NetworkBehaviour
 {
@@ -38,6 +39,10 @@ public class Weapon : NetworkBehaviour
     [SerializeField] private float recoverTime;
     [SerializeField] private bool infiniteAmmo = false;
     [SerializeField] private bool movementWeapon = false;
+
+    [Header("Bounce Settings")]
+    [SerializeField] private int maxBounces = 3;
+    [SerializeField] private LayerMask bounceSurfaces = -1; // Surfaces the bullet can bounce off of
 
     [Header("Bullet Trail Settings")]
     [SerializeField] private BulletTrail bulletTrailPrefab;
@@ -104,27 +109,8 @@ public class Weapon : NetworkBehaviour
         RpcPlayMuzzleFlash();
         TargetApplyRecoil(ownerConn);
 
-        Vector3 hitPoint = muzzleTransform.position + muzzleTransform.forward * range;
-        Ray ray = new Ray(muzzleTransform.position, muzzleTransform.forward);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, range))
-        {
-            hitPoint = hit.point;
-            if (hit.collider)
-            {
-                var hitIdentity = hit.collider.GetComponentInParent<NetworkIdentity>();
-
-                if (hitIdentity?.connectionToClient != null)
-                {
-                    Vector3 forceDir = (hit.point - muzzleTransform.position).normalized;
-                    TargetApplyImpactForce(hitIdentity.connectionToClient, forceDir, power);
-                }
-
-                RpcSpawnImpact(hit.point, hit.normal);
-            }
-        }
-
-        RpcSpawnTrail(muzzleTransform.position, hitPoint);
+        // Handle bouncing bullet logic
+        BouncingBullet(ownerConn, muzzleTransform.position, muzzleTransform.forward, power, maxBounces);
 
         if (!infiniteAmmo)
         {
@@ -132,6 +118,62 @@ public class Weapon : NetworkBehaviour
         }
     }
 
+    private void BouncingBullet(NetworkConnectionToClient ownerConn, Vector3 startPosition, Vector3 direction, float currentPower, int remainingBounces)
+    {
+        // Store all points for trail rendering
+        List<Vector3> pathPoints = new List<Vector3> { startPosition };
+
+        Vector3 currentPosition = startPosition;
+        Vector3 currentDirection = direction;
+        float currentRange = range;
+
+        while (remainingBounces >= 0 && currentPower > 0.1f)
+        {
+            Ray ray = new Ray(currentPosition, currentDirection);
+            bool hitSomething = Physics.Raycast(ray, out RaycastHit hit, currentRange, bounceSurfaces);
+
+            if (hitSomething)
+            {
+                // Add hit point to path
+                pathPoints.Add(hit.point);
+
+                // Process impact effects and forces
+                HandleImpact(ownerConn, hit, currentPosition, currentDirection, currentPower);
+
+                // Calculate reflection for next segment
+                currentDirection = Vector3.Reflect(currentDirection, hit.normal);
+                currentPosition = hit.point + currentDirection * 0.001f; // Small offset to prevent self-collision
+                remainingBounces--;
+            }
+            else
+            {
+                // No more bounces, add final point
+                Vector3 endPoint = currentPosition + currentDirection * currentRange;
+                pathPoints.Add(endPoint);
+                break;
+            }
+        }
+
+        // Render the trail with all collected points
+        RpcSpawnTrailMultipoint(pathPoints.ToArray());
+    }
+
+    private void HandleImpact(NetworkConnectionToClient ownerConn, RaycastHit hit, Vector3 startPosition, Vector3 direction, float currentPower)
+    {
+        // Spawn impact effect
+        RpcSpawnImpact(hit.point, hit.normal);
+
+        // Apply force if hit a NetworkIdentity
+        var hitIdentity = hit.collider.GetComponentInParent<NetworkIdentity>();
+        if (hitIdentity?.connectionToClient != null)
+        {
+            // Target ID and hit component info for target-side processing
+            Vector3 forceDir = (hit.point - startPosition).normalized;
+
+            // Send detailed hit information to the client for accurate force application
+            RpcApplyBounceImpact(hitIdentity.gameObject, hit.point, forceDir, currentPower);
+        }
+    }
 
     [TargetRpc]
     void TargetApplyImpactForce(NetworkConnection target, Vector3 forceDirection, float power)
@@ -155,6 +197,33 @@ public class Weapon : NetworkBehaviour
             {
                 Debug.LogWarning("No Movement script found on the hit object.");
             }
+        }
+    }
+
+    [ClientRpc]
+    void RpcApplyBounceImpact(GameObject hitObject, Vector3 hitPoint, Vector3 forceDirection, float power)
+    {
+        // This is called on all clients, but we only want to apply force to the client that owns the hit object
+        NetworkIdentity hitIdentity = hitObject.GetComponent<NetworkIdentity>();
+        if (hitIdentity == null || !hitIdentity.isOwned) return;
+
+        // Apply ragdoll effect if applicable
+        var rc = hitObject.GetComponentInParent<RagdollController>();
+        if (rc != null)
+        {
+            rc.EnableRagdoll();
+            rc.SetRagdollStiffnessWithoutBalance(1000f);
+        }
+
+        // Apply force to player
+        var movementScript = hitObject.GetComponentInParent<Movement>();
+        if (movementScript != null)
+        {
+            movementScript.AddForceToPlayer(forceDirection, power);
+        }
+        else
+        {
+            Debug.LogWarning("No Movement script found on the hit object.");
         }
     }
 
@@ -196,6 +265,19 @@ public class Weapon : NetworkBehaviour
     {
         BulletTrail trail = trailPool.Get();
         trail.Init(start, end, (t) => trailPool.Return(t));
+    }
+
+    [ClientRpc]
+    private void RpcSpawnTrailMultipoint(Vector3[] points)
+    {
+        if (points.Length < 2) return;
+
+        // Spawn a trail for each segment
+        for (int i = 0; i < points.Length - 1; i++)
+        {
+            BulletTrail trail = trailPool.Get();
+            trail.Init(points[i], points[i + 1], (t) => trailPool.Return(t));
+        }
     }
 
     public void ClearPool()

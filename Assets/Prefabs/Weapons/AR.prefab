@@ -153,10 +153,13 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   maxDistance: 500
-  alpha: 0.577
   laserColor: {r: 1, g: 0, b: 0, a: 0.5176471}
-  laserWidth: 0.015
-  laserShader: {fileID: 202, guid: 0000000000000000f000000000000000, type: 0}
+  laserWidth: 0.006
+  maxBounces: 1
+  raycastMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  laserMaterial: {fileID: 2100000, guid: 5c4f3dbb50c65e14ca9da067e8a8bf32, type: 2}
 --- !u!1 &5629045766404183405
 GameObject:
   m_ObjectHideFlags: 0
@@ -258,6 +261,11 @@ MonoBehaviour:
   recoverTime: 0.1
   infiniteAmmo: 0
   movementWeapon: 0
+  maxBounces: 1
+  powerReductionPerBounce: 0.1
+  bounceSurfaces:
+    serializedVersion: 2
+    m_Bits: 4294967295
   bulletTrailPrefab: {fileID: 8483647679569776263, guid: 2414faf7e632ab743a3474446c779a74, type: 3}
   trailPoolSize: 10
   muzzleFlash: {fileID: 7534688564351721480}
