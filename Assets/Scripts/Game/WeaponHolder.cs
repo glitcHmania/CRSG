@@ -15,17 +15,28 @@ public class WeaponHolder : NetworkBehaviour
     private GameObject currentObtainableWeaponPrefab;
     private TextMeshProUGUI bulletUI;
     private TextMeshProUGUI reloadText;
+    public Canvas tutorialCanvas;
 
     [SyncVar(hook = nameof(OnWeaponChanged))]
     private NetworkIdentity currentWeaponNetIdentity;
 
     private void Start()
     {
-        var pui = GameObject.FindGameObjectWithTag("PlayerUI");
-        bulletUI = pui.transform.Find("BulletCountText").GetComponent<TextMeshProUGUI>();
-        bulletUI.enabled = false;
-        reloadText = pui.transform.Find("ReloadText").GetComponent<TextMeshProUGUI>();
-        reloadText.enabled = false;
+        var uiManager = UIManager.Instance;
+        if (uiManager != null)
+        {
+            bulletUI = uiManager.BulletUI;
+            reloadText = uiManager.ReloadUI;
+            tutorialCanvas = uiManager.TutorialCanvas;
+
+            bulletUI.enabled = false; // Disable bullet UI by default
+            reloadText.enabled = false; // Disable reload UI by default
+            tutorialCanvas.enabled = true; // Disable tutorial UI by default
+        }
+        else
+        {
+            Debug.LogWarning("UIManager instance not found. Bullet and Reload UI references will not be set.");
+        }
     }
 
     void Update()
@@ -48,22 +59,26 @@ public class WeaponHolder : NetworkBehaviour
 
     private void HandleInput()
     {
-        if (playerState.IsArmed && playerState.IsAiming)
+        if (playerState.IsArmed)
         {
-            if (currentWeaponScript != null)
+            if (playerState.IsAiming)
             {
-                if (currentWeaponScript.IsAutomatic && currentWeaponScript.IsAvailable)
+
+                if (currentWeaponScript != null)
                 {
-                    if (Input.GetMouseButton(0))
+                    if (currentWeaponScript.IsAutomatic && currentWeaponScript.IsAvailable)
                     {
-                        CmdShoot();
+                        if (Input.GetMouseButton(0))
+                        {
+                            CmdShoot();
+                        }
                     }
-                }
-                else
-                {
-                    if (Input.GetMouseButtonDown(0))
+                    else
                     {
-                        CmdShoot();
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            CmdShoot();
+                        }
                     }
                 }
             }
@@ -165,7 +180,7 @@ public class WeaponHolder : NetworkBehaviour
     {
         if (currentWeaponObject == null || currentWeaponPrefab == null || currentObtainableWeaponPrefab == null) return;
 
-        GameObject drop = Instantiate(currentObtainableWeaponPrefab, transform.position + transform.up + transform.forward * 4f, Quaternion.identity);
+        GameObject drop = Instantiate(currentObtainableWeaponPrefab, transform.position + transform.forward * 2f, Quaternion.identity);
 
         var obtainable = drop.GetComponent<ObtainableWeapon>();
         if (obtainable != null && obtainable.prefabReference != null)

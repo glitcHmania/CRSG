@@ -11,6 +11,8 @@ public class CameraMovement : MonoBehaviour
     [SerializeField] private float rotationSpeed = 5f;
     [SerializeField] private float minYAngle = -30f;
     [SerializeField] private float maxYAngle = 60f;
+    [SerializeField] private float collisionBuffer = 0.3f; // Distance from wall to prevent clipping
+    [SerializeField] private float sphereCastRadius = 0.5f; // Thickness of the cast
 
     private float currentYaw = 0f;
     private float currentPitch = 20f;
@@ -40,14 +42,21 @@ public class CameraMovement : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(currentPitch, currentYaw, 0);
         Vector3 desiredPosition = target.position + rotation * offset;
 
-        transform.position = desiredPosition;
-        transform.LookAt(target.position + Vector3.up * 1.5f);
+        Vector3 targetPositionOffset = target.position + new Vector3(0f, 1f); // Offset slightly above player
+        Vector3 direction = (desiredPosition - targetPositionOffset).normalized;
+        float distance = Vector3.Distance(targetPositionOffset, desiredPosition);
 
-        Physics.Raycast(target.position + new Vector3(0f, 1f), (desiredPosition - target.position).normalized, out RaycastHit hit, Vector3.Distance(target.position, transform.position), collisionMask);
-        if (hit.collider != null)
+        // SphereCast instead of Raycast
+        if (Physics.SphereCast(targetPositionOffset, sphereCastRadius, direction, out RaycastHit hit, distance, collisionMask))
         {
-            transform.position = hit.point;
+            // Move camera slightly before collision
+            transform.position = hit.point - direction * collisionBuffer;
+        }
+        else
+        {
+            transform.position = desiredPosition;
         }
 
+        transform.LookAt(target.position + Vector3.up * 1.5f);
     }
 }

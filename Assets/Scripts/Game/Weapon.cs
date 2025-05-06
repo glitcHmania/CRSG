@@ -79,16 +79,6 @@ public class Weapon : NetworkBehaviour
     {
         recoverTimer.Update();
         reloadTimer.Update();
-
-        #region Input
-        if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
-        {
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                laser.SetActive(!laser.activeSelf);
-            }
-        }
-        #endregion
     }
 
     public void Reload()

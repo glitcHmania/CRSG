@@ -7,16 +7,17 @@ public class ObtainableWeapon : NetworkBehaviour
     public GameObject WeaponPrefab => prefabReference?.weaponPrefab;
     public GameObject SelfPrefab => prefabReference?.obtainableWeaponPrefab;
     [Header("Settings")]
-    [SerializeField] private Vector3 modelOffset = Vector3.zero;
     [SerializeField] private float bobAmplitude = 0.25f;
     [SerializeField] private float bobFrequency = 2f;
     [SerializeField] private float rotationSpeed = 50f;
+
     private GameObject modelInstance;
     private float startY;
+    private Vector3 modelOffset = new Vector3(0f, 0.777f);
     void Start()
     {
         // Only instantiate model if it's NOT already there
-        if (modelInstance != null || transform.childCount > 1)
+        if (modelInstance != null || transform.childCount > 2)
             return;
         if (WeaponPrefab != null)
         {

@@ -3,22 +3,23 @@
 /// </summary>
 
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace SunTemple {
+namespace SunTemple
+{
 
-public class DisableRenderer : MonoBehaviour {
+    public class DisableRenderer : MonoBehaviour
+    {
 
-	// Use this for initialization
-	void Start () {
-			GetComponent<MeshRenderer> ().enabled = false;
-		
-	}
-	
+        // Use this for initialization
+        void Start()
+        {
+            //disable renderer
+            GetComponent<MeshRenderer>().enabled = false;
+        }
 
-}
+
+    }
 
 
 }

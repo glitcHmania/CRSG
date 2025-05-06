@@ -136,8 +136,10 @@ MonoBehaviour:
     m_Bits: 8215
   offset: {x: 0, y: 3, z: -1}
   rotationSpeed: 5
-  minYAngle: -60
+  minYAngle: -75
   maxYAngle: 10
+  collisionBuffer: 0.3
+  sphereCastRadius: 0.1
 --- !u!81 &6223364375323298652
 AudioListener:
   m_ObjectHideFlags: 0
@@ -3576,6 +3578,7 @@ MonoBehaviour:
   recoilBone: {fileID: 287997504604421362}
   weaponBone: {fileID: 8292016055041033889}
   playerState: {fileID: -8150470886946853929}
+  tutorialCanvas: {fileID: 0}
 --- !u!114 &-8150470886946853929
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -86,10 +86,12 @@ MonoBehaviour:
   muzzleTransform: {fileID: 9077244307745308885}
   laser: {fileID: 7473784515348345783}
   PlayerState: {fileID: 0}
+  WeaponHolder: {fileID: 0}
   Movement: {fileID: 0}
   HandRigidbody: {fileID: 0}
-  IsAutomatic: 0
   BulletCount: 3
+  IsAvailable: 1
+  IsAutomatic: 0
   MagazineSize: 3
   power: 400
   range: 200
@@ -99,9 +101,6 @@ MonoBehaviour:
   recoverTime: 1
   infiniteAmmo: 0
   movementWeapon: 1
-  bulletMask:
-    serializedVersion: 2
-    m_Bits: 49143
   bulletTrailPrefab: {fileID: 8483647679569776263, guid: 2414faf7e632ab743a3474446c779a74, type: 3}
   trailPoolSize: 10
   muzzleFlash: {fileID: 7534688564351721480}
@@ -150,7 +149,7 @@ Transform:
   m_GameObject: {fileID: 7473784515348345783}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.04, y: 0.0025999919, z: 0.4532}
+  m_LocalPosition: {x: 0, y: 0.031299993, z: 0.74820006}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -272,11 +271,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8f877cf330b96449a48498922c25a6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   maxDistance: 500
   alpha: 1
   laserColor: {r: 1, g: 0, b: 0, a: 0.5176471}
-  laserWidth: 0.005
-  laserEnabled: 1
+  laserWidth: 0.015
   laserShader: {fileID: 202, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!1001 &3566661192098838077
 PrefabInstance:
