@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5430204467148329921
+--- !u!1 &3863760336251806609
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,39 +8,45 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2638820883776881641}
-  - component: {fileID: 5699811975147871603}
-  - component: {fileID: 3653979302181797732}
-  - component: {fileID: 6220470052611013783}
+  - component: {fileID: 4597067215076376325}
+  - component: {fileID: 6397709930779725610}
+  - component: {fileID: 5119504599540202812}
+  - component: {fileID: 617026361831613459}
+  - component: {fileID: 6239487883219799257}
+  - component: {fileID: 6223364375323298652}
   m_Layer: 0
   m_Name: Camera
-  m_TagString: Player
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2638820883776881641
-Transform:
+--- !u!224 &4597067215076376325
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5430204467148329921}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0.12957436, y: -0, z: -0, w: 0.99156976}
-  m_LocalPosition: {x: 0, y: 2.5110002, z: -2.0900002}
+  m_GameObject: {fileID: 3863760336251806609}
+  m_LocalRotation: {x: 0.12957439, y: 0, z: 0, w: 0.99156976}
+  m_LocalPosition: {x: 0, y: 0, z: -2.0900002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9188074739379872998}
-  m_LocalEulerAnglesHint: {x: 14.89, y: 0, z: 0}
---- !u!20 &5699811975147871603
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 2.5110002}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!20 &6397709930779725610
 Camera:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5430204467148329921}
+  m_GameObject: {fileID: 3863760336251806609}
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
@@ -66,7 +72,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.1
-  far clip plane: 1000
+  far clip plane: 2500
   field of view: 90
   orthographic: 0
   orthographic size: 5
@@ -74,32 +80,51 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
+  m_HDR: 0
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &3653979302181797732
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5430204467148329921}
-  m_Enabled: 1
---- !u!114 &6220470052611013783
+--- !u!114 &5119504599540202812
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5430204467148329921}
+  m_GameObject: {fileID: 3863760336251806609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: 78254f968cc460e408f81c76abc84db0, type: 2}
+--- !u!114 &617026361831613459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3863760336251806609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c35eada6229c8040bb901d2696b907a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxDistance: 200
+  alwaysVisibleLayers: 000000000d000000
+--- !u!114 &6239487883219799257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3863760336251806609}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c7b86e4560181b24c83ac392943c0467, type: 3}
@@ -111,8 +136,16 @@ MonoBehaviour:
     m_Bits: 8215
   offset: {x: 0, y: 3, z: -1}
   rotationSpeed: 5
-  minYAngle: -70
+  minYAngle: -60
   maxYAngle: 10
+--- !u!81 &6223364375323298652
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3863760336251806609}
+  m_Enabled: 1
 --- !u!1 &8292016055041033889
 GameObject:
   m_ObjectHideFlags: 0
@@ -1085,7 +1118,7 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2638820883776881641}
+      addedObject: {fileID: 4597067215076376325}
     - targetCorrespondingSourceObject: {fileID: 1852576806548013000, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7332495130815067806}
@@ -1435,7 +1468,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_ProjectionMode: 0
+  m_ProjectionMode: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
@@ -1626,7 +1659,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_ProjectionMode: 0
+  m_ProjectionMode: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
@@ -1830,7 +1863,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_ProjectionMode: 0
+  m_ProjectionMode: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
@@ -2041,7 +2074,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_ProjectionMode: 0
+  m_ProjectionMode: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
@@ -2240,7 +2273,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_ProjectionMode: 0
+  m_ProjectionMode: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
@@ -2431,7 +2464,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_ProjectionMode: 0
+  m_ProjectionMode: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
@@ -2599,7 +2632,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_ProjectionMode: 0
+  m_ProjectionMode: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
@@ -2811,7 +2844,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_ProjectionMode: 0
+  m_ProjectionMode: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
@@ -3007,7 +3040,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_ProjectionMode: 0
+  m_ProjectionMode: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
@@ -3217,7 +3250,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_ProjectionMode: 0
+  m_ProjectionMode: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
@@ -3418,7 +3451,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_ProjectionMode: 0
+  m_ProjectionMode: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
@@ -3582,7 +3615,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  cam: {fileID: 5430204467148329921}
+  cam: {fileID: 3863760336251806609}
   hip: {fileID: 8578548780879289607}
   playerState: {fileID: -8150470886946853929}
   moveSpeed: 2.8
@@ -3655,7 +3688,7 @@ MonoBehaviour:
   syncInterval: 0
   playerState: {fileID: -8150470886946853929}
   hips: {fileID: 8578548780879289607}
-  cam: {fileID: 5699811975147871603}
+  cam: {fileID: 6397709930779725610}
   walkSpeed: 9
   sprintSpeed: 11
   stepHeight: 60
@@ -3944,7 +3977,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_ProjectionMode: 0
+  m_ProjectionMode: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
@@ -4135,7 +4168,7 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_ProjectionMode: 0
+  m_ProjectionMode: 1
   m_ProjectionDistance: 0.01
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
