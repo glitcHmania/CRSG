@@ -94,7 +94,7 @@ public class JointController : NetworkBehaviour
             spineJoint.targetRotation = defaultSpineTargetRotation; // reset spine rotation if not aiming
         }
 
-        if (playerState.IsMoving)
+        if (!playerState.IsUnbalanced && playerState.IsMoving)
         {
             stepChronometer.Update();
 
