@@ -9,6 +9,9 @@ public class WeaponHolder : NetworkBehaviour
     [SerializeField] private GameObject weaponBone;
     [SerializeField] private PlayerState playerState;
 
+    [Header("Audio Sources")]
+    [SerializeField] private AudioSource equipSound;
+
     private GameObject currentWeaponObject;
     private Weapon currentWeaponScript;
     private GameObject currentWeaponPrefab;
@@ -70,14 +73,14 @@ public class WeaponHolder : NetworkBehaviour
                         currentWeaponScript.CmdToggleLaser(true);
                     }
 
-                    if (currentWeaponScript.IsAutomatic && currentWeaponScript.IsAvailable)
+                    if (currentWeaponScript.IsAvailable && currentWeaponScript.IsAutomatic && !currentWeaponScript.OutOfAmmo)
                     {
                         if (Input.GetMouseButton(0))
                         {
                             CmdShoot();
                         }
                     }
-                    else
+                    else if (currentWeaponScript.IsAvailable)
                     {
                         if (Input.GetMouseButtonDown(0))
                         {
@@ -92,7 +95,7 @@ public class WeaponHolder : NetworkBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && currentWeaponScript.BulletCount < currentWeaponScript.MagazineSize)
         {
             CmdReload();
         }
@@ -116,11 +119,11 @@ public class WeaponHolder : NetworkBehaviour
     {
         currentWeaponScript.Shoot(connectionToClient);
 
-        if (currentWeaponScript.BulletCount == 0)
-        {
-            // Server knows BulletCount is 0, so ask client to reload
-            TargetStartReload(connectionToClient);
-        }
+        //if (currentWeaponScript.BulletCount == 0)
+        //{
+        //    // Server knows BulletCount is 0, so ask client to reload
+        //    TargetStartReload(connectionToClient);
+        //}
     }
 
     [TargetRpc]
@@ -181,6 +184,8 @@ public class WeaponHolder : NetworkBehaviour
 
         // Notify only local player to enable UI
         TargetShowBulletUI(connectionToClient, true);
+
+        //equipSound.Play();
     }
 
     [Command]

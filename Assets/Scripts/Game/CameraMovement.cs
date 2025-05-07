@@ -33,15 +33,15 @@ public class CameraMovement : MonoBehaviour
 
         if (playerState.IsAiming)
         {
-            GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, 50f, Time.deltaTime * 5f);
-            target.localPosition = Vector3.Lerp(target.localPosition, new Vector3(0.3f, target.localPosition.y, target.localPosition.z), Time.deltaTime * 5f);
+            GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, 80f, Time.deltaTime * 5f);
+            target.localPosition = Vector3.Lerp(target.localPosition, new Vector3(0.6f, target.localPosition.y, 1.3f), Time.deltaTime * 5f);
 
             fovDirtyFlag = true;
         }
         else if (fovDirtyFlag)
         {
             GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, 90f, Time.deltaTime * 5f);
-            target.localPosition = Vector3.Lerp(target.localPosition, new Vector3(0f, target.localPosition.y, target.localPosition.z), Time.deltaTime * 5f);
+            target.localPosition = Vector3.Lerp(target.localPosition, new Vector3(0f, target.localPosition.y, 0f), Time.deltaTime * 5f);
 
             if (Mathf.Abs(GetComponent<Camera>().fieldOfView - 90f) < 1f)
             {

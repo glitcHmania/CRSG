@@ -1,6 +1,9 @@
 using System;
 using UnityEngine;
 
+using System;
+using UnityEngine;
+
 public class Timer
 {
     public float RemainingTime { get; private set; }
@@ -25,13 +28,14 @@ public class Timer
     {
         if (!_hasStarted)
         {
-            _startTime = Time.time;
+            _startTime = 0f;
             _hasStarted = true;
         }
 
         if (IsFinished) return;
 
-        Elapsed = Time.time - _startTime;
+        _startTime += Time.deltaTime; // accumulate elapsed time manually
+        Elapsed = _startTime;
         RemainingTime = Mathf.Max(0f, Duration - Elapsed);
 
         if (Elapsed >= Duration)
@@ -53,6 +57,7 @@ public class Timer
         return Mathf.Clamp01(1f - RemainingTime / Duration);
     }
 }
+
 
 public class Chronometer
 {

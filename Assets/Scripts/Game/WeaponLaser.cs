@@ -88,10 +88,11 @@ public class WeaponLaser : NetworkBehaviour
                     // Detection logic
                     if (isOwned && (detectMask.value & (1 << hit.collider.gameObject.layer)) != 0)
                     {
-                        foundPlayer = true;
-
-                        // Try to get Outline component
-                        newOutlineTarget = hit.collider.GetComponentInParent<Outline>();
+                        if (!hit.collider.GetComponentInParent<NetworkIdentity>().isLocalPlayer)
+                        {
+                            foundPlayer = true;
+                            newOutlineTarget = hit.collider.GetComponentInParent<Outline>();
+                        }
                     }
 
                     bool isBounceSurface = (bounceMask.value & (1 << hit.collider.gameObject.layer)) != 0;

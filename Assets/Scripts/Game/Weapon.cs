@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Weapon : NetworkBehaviour
 {
@@ -15,25 +16,15 @@ public class Weapon : NetworkBehaviour
     [HideInInspector] public WeaponHolder WeaponHolder;
     [HideInInspector] public Movement Movement;
     [HideInInspector] public Rigidbody HandRigidbody;
-    
+
     public bool IsLaserOn => isLaserOn;
 
     public bool OutOfAmmo => BulletCount <= 0 && !infiniteAmmo;
 
     [SyncVar(hook = nameof(OnBulletCountChanged))]
-    public int BulletCount;
-    [SyncVar] public bool IsAvailable = true;
+    [HideInInspector] public int BulletCount;
 
-    private void OnBulletCountChanged(int oldCount, int newCount)
-    {
-        if (isOwned)
-        {
-            if (WeaponHolder != null)
-            {
-                WeaponHolder.UpdateBulletCountText();
-            }
-        }
-    }
+    [SyncVar] public bool IsAvailable = true;
 
     [Header("Weapon Settings")]
     public bool IsAutomatic;
@@ -57,12 +48,33 @@ public class Weapon : NetworkBehaviour
 
     [Header("Particle System")]
     [SerializeField] private ParticleSystem muzzleFlash;
+    [SerializeField] private ParticleSystem shellEjection;
     [SerializeField] private ParticleSystem stoneImpactEffect;
+
+    [Header("Audio")]
+    public AudioClip FireSound;
+    public AudioClip EmptyClickSound;
+    public AudioClip MagOutSound;
+    public AudioClip MagInSound;
+    public AudioClip BoltSound;
 
     private Timer recoverTimer;
     private ObjectPool<BulletTrail> trailPool;
     private Timer reloadTimer;
     private bool isLaserOn;
+    private AudioSource audioSource;
+    private Vector3 initialBoltPos;
+
+    private void OnBulletCountChanged(int oldCount, int newCount)
+    {
+        if (isOwned)
+        {
+            if (WeaponHolder != null)
+            {
+                WeaponHolder.UpdateBulletCountText();
+            }
+        }
+    }
 
     void Awake()
     {
@@ -73,13 +85,20 @@ public class Weapon : NetworkBehaviour
             IsAvailable = true;
             WeaponHolder.UpdateBulletCountText();
             WeaponHolder.TargetShowReloadText(WeaponHolder.gameObject.GetComponent<NetworkIdentity>().connectionToClient, false);
+
+            RpcAdjustBolt(false);
+            RpcAdjustMag(false);
+
         }, true);
 
+        audioSource = GetComponent<AudioSource>();
+        initialBoltPos = bolt.transform.localPosition;
         trailPool = new ObjectPool<BulletTrail>(bulletTrailPrefab, trailPoolSize);
     }
 
     private void Start()
     {
+        BulletCount = MagazineSize;
         WeaponHolder?.UpdateBulletCountText();
     }
 
@@ -101,7 +120,10 @@ public class Weapon : NetworkBehaviour
             WeaponHolder.TargetShowReloadText(WeaponHolder.gameObject.GetComponent<NetworkIdentity>().connectionToClient, true);
             IsAvailable = false;
             reloadTimer.Reset();
-            RpcAdjustBoltAndMag(true);
+
+            RpcAdjustBolt(true);
+            RpcAdjustMag(true);
+            RpcSpawnDroppedMag(transform.position - transform.up * 0.2f);
         }
     }
 
@@ -109,13 +131,19 @@ public class Weapon : NetworkBehaviour
     {
         if (!isServer) return;
 
-        if (!IsAvailable || BulletCount <= 0)
+        if (!IsAvailable)
             return;
+
+        if (BulletCount <= 0)
+        {
+            audioSource.PlayOneShot(EmptyClickSound);
+            return;
+        }
 
         IsAvailable = false;
         recoverTimer.Reset();
 
-        RpcPlayMuzzleFlash();
+        RpcPlayWeaponEffects();
         TargetApplyRecoil(ownerConn);
 
         // Handle bouncing bullet logic
@@ -128,8 +156,7 @@ public class Weapon : NetworkBehaviour
 
         if (OutOfAmmo)
         {
-            RpcAdjustBoltAndMag(false); 
-            RpcSpawnDroppedMag(transform.position - transform.up * 0.2f);
+            RpcAdjustBolt(true);
         }
     }
 
@@ -261,9 +288,11 @@ public class Weapon : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void RpcPlayMuzzleFlash()
+    private void RpcPlayWeaponEffects()
     {
         muzzleFlash?.Play();
+        shellEjection?.Play();
+        audioSource.PlayOneShot(FireSound);
     }
 
     [ClientRpc]
@@ -315,17 +344,32 @@ public class Weapon : NetworkBehaviour
     }
 
     [ClientRpc]
-    void RpcAdjustBoltAndMag(bool reloading)
+    void RpcAdjustMag(bool isOut)
     {
-        if (reloading)
+        if (!isOut)
         {
-            bolt.transform.localPosition += new Vector3(0, 0, 0.08f);
             mag.SetActive(true);
+            audioSource.PlayOneShot(MagInSound);
         }
         else
         {
-            bolt.transform.localPosition -= new Vector3(0, 0, 0.08f);
             mag.SetActive(false);
+            audioSource.PlayOneShot(MagOutSound);
+        }
+    }
+
+    [ClientRpc]
+    void RpcAdjustBolt(bool isOut)
+    {
+        if (!isOut)
+        {
+            bolt.transform.localPosition = initialBoltPos;
+            audioSource.PlayOneShot(BoltSound);
+        }
+        else
+        {
+            bolt.transform.localPosition = initialBoltPos + Vector3.back * 0.08f;
+            audioSource.PlayOneShot(BoltSound);
         }
     }
 

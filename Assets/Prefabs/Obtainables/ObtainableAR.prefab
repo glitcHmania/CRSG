@@ -84,6 +84,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   prefabReference: {fileID: 11400000, guid: 121c2ea642bb2de43b6480937ca96fd9, type: 2}
+  equipSound: {fileID: 7880497962153774103, guid: 2e927048918e3db48aa032647d2f48f4, type: 3}
   bobAmplitude: 0.12
   bobFrequency: 2
   rotationSpeed: 50

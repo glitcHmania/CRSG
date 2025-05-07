@@ -7,6 +7,7 @@ public class FadeDestroy : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float lifeTime = 3.0f;
+    [SerializeField] private bool fadeOut = true;
 
     private Timer timer;
     private Renderer rendererComponent;
@@ -21,8 +22,11 @@ public class FadeDestroy : MonoBehaviour
     {
         timer.Update();
 
-        Color color = rendererComponent.material.color;
-        color.a = 1f - timer.GetRatio();
-        rendererComponent.material.color = color;
+        if (fadeOut)
+        {
+            Color color = rendererComponent.material.color;
+            color.a = 1f - timer.GetRatio();
+            rendererComponent.material.color = color;
+        }
     }
 }
