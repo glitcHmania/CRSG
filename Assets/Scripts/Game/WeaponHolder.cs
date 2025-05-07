@@ -63,9 +63,13 @@ public class WeaponHolder : NetworkBehaviour
         {
             if (playerState.IsAiming)
             {
-
                 if (currentWeaponScript != null)
                 {
+                    if (!currentWeaponScript.IsLaserOn)
+                    {
+                        currentWeaponScript.CmdToggleLaser(true);
+                    }
+
                     if (currentWeaponScript.IsAutomatic && currentWeaponScript.IsAvailable)
                     {
                         if (Input.GetMouseButton(0))
@@ -81,6 +85,10 @@ public class WeaponHolder : NetworkBehaviour
                         }
                     }
                 }
+            }
+            else if (currentWeaponScript != null && currentWeaponScript.IsLaserOn)
+            {
+                currentWeaponScript.CmdToggleLaser(false);
             }
         }
 

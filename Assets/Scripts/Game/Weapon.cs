@@ -1,17 +1,24 @@
 ﻿using Mirror;
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Weapon : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform muzzleTransform;
     [SerializeField] private GameObject laser;
+    [SerializeField] private GameObject mag;
+    [SerializeField] private GameObject magPrefab;
+    [SerializeField] private GameObject bolt;
 
     [HideInInspector] public PlayerState PlayerState;
     [HideInInspector] public WeaponHolder WeaponHolder;
     [HideInInspector] public Movement Movement;
     [HideInInspector] public Rigidbody HandRigidbody;
+    
+    public bool IsLaserOn => isLaserOn;
+
+    public bool OutOfAmmo => BulletCount <= 0 && !infiniteAmmo;
 
     [SyncVar(hook = nameof(OnBulletCountChanged))]
     public int BulletCount;
@@ -55,6 +62,7 @@ public class Weapon : NetworkBehaviour
     private Timer recoverTimer;
     private ObjectPool<BulletTrail> trailPool;
     private Timer reloadTimer;
+    private bool isLaserOn;
 
     void Awake()
     {
@@ -93,6 +101,7 @@ public class Weapon : NetworkBehaviour
             WeaponHolder.TargetShowReloadText(WeaponHolder.gameObject.GetComponent<NetworkIdentity>().connectionToClient, true);
             IsAvailable = false;
             reloadTimer.Reset();
+            RpcAdjustBoltAndMag(true);
         }
     }
 
@@ -115,6 +124,12 @@ public class Weapon : NetworkBehaviour
         if (!infiniteAmmo)
         {
             BulletCount--; // server modifies
+        }
+
+        if (OutOfAmmo)
+        {
+            RpcAdjustBoltAndMag(false); 
+            RpcSpawnDroppedMag(transform.position - transform.up * 0.2f);
         }
     }
 
@@ -279,6 +294,47 @@ public class Weapon : NetworkBehaviour
             trail.Init(points[i], points[i + 1], (t) => trailPool.Return(t));
         }
     }
+
+    [Command]
+    public void CmdToggleLaser(bool state)
+    {
+        if (laser != null)
+        {
+            RpcToggleLaser(state);
+        }
+    }
+
+    [ClientRpc]
+    public void RpcToggleLaser(bool state)
+    {
+        if (laser != null)
+        {
+            laser.SetActive(state);
+            isLaserOn = state;
+        }
+    }
+
+    [ClientRpc]
+    void RpcAdjustBoltAndMag(bool reloading)
+    {
+        if (reloading)
+        {
+            bolt.transform.localPosition += new Vector3(0, 0, 0.08f);
+            mag.SetActive(true);
+        }
+        else
+        {
+            bolt.transform.localPosition -= new Vector3(0, 0, 0.08f);
+            mag.SetActive(false);
+        }
+    }
+
+    [ClientRpc]
+    void RpcSpawnDroppedMag(Vector3 position)
+    {
+        Instantiate(magPrefab, position, Quaternion.identity);
+    }
+
 
     public void ClearPool()
     {

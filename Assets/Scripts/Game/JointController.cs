@@ -248,7 +248,7 @@ public class JointController : NetworkBehaviour
     private void RotateArmToAim(ConfigurableJoint arm, ConfigurableJoint forearm)
     {
         arm.targetRotation = Quaternion.Euler(285f, 0f, 0f);
-        forearm.targetRotation = Quaternion.Euler(15f, 0f, 250f);
+        forearm.targetRotation = Quaternion.Euler(8f, 0f, 260f);
     }
 
     private void BendLeg(ConfigurableJoint leftupleg, ConfigurableJoint leftleg)

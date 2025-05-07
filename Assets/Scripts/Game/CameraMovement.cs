@@ -4,6 +4,7 @@ public class CameraMovement : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform target;
+    [SerializeField] private PlayerState playerState;
     [SerializeField] private LayerMask collisionMask;
 
     [Header("Settings")]
@@ -18,6 +19,7 @@ public class CameraMovement : MonoBehaviour
     private float currentPitch = 20f;
     private float mouseY;
     private float mouseX;
+    private bool fovDirtyFlag = false;
 
     private void Start()
     {
@@ -28,6 +30,24 @@ public class CameraMovement : MonoBehaviour
     void LateUpdate()
     {
         if (target == null) return;
+
+        if (playerState.IsAiming)
+        {
+            GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, 50f, Time.deltaTime * 5f);
+            target.localPosition = Vector3.Lerp(target.localPosition, new Vector3(0.3f, target.localPosition.y, target.localPosition.z), Time.deltaTime * 5f);
+
+            fovDirtyFlag = true;
+        }
+        else if (fovDirtyFlag)
+        {
+            GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, 90f, Time.deltaTime * 5f);
+            target.localPosition = Vector3.Lerp(target.localPosition, new Vector3(0f, target.localPosition.y, target.localPosition.z), Time.deltaTime * 5f);
+
+            if (Mathf.Abs(GetComponent<Camera>().fieldOfView - 90f) < 1f)
+            {
+                fovDirtyFlag = false;
+            }
+        }
 
         if (!ChatBehaviour.Instance.IsInputActive)
         {
@@ -42,12 +62,11 @@ public class CameraMovement : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(currentPitch, currentYaw, 0);
         Vector3 desiredPosition = target.position + rotation * offset;
 
-        Vector3 targetPositionOffset = target.position + new Vector3(0f, 1f); // Offset slightly above player
-        Vector3 direction = (desiredPosition - targetPositionOffset).normalized;
-        float distance = Vector3.Distance(targetPositionOffset, desiredPosition);
+        Vector3 direction = (desiredPosition - target.position).normalized;
+        float distance = Vector3.Distance(target.position, desiredPosition);
 
         // SphereCast instead of Raycast
-        if (Physics.SphereCast(targetPositionOffset, sphereCastRadius, direction, out RaycastHit hit, distance, collisionMask))
+        if (Physics.SphereCast(target.position, sphereCastRadius, direction, out RaycastHit hit, distance, collisionMask))
         {
             // Move camera slightly before collision
             transform.position = hit.point - direction * collisionBuffer;
@@ -57,6 +76,6 @@ public class CameraMovement : MonoBehaviour
             transform.position = desiredPosition;
         }
 
-        transform.LookAt(target.position + Vector3.up * 1.5f);
+        transform.LookAt(target.position);
     }
 }
