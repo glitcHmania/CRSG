@@ -285,9 +285,15 @@ MonoBehaviour:
   laserColor: {r: 1, g: 0, b: 0, a: 0.5176471}
   laserWidth: 0.006
   maxBounces: 1
+  bounceMask:
+    serializedVersion: 2
+    m_Bits: 8192
+  detectMask:
+    serializedVersion: 2
+    m_Bits: 8128
   raycastMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 16320
   laserMaterial: {fileID: 2100000, guid: 5c4f3dbb50c65e14ca9da067e8a8bf32, type: 2}
 --- !u!1001 &3261659178384690027
 PrefabInstance:

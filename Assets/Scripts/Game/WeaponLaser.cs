@@ -1,5 +1,5 @@
-using UnityEngine;
 using Mirror;
+using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
 public class WeaponLaser : NetworkBehaviour
@@ -8,10 +8,26 @@ public class WeaponLaser : NetworkBehaviour
     [SerializeField] private Color laserColor = Color.red;
     [SerializeField] private float laserWidth = 0.05f;
     [SerializeField] private int maxBounces = 5;
-    [SerializeField] private LayerMask raycastMask = -1;
+    [SerializeField] private LayerMask bounceMask = -1;   // Layers the laser can reflect off
+    [SerializeField] private LayerMask detectMask = -1;   // Layers the laser can detect targets on
+    [SerializeField] private LayerMask raycastMask = -1;  // Layers to raycast against
+
     [SerializeField] private Material laserMaterial;
 
+    public bool IsAimingOnPlayer => isAimingOnPlayer;
+
     private LineRenderer[] lineSegments;
+    private bool isAimingOnPlayer = false;
+    private Outline currentOutlineTarget = null;
+
+
+    private void OnDisable()
+    {
+        if(currentOutlineTarget != null)
+        {
+            currentOutlineTarget.enabled = false; // Disable outline when the laser is disabled
+        }
+    }
 
     void Start()
     {
@@ -48,6 +64,9 @@ public class WeaponLaser : NetworkBehaviour
         float remainingDistance = maxDistance;
         int segmentIndex = 0;
 
+        bool foundPlayer = false;
+        Outline newOutlineTarget = null;
+
         // Reset all line renderers
         for (int i = 0; i < lineSegments.Length; i++)
         {
@@ -56,7 +75,6 @@ public class WeaponLaser : NetworkBehaviour
 
         const float minimumHitDistance = 0.01f;
 
-        // Trace the laser path
         while (segmentIndex < maxBounces + 1 && remainingDistance > 0)
         {
             LineRenderer currentSegment = lineSegments[segmentIndex];
@@ -65,27 +83,43 @@ public class WeaponLaser : NetworkBehaviour
 
             if (Physics.Raycast(origin, direction, out RaycastHit hit, remainingDistance, raycastMask))
             {
-                // Make sure the hit isn't too close
-                if (hit.distance < minimumHitDistance)
+                if (hit.collider != null)
                 {
-                    // Very tiny hit, break to avoid infinite bouncing
-                    currentSegment.SetPosition(1, origin + direction * remainingDistance);
-                    break;
+                    // Detection logic
+                    if (isOwned && (detectMask.value & (1 << hit.collider.gameObject.layer)) != 0)
+                    {
+                        foundPlayer = true;
+
+                        // Try to get Outline component
+                        newOutlineTarget = hit.collider.GetComponentInParent<Outline>();
+                    }
+
+                    bool isBounceSurface = (bounceMask.value & (1 << hit.collider.gameObject.layer)) != 0;
+
+                    if (hit.distance < minimumHitDistance)
+                    {
+                        currentSegment.SetPosition(1, origin + direction * remainingDistance);
+                        break;
+                    }
+
+                    currentSegment.SetPosition(1, hit.point);
+
+                    if (isBounceSurface)
+                    {
+                        float usedDistance = hit.distance;
+                        remainingDistance -= usedDistance;
+
+                        direction = Vector3.Reflect(direction, hit.normal).normalized;
+                        origin = hit.point + direction * 0.01f;
+                    }
+                    else
+                    {
+                        break; // Hit non-bounce object, stop laser
+                    }
                 }
-
-                currentSegment.SetPosition(1, hit.point);
-
-                // Calculate remaining distance
-                float usedDistance = hit.distance;
-                remainingDistance -= usedDistance;
-
-                // Prepare for next segment
-                direction = Vector3.Reflect(direction, hit.normal).normalized;
-                origin = hit.point + direction * 0.01f; // Move slightly along the new direction to avoid immediate re-hit
             }
             else
             {
-                // No hit - draw to max distance
                 Vector3 endPoint = origin + direction * remainingDistance;
                 currentSegment.SetPosition(1, endPoint);
                 break;
@@ -93,6 +127,32 @@ public class WeaponLaser : NetworkBehaviour
 
             segmentIndex++;
         }
+
+        if (isOwned)
+        {
+            // Update aiming states after raycast finishes
+            UpdateOutlineTarget(newOutlineTarget);
+            isAimingOnPlayer = foundPlayer;
+        }
     }
 
+    private void UpdateOutlineTarget(Outline newTarget)
+    {
+        if (currentOutlineTarget != null && currentOutlineTarget != newTarget)
+        {
+            currentOutlineTarget.enabled = false; // Disable old one
+        }
+
+        if (newTarget != null)
+        {
+            newTarget.enabled = true; // Enable new one
+        }
+
+        currentOutlineTarget = newTarget;
+    }
+
+
 }
+
+
+

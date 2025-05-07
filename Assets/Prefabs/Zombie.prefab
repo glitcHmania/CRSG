@@ -1193,6 +1193,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2649560988290364114}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1219201752035072413}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4419815717529161684}
@@ -3953,6 +3956,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxVelocity: 20
   maxAngularVelocity: 20
+--- !u!114 &1219201752035072413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8415338635620679260}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 0, b: 0, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &8578548780879289607 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1082271958561512970, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
