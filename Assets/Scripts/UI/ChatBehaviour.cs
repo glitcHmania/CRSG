@@ -9,9 +9,9 @@ public class ChatBehaviour : NetworkBehaviour
 {
     public static ChatBehaviour Instance { get; private set; }
 
-    [SerializeField] private GameObject chatUI = null;
-    [SerializeField] private ScrollRect scrollRect = null;
-    [SerializeField] private TMP_InputField inputField = null;
+    private GameObject chatUI = null;
+    private ScrollRect scrollRect = null;
+    private TMP_InputField inputField = null;
 
     private TMP_Text chatText = null;
     private Image scrollRectImage = null;
