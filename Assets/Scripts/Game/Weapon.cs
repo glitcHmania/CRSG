@@ -58,12 +58,13 @@ public class Weapon : NetworkBehaviour
     public AudioClip MagInSound;
     public AudioClip BoltSound;
 
-    private Timer recoverTimer;
-    private ObjectPool<BulletTrail> trailPool;
-    private Timer reloadTimer;
     private bool isLaserOn;
-    private AudioSource audioSource;
     private Vector3 initialBoltPos;
+    private Timer recoverTimer;
+    private Timer boltTimer;
+    private Timer magTimer;
+    private AudioSource audioSource;
+    private ObjectPool<BulletTrail> trailPool;
 
     private void OnBulletCountChanged(int oldCount, int newCount)
     {
@@ -79,16 +80,20 @@ public class Weapon : NetworkBehaviour
     void Awake()
     {
         recoverTimer = new Timer(recoverTime, () => IsAvailable = true, true);
-        reloadTimer = new Timer(reloadTime, () =>
+        boltTimer = new Timer(reloadTime, () =>
         {
             BulletCount = MagazineSize;
             IsAvailable = true;
             WeaponHolder.UpdateBulletCountText();
             WeaponHolder.TargetShowReloadText(WeaponHolder.gameObject.GetComponent<NetworkIdentity>().connectionToClient, false);
 
-            RpcAdjustBolt(false);
-            RpcAdjustMag(false);
+            RpcAdjustBolt(true);
 
+        }, true);
+
+        magTimer = new Timer(reloadTime * 0.5f, () =>
+        {
+            RpcAdjustMag(true);
         }, true);
 
         audioSource = GetComponent<AudioSource>();
@@ -110,7 +115,8 @@ public class Weapon : NetworkBehaviour
     void Update()
     {
         recoverTimer.Update();
-        reloadTimer.Update();
+        boltTimer.Update();
+        magTimer.Update();
     }
 
     public void Reload()
@@ -119,10 +125,11 @@ public class Weapon : NetworkBehaviour
         {
             WeaponHolder.TargetShowReloadText(WeaponHolder.gameObject.GetComponent<NetworkIdentity>().connectionToClient, true);
             IsAvailable = false;
-            reloadTimer.Reset();
+            boltTimer.Reset();
+            magTimer.Reset();
 
-            RpcAdjustBolt(true);
-            RpcAdjustMag(true);
+            RpcAdjustBolt(false);
+            RpcAdjustMag(false);
             RpcSpawnDroppedMag(transform.position - transform.up * 0.2f);
         }
     }
@@ -156,7 +163,7 @@ public class Weapon : NetworkBehaviour
 
         if (OutOfAmmo)
         {
-            RpcAdjustBolt(true);
+            RpcAdjustBolt(false);
         }
     }
 
@@ -344,9 +351,9 @@ public class Weapon : NetworkBehaviour
     }
 
     [ClientRpc]
-    void RpcAdjustMag(bool isOut)
+    void RpcAdjustMag(bool adjust)
     {
-        if (!isOut)
+        if (adjust)
         {
             mag.SetActive(true);
             audioSource.PlayOneShot(MagInSound);
@@ -359,9 +366,9 @@ public class Weapon : NetworkBehaviour
     }
 
     [ClientRpc]
-    void RpcAdjustBolt(bool isOut)
+    void RpcAdjustBolt(bool adjust)
     {
-        if (!isOut)
+        if (adjust)
         {
             bolt.transform.localPosition = initialBoltPos;
             audioSource.PlayOneShot(BoltSound);
