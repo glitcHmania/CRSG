@@ -3599,7 +3599,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  recoilBone: {fileID: 1970915999094826036}
+  weaponHand: {fileID: 4895237054626172946}
+  reloadHand: {fileID: 6583999418628161245}
   weaponBone: {fileID: 8780963649569159077}
   playerState: {fileID: 5436185569749787226}
   equipSound: {fileID: 0}

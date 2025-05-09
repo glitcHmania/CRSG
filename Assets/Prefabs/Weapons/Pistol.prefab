@@ -198,6 +198,37 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 16320
   laserMaterial: {fileID: 2100000, guid: 5c4f3dbb50c65e14ca9da067e8a8bf32, type: 2}
+--- !u!1 &2241933929349468500
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4733332652300852537}
+  m_Layer: 15
+  m_Name: MagDrop
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4733332652300852537
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2241933929349468500}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.1161, z: -0.0505}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3207413368977302510}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5629045766404183405
 GameObject:
   m_ObjectHideFlags: 0
@@ -266,6 +297,7 @@ Transform:
   - {fileID: 9077244307745308885}
   - {fileID: 1475502275687539839}
   - {fileID: 3286076589869032107}
+  - {fileID: 4733332652300852537}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &533902080912870051
@@ -284,6 +316,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   muzzleTransform: {fileID: 9077244307745308885}
+  magDropTansform: {fileID: 4733332652300852537}
   laser: {fileID: 1498856379543725439}
   mag: {fileID: 2625200914508038485}
   magPrefab: {fileID: 8013567358858603555, guid: 9bb488b9298db15488e616ec82b7ce08, type: 3}

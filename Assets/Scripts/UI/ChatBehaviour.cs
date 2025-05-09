@@ -15,12 +15,13 @@ public class ChatBehaviour : NetworkBehaviour
     private TMP_InputField inputField = null;
 
     private TMP_Text chatText = null;
+    private Graphic placeholderText = null;
     private Image scrollRectImage = null;
     private Image inputFieldImage = null;
     private Color scrollRectOpenColor = new Color(0, 0, 0, 0.4f);
-    private Color scrollRectClosedColor = new Color(0, 0, 0, 0);
+    private Color scrollRectClosedColor;
     private Color inputFieldOpenColor = new Color(0, 0, 0, 0.7f);
-    private Color inputFieldClosedColor = new Color(0, 0, 0, 0);
+    private Color inputFieldClosedColor;
 
     private static event Action<string> OnMessage;
 
@@ -34,10 +35,15 @@ public class ChatBehaviour : NetworkBehaviour
         chatUI = GameObject.FindWithTag("ChatUI");
         inputField = chatUI.GetComponentInChildren<TMP_InputField>(true);
         scrollRect = chatUI.GetComponentInChildren<ScrollRect>(true);
-        chatText = scrollRect.gameObject.GetComponentInChildren<TMP_Text>();
+        chatText = scrollRect.GetComponentInChildren<TMP_Text>();
 
-        scrollRectImage = scrollRect.gameObject.GetComponent<Image>();
-        inputFieldImage = inputField.gameObject.GetComponent<Image>();
+        placeholderText = inputField.placeholder;
+
+        scrollRectImage = scrollRect.GetComponent<Image>();
+        inputFieldImage = inputField.GetComponent<Image>();
+
+        scrollRectClosedColor = scrollRectImage.color;
+        inputFieldClosedColor = inputFieldImage.color;
 
         chatUI.SetActive(true);
         OnMessage += HandleMessage;
@@ -76,6 +82,7 @@ public class ChatBehaviour : NetworkBehaviour
                 EventSystem.current.SetSelectedGameObject(inputField.gameObject);
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+                placeholderText.gameObject.SetActive(false);
             }
             else
             {
@@ -95,6 +102,7 @@ public class ChatBehaviour : NetworkBehaviour
 
                 scrollRectImage.color = scrollRectClosedColor;
                 inputFieldImage.color = inputFieldClosedColor;
+                placeholderText.gameObject.SetActive(true);
             }
         }
     }
@@ -108,16 +116,16 @@ public class ChatBehaviour : NetworkBehaviour
             return;
         }
 
-        CmdSendMessage(message);
+        string playerName = SteamFriends.GetPersonaName(); // Get Steam name on client
+        CmdSendMessage(playerName, message);
     }
 
     [Command]
-    private void CmdSendMessage(string message)
+    private void CmdSendMessage(string playerName, string message)
     {
-        //string playerName = connectionToClient.connectionId.ToString();
-        string playerName = SteamFriends.GetPersonaName();
         RpcHandleMessage($"[{playerName}]: {message}");
     }
+
 
     [ClientRpc]
     private void RpcHandleMessage(string message)

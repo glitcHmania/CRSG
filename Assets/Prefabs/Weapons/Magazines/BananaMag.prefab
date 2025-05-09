@@ -148,3 +148,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fadeTarget: {fileID: 323307695952796306}
   lifeTime: 3
+  fadeOut: 1

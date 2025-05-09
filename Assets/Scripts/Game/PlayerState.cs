@@ -33,19 +33,22 @@ public class PlayerState : NetworkBehaviour
 
     private void HandleMovementInput()
     {
-        if (Input.GetKey(KeyCode.Space) && Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
+        if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
         {
-            MovementState = Movement.Jumping;
-            return;
-        }
+            if (Input.GetKey(KeyCode.Space))
+            {
+                MovementState = Movement.Jumping;
+                return;
+            }
 
-        if (Input.GetKeyDown(KeyCode.LeftControl))
-        {
-            IsCrouching = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.LeftControl))
-        {
-            IsCrouching = false;
+            if (Input.GetKeyDown(KeyCode.LeftControl))
+            {
+                IsCrouching = true;
+            }
+            else if (Input.GetKeyUp(KeyCode.LeftControl))
+            {
+                IsCrouching = false;
+            }
         }
 
         bool hasInput = (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||

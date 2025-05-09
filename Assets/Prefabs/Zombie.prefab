@@ -3773,7 +3773,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  recoilBone: {fileID: 287997504604421362}
+  weaponHand: {fileID: 6344032637225775703}
+  reloadHand: {fileID: 2565115557084225215}
   weaponBone: {fileID: 8292016055041033889}
   playerState: {fileID: -8150470886946853929}
   equipSound: {fileID: 0}
@@ -3916,9 +3917,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  chatUI: {fileID: 0}
-  scrollRect: {fileID: 0}
-  inputField: {fileID: 0}
 --- !u!54 &8976224003413410346
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -77,62 +77,62 @@ public class Movement : NetworkBehaviour
                 }
                 gameObject.transform.position = new Vector3(-1, 1.5f, -8);
             }
+
+            jumpTimer.Update();
+            jumpCooldownTimer.Update();
+
+            if (jumpCooldownTimer.IsFinished)
+            {
+                if (Input.GetKey(KeyCode.Space) && playerState.IsGrounded)
+                {
+                    jumpHoldTimer.Update();
+                }
+
+                if (Input.GetKeyUp(KeyCode.Space) && playerState.IsGrounded)
+                {
+                    if (jumpHoldTimer.IsFinished)
+                    {
+                        ragdollController.DisableBalance();
+                        mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * jumpForce * 1.5f, ForceMode.Impulse);
+                    }
+                    else if (playerState.MovementState == PlayerState.Movement.Running)
+                    {
+                        mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * jumpForce, ForceMode.Impulse);
+                    }
+                    else
+                    {
+                        mainRigidBody.AddForce((Vector3.up).normalized * jumpForce, ForceMode.Impulse);
+                    }
+
+                    jumpTimer.Reset();
+                    jumpHoldTimer.Reset();
+                    jumpCooldownTimer.Reset();
+                }
+            }
+
+            if (playerState.IsAiming)
+            {
+                mainRigidBody.MoveRotation(Quaternion.Slerp(mainRigidBody.rotation, Quaternion.Euler(0, cam.transform.eulerAngles.y, 0), 5f * Time.deltaTime));
+
+                moveDir = Vector3.zero;
+            }
+            else
+            {
+                float h = Input.GetAxisRaw("Horizontal");
+                float v = Input.GetAxisRaw("Vertical");
+
+                Vector3 camForward = cam.transform.forward;
+                Vector3 camRight = cam.transform.right;
+
+                camForward.y = 0;
+                camRight.y = 0;
+                camForward.Normalize();
+                camRight.Normalize();
+
+                moveDir = (camForward * v + camRight * h).normalized;
+            }
         }
         #endregion
-
-        if (playerState.IsAiming)
-        {
-            mainRigidBody.MoveRotation(Quaternion.Slerp(mainRigidBody.rotation, Quaternion.Euler(0, cam.transform.eulerAngles.y, 0), 5f * Time.deltaTime));
-
-            moveDir = Vector3.zero;
-        }
-        else
-        {
-            float h = Input.GetAxisRaw("Horizontal");
-            float v = Input.GetAxisRaw("Vertical");
-
-            Vector3 camForward = cam.transform.forward;
-            Vector3 camRight = cam.transform.right;
-
-            camForward.y = 0;
-            camRight.y = 0;
-            camForward.Normalize();
-            camRight.Normalize();
-
-            moveDir = (camForward * v + camRight * h).normalized;
-        }
-
-        jumpTimer.Update();
-        jumpCooldownTimer.Update();
-
-        if (jumpCooldownTimer.IsFinished)
-        {
-            if (Input.GetKey(KeyCode.Space) && playerState.IsGrounded)
-            {
-                jumpHoldTimer.Update();
-            }
-
-            if (Input.GetKeyUp(KeyCode.Space) && playerState.IsGrounded)
-            {
-                if (jumpHoldTimer.IsFinished)
-                {
-                    ragdollController.DisableBalance();
-                    mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * jumpForce * 1.5f, ForceMode.Impulse);
-                }
-                else if (playerState.MovementState == PlayerState.Movement.Running)
-                {
-                    mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * jumpForce, ForceMode.Impulse);
-                }
-                else
-                {
-                    mainRigidBody.AddForce((Vector3.up).normalized * jumpForce, ForceMode.Impulse);
-                }
-
-                jumpTimer.Reset();
-                jumpHoldTimer.Reset();
-                jumpCooldownTimer.Reset();
-            }
-        }
 
         //raycast to check if the player is grounded and take the normal of the surface
         if (Physics.Raycast(hip.transform.position, Vector3.down, out RaycastHit hit, groundCheckDistance, groundMask))

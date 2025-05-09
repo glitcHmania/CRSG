@@ -5,7 +5,8 @@ using UnityEngine;
 public class WeaponHolder : NetworkBehaviour
 {
     [Header("References")]
-    [SerializeField] private GameObject recoilBone;
+    [SerializeField] private Rigidbody weaponHand;
+    [SerializeField] private Rigidbody reloadHand;
     [SerializeField] private GameObject weaponBone;
     [SerializeField] private PlayerState playerState;
 
@@ -255,7 +256,8 @@ public class WeaponHolder : NetworkBehaviour
         if (weaponObj.TryGetComponent<Weapon>(out var gunScript))
         {
             currentWeaponScript = gunScript;
-            currentWeaponScript.HandRigidbody = recoilBone.GetComponent<Rigidbody>();
+            currentWeaponScript.WeaponHandRigidbody = weaponHand;
+            currentWeaponScript.ReloadHandRigidbody = reloadHand;
             currentWeaponScript.Movement = GetComponent<Movement>();
             currentWeaponScript.PlayerState = playerState;
             currentWeaponScript.WeaponHolder = this;

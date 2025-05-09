@@ -7,6 +7,7 @@ public class Weapon : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform muzzleTransform;
+    [SerializeField] private Transform magDropTansform;
     [SerializeField] private GameObject laser;
     [SerializeField] private GameObject mag;
     [SerializeField] private GameObject magPrefab;
@@ -15,7 +16,8 @@ public class Weapon : NetworkBehaviour
     [HideInInspector] public PlayerState PlayerState;
     [HideInInspector] public WeaponHolder WeaponHolder;
     [HideInInspector] public Movement Movement;
-    [HideInInspector] public Rigidbody HandRigidbody;
+    [HideInInspector] public Rigidbody ReloadHandRigidbody;
+    [HideInInspector] public Rigidbody WeaponHandRigidbody;
 
     public bool IsLaserOn => isLaserOn;
 
@@ -130,7 +132,7 @@ public class Weapon : NetworkBehaviour
 
             RpcAdjustBolt(false);
             RpcAdjustMag(false);
-            RpcSpawnDroppedMag(transform.position - transform.up * 0.2f);
+            RpcSpawnDroppedMag(magDropTansform.position);
         }
     }
 
@@ -285,9 +287,9 @@ public class Weapon : NetworkBehaviour
         }
         else
         {
-            if (HandRigidbody != null)
+            if (WeaponHandRigidbody != null)
             {
-                HandRigidbody.AddForce(-transform.forward * power * recoilMultiplier, ForceMode.Impulse);
+                WeaponHandRigidbody.AddForce(-transform.forward * power * recoilMultiplier, ForceMode.Impulse);
             }
         }
 
@@ -357,11 +359,15 @@ public class Weapon : NetworkBehaviour
         {
             mag.SetActive(true);
             audioSource.PlayOneShot(MagInSound);
+            //WeaponHandRigidbody.AddForce(transform.forward * 10f, ForceMode.Impulse);
+            ReloadHandRigidbody.AddForce(transform.forward * 5f, ForceMode.Impulse);
+            ReloadHandRigidbody.AddForce(transform.right * 15f, ForceMode.Impulse);
         }
         else
         {
             mag.SetActive(false);
             audioSource.PlayOneShot(MagOutSound);
+            WeaponHandRigidbody.AddForce(-transform.forward * 10f, ForceMode.Impulse);
         }
     }
 
@@ -383,7 +389,8 @@ public class Weapon : NetworkBehaviour
     [ClientRpc]
     void RpcSpawnDroppedMag(Vector3 position)
     {
-        Instantiate(magPrefab, position, Quaternion.identity);
+        GameObject droppedMag = Instantiate(magPrefab, position, Quaternion.Euler(0, 180, 0));
+        droppedMag.GetComponent<Rigidbody>().AddForce(Vector3.forward * -2f, ForceMode.Impulse);
     }
 
 
