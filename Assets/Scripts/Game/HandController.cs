@@ -14,12 +14,13 @@ public class HandController : MonoBehaviour
     private GameObject collidedObject = null;
     private bool isColliding = false;
     private bool isCarrying = false;
+    private bool isHolding = false;
 
     void Update()
     {
         if (disableOnArmed && playerState.IsArmed) return;
 
-        if (Input.GetKeyDown(controlkey))
+        if (!isHolding && !isCarrying && Input.GetKey(controlkey))
         {
             if (isColliding && collidedObject != null)
             {
@@ -33,6 +34,7 @@ public class HandController : MonoBehaviour
                 {
                     fixedJoint = foreArm.gameObject.AddComponent<FixedJoint>();
                     fixedJoint.connectedAnchor = collidedObject.transform.position;
+                    isHolding = true;
                 }
             }
         }
@@ -49,6 +51,7 @@ public class HandController : MonoBehaviour
                 {
                     Destroy(fixedJoint);
                     fixedJoint = null;
+                    isHolding = false;
                 }
             }
         }

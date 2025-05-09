@@ -94,11 +94,11 @@ public class WeaponHolder : NetworkBehaviour
             {
                 currentWeaponScript.CmdToggleLaser(false);
             }
-        }
 
-        if (Input.GetKeyDown(KeyCode.R) && currentWeaponScript.BulletCount < currentWeaponScript.MagazineSize)
-        {
-            CmdReload();
+            if (Input.GetKeyDown(KeyCode.R) && currentWeaponScript.BulletCount < currentWeaponScript.MagazineSize)
+            {
+                CmdReload();
+            }
         }
     }
 

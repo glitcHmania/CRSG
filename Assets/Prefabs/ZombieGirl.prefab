@@ -116,8 +116,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c35eada6229c8040bb901d2696b907a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDistance: 200
-  alwaysVisibleLayers: 000000000d000000
+  maxDistance: 150
+  alwaysVisibleLayers: 00000000
 --- !u!114 &5832771300535971052
 MonoBehaviour:
   m_ObjectHideFlags: 0
