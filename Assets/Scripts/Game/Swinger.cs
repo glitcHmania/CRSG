@@ -44,12 +44,4 @@ public class Swinger : NetworkBehaviour
         Quaternion smoothedRotation = Quaternion.Lerp(rb.rotation, targetRotation, rotationLerpSpeed * Time.fixedDeltaTime);
         rb.MoveRotation(smoothedRotation);
     }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("PlayerSpine") || collision.gameObject.layer == LayerMask.NameToLayer("PlayerHip"))
-        {
-            //collision.gameObject.GetComponentInParent<RagdollController>().EnableRagdoll();
-        }
-    }
 }

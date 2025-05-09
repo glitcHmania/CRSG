@@ -143,8 +143,8 @@ public class JointController : NetworkBehaviour
             else
             {
                 ResetUpperArms();
+                ResetLeftLowerArm();
             }
-            ResetLowerArms();
         }
         else
         {
@@ -273,6 +273,11 @@ public class JointController : NetworkBehaviour
     {
         leftForeArmJoint.targetRotation = Quaternion.Euler(0, 0, 30);
         rightForeArmJoint.targetRotation = Quaternion.Euler(0, 0, 330);
+    }
+
+    private void ResetLeftLowerArm()
+    {
+        leftForeArmJoint.targetRotation = Quaternion.Euler(0, 0, 30);
     }
 
     private void ResetUpperArms()
