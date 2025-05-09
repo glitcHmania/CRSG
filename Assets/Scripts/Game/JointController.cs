@@ -140,14 +140,20 @@ public class JointController : NetworkBehaviour
             {
                 RaiseArms(leftArmJoint, rightArmJoint);
             }
+            else
+            {
+                ResetUpperArms();
+            }
+            ResetLowerArms();
         }
         else
         {
             ResetLegs();
 
+            ResetUpperArms();
             if (!playerState.IsAiming)
             {
-                ResetUpperArms();
+                ResetLowerArms();
             }
 
             stepChronometer.Reset();
@@ -263,13 +269,9 @@ public class JointController : NetworkBehaviour
         rightArm.targetRotation = Quaternion.Euler(60, 110, 0);
     }
 
-    private void ResetLeftArm()
+    private void ResetLowerArms()
     {
         leftForeArmJoint.targetRotation = Quaternion.Euler(0, 0, 30);
-    }
-
-    private void ResetRightArm()
-    {
         rightForeArmJoint.targetRotation = Quaternion.Euler(0, 0, 330);
     }
 

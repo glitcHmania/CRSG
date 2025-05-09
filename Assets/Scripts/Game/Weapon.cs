@@ -359,15 +359,13 @@ public class Weapon : NetworkBehaviour
         {
             mag.SetActive(true);
             audioSource.PlayOneShot(MagInSound);
-            //WeaponHandRigidbody.AddForce(transform.forward * 10f, ForceMode.Impulse);
-            ReloadHandRigidbody.AddForce(transform.forward * 5f, ForceMode.Impulse);
-            ReloadHandRigidbody.AddForce(transform.right * 15f, ForceMode.Impulse);
+            WeaponHandRigidbody.AddForce(transform.up * 2f, ForceMode.Impulse);
         }
         else
         {
             mag.SetActive(false);
             audioSource.PlayOneShot(MagOutSound);
-            WeaponHandRigidbody.AddForce(-transform.forward * 10f, ForceMode.Impulse);
+            WeaponHandRigidbody.AddForce(-transform.up * 4f, ForceMode.Impulse);
         }
     }
 
@@ -378,6 +376,7 @@ public class Weapon : NetworkBehaviour
         {
             bolt.transform.localPosition = initialBoltPos;
             audioSource.PlayOneShot(BoltSound);
+            WeaponHandRigidbody.AddForce(transform.forward * 2f, ForceMode.Impulse);
         }
         else
         {

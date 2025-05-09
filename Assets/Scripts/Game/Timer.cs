@@ -25,14 +25,13 @@ public class Timer
     {
         if (!_hasStarted)
         {
-            _startTime = 0f;
+            _startTime = Time.time;
             _hasStarted = true;
         }
 
         if (IsFinished) return;
 
-        _startTime += Time.deltaTime; // accumulate elapsed time manually
-        Elapsed = _startTime;
+        Elapsed = Time.time - _startTime;
         RemainingTime = Mathf.Max(0f, Duration - Elapsed);
 
         if (Elapsed >= Duration)
@@ -54,7 +53,6 @@ public class Timer
         return Mathf.Clamp01(1f - RemainingTime / Duration);
     }
 }
-
 
 public class Chronometer
 {
@@ -90,7 +88,7 @@ public class Chronometer
 
     public void Update()
     {
-        if(!IsRunning)
+        if (!IsRunning)
         {
             IsRunning = true;
         }
