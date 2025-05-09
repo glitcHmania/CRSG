@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 828135782306049801}
   serializedVersion: 2
   m_LocalRotation: {x: -0.3688873, y: 0.6032596, z: 0.3688874, w: 0.6032596}
-  m_LocalPosition: {x: 0.0049, y: 0.0561, z: 0.0426}
+  m_LocalPosition: {x: -0.006099999, y: 0.0561, z: 0.0426}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -59,7 +59,7 @@ Transform:
   m_GameObject: {fileID: 1498856379543725439}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.008, y: -0.0076, z: 0.1971}
+  m_LocalPosition: {x: -0.019, y: -0.0076, z: 0.1971}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -223,7 +223,7 @@ Transform:
   m_GameObject: {fileID: 2241933929349468500}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.1161, z: -0.0505}
+  m_LocalPosition: {x: -0.010999999, y: -0.1161, z: -0.0505}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -254,7 +254,7 @@ Transform:
   m_GameObject: {fileID: 5629045766404183405}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.008, y: 0.0488, z: 0.2029}
+  m_LocalPosition: {x: -0.019, y: 0.0488, z: 0.2029}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -324,7 +324,8 @@ MonoBehaviour:
   PlayerState: {fileID: 0}
   WeaponHolder: {fileID: 0}
   Movement: {fileID: 0}
-  HandRigidbody: {fileID: 0}
+  ReloadHandRigidbody: {fileID: 0}
+  WeaponHandRigidbody: {fileID: 0}
   BulletCount: 10
   IsAvailable: 1
   IsAutomatic: 0
@@ -663,7 +664,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7549530855202475692, guid: e7461e3cb4dfd384ea54841be167ca84, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.008
+      value: -0.019
       objectReference: {fileID: 0}
     - target: {fileID: 7549530855202475692, guid: e7461e3cb4dfd384ea54841be167ca84, type: 3}
       propertyPath: m_LocalPosition.y

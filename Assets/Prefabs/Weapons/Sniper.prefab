@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 4202914531650195228}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.0299, y: 0.1034, z: 0.1197}
+  m_LocalPosition: {x: 0.018900001, y: 0.1034, z: 0.1197}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -57,7 +57,7 @@ Transform:
   m_GameObject: {fileID: 5629045766404183405}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.025, y: 0.0734, z: 0.9176}
+  m_LocalPosition: {x: -0.036, y: 0.0734, z: 0.9176}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -89,7 +89,7 @@ Transform:
   m_GameObject: {fileID: 5903580061964193564}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.0534, z: 0.136}
+  m_LocalPosition: {x: -0.010999998, y: -0.0534, z: 0.136}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -158,7 +158,8 @@ MonoBehaviour:
   PlayerState: {fileID: 0}
   WeaponHolder: {fileID: 0}
   Movement: {fileID: 0}
-  HandRigidbody: {fileID: 0}
+  ReloadHandRigidbody: {fileID: 0}
+  WeaponHandRigidbody: {fileID: 0}
   BulletCount: 3
   IsAvailable: 1
   IsAutomatic: 0
@@ -325,7 +326,7 @@ Transform:
   m_GameObject: {fileID: 7473784515348345783}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.025, y: 0.0196, z: 0.78}
+  m_LocalPosition: {x: -0.036, y: 0.0196, z: 0.78}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -608,7 +609,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7549530855202475692, guid: e7461e3cb4dfd384ea54841be167ca84, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.025
+      value: -0.036
       objectReference: {fileID: 0}
     - target: {fileID: 7549530855202475692, guid: e7461e3cb4dfd384ea54841be167ca84, type: 3}
       propertyPath: m_LocalPosition.y
