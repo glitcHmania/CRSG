@@ -265,11 +265,13 @@ public class WeaponHolder : NetworkBehaviour
         weaponObj.transform.localPosition = Vector3.zero;
         weaponObj.transform.localRotation = Quaternion.identity;
 
-        weaponObj.GetComponentInChildren<Collider>().enabled = true;
+        var weaponCollider = weaponObj.GetComponentInChildren<Collider>();
+
+        weaponCollider.enabled = true;
 
         foreach (Collider collider in GetComponentsInChildren<Collider>())
         {
-            Physics.IgnoreCollision(currentWeaponObject.GetComponentInChildren<Collider>(), collider, true);
+            Physics.IgnoreCollision(weaponCollider, collider, true);
         }
 
         playerState.IsArmed = true;

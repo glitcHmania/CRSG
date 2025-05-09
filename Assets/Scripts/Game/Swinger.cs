@@ -49,7 +49,7 @@ public class Swinger : NetworkBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("PlayerSpine") || collision.gameObject.layer == LayerMask.NameToLayer("PlayerHip"))
         {
-            collision.gameObject.GetComponentInParent<RagdollController>().EnableRagdoll();
+            //collision.gameObject.GetComponentInParent<RagdollController>().EnableRagdoll();
         }
     }
 }

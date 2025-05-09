@@ -1,9 +1,6 @@
 using System;
 using UnityEngine;
 
-using System;
-using UnityEngine;
-
 public class Timer
 {
     public float RemainingTime { get; private set; }

@@ -1,4 +1,5 @@
 using Mirror;
+using Steamworks;
 using System;
 using TMPro;
 using UnityEngine;
@@ -113,8 +114,9 @@ public class ChatBehaviour : NetworkBehaviour
     [Command]
     private void CmdSendMessage(string message)
     {
-        string playerName = connectionToClient.connectionId.ToString();
-        RpcHandleMessage($"[Player {playerName}]: {message}");
+        //string playerName = connectionToClient.connectionId.ToString();
+        string playerName = SteamFriends.GetPersonaName();
+        RpcHandleMessage($"[{playerName}]: {message}");
     }
 
     [ClientRpc]
