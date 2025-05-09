@@ -19,7 +19,7 @@ public class HandController : MonoBehaviour
     {
         if (disableOnArmed && playerState.IsArmed) return;
 
-        if (Input.GetKey(controlkey))
+        if (Input.GetKeyDown(controlkey))
         {
             if (isColliding && collidedObject != null)
             {
