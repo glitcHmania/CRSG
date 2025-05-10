@@ -90,18 +90,20 @@ public class Movement : NetworkBehaviour
 
                 if (Input.GetKeyUp(KeyCode.Space) && playerState.IsGrounded)
                 {
+                    var newJumpForce = playerState.IsClimbing ? jumpForce * 1.5f : jumpForce;
+
                     if (jumpHoldTimer.IsFinished)
                     {
                         ragdollController.DisableBalance();
-                        mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * jumpForce * 1.5f, ForceMode.Impulse);
+                        mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * newJumpForce * 1.5f, ForceMode.Impulse);
                     }
                     else if (playerState.MovementState == PlayerState.Movement.Running)
                     {
-                        mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * jumpForce, ForceMode.Impulse);
+                        mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * newJumpForce, ForceMode.Impulse);
                     }
                     else
                     {
-                        mainRigidBody.AddForce((Vector3.up).normalized * jumpForce, ForceMode.Impulse);
+                        mainRigidBody.AddForce((Vector3.up).normalized * newJumpForce, ForceMode.Impulse);
                     }
 
                     jumpTimer.Reset();
@@ -160,8 +162,8 @@ public class Movement : NetworkBehaviour
         }
         else
         {
-            playerState.IsGrounded = false;
-            playerState.MovementState = PlayerState.Movement.Falling;
+            playerState.IsGrounded = playerState.IsClimbing;
+            playerState.MovementState = playerState.IsClimbing ? PlayerState.Movement.Climbing : PlayerState.Movement.Falling;
         }
 
         if (playerState.IsGrounded)

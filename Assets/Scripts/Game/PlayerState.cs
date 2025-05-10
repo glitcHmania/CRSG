@@ -10,6 +10,7 @@ public class PlayerState : NetworkBehaviour
         Running,
         Jumping,
         Falling,
+        Climbing
     }
 
     [SyncVar] public Movement MovementState;
@@ -20,6 +21,7 @@ public class PlayerState : NetworkBehaviour
     [SyncVar] public bool IsArmed;
     [SyncVar] public bool IsBouncing;
     [SyncVar] public bool IsCrouching;
+    [SyncVar] public bool IsClimbing;
     [SyncVar] public float Numbness;
 
     public bool IsMoving => (MovementState == Movement.Walking || MovementState == Movement.Running) && MovementState != Movement.Jumping;

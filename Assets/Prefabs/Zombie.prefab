@@ -3141,7 +3141,8 @@ MonoBehaviour:
   controlkey: 113
   foreArm: {fileID: 2565115557084225215}
   playerState: {fileID: -8150470886946853929}
-  disableOnArmed: 0
+  isLeftHand: 1
+  rightHandReference: {fileID: 3908616008693954722}
 --- !u!1 &5393420517641593754 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5561550452697079657, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
@@ -3998,7 +3999,8 @@ MonoBehaviour:
   controlkey: 101
   foreArm: {fileID: 6344032637225775703}
   playerState: {fileID: -8150470886946853929}
-  disableOnArmed: 1
+  isLeftHand: 0
+  rightHandReference: {fileID: 0}
 --- !u!4 &7042940409284967621 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1852576806548013000, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
@@ -4346,6 +4348,7 @@ MonoBehaviour:
   IsArmed: 0
   IsBouncing: 0
   IsCrouching: 0
+  IsClimbing: 0
   Numbness: 0
 --- !u!114 &7321850614008527734
 MonoBehaviour:
@@ -4373,7 +4376,7 @@ MonoBehaviour:
   jumpCooldown: 1
   groundCheckDistance: 1.6
   ungroundedTime: 2
-  maxGroundAngle: 30
+  maxGroundAngle: 100
   groundMask:
     serializedVersion: 2
     m_Bits: 8192

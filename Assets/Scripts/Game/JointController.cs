@@ -132,13 +132,14 @@ public class JointController : NetworkBehaviour
             BendLeg(leftUpLegJoint, leftLegJoint);
             BendLeg(rightUpLegJoint, rightLegJoint);
         }
-        else if (playerState.MovementState == PlayerState.Movement.Falling || playerState.IsRagdoll)
+        else if (playerState.MovementState == PlayerState.Movement.Falling || playerState.MovementState == PlayerState.Movement.Climbing || playerState.IsRagdoll)
         {
             BendLeg(leftUpLegJoint, leftLegJoint);
             BendLeg(rightUpLegJoint, rightLegJoint);
             if (!playerState.IsAiming)
             {
                 RaiseArms(leftArmJoint, rightArmJoint);
+                ResetLowerArms();
             }
             else
             {
@@ -265,8 +266,8 @@ public class JointController : NetworkBehaviour
 
     private void RaiseArms(ConfigurableJoint leftArm, ConfigurableJoint rightArm)
     {
-        leftArm.targetRotation = Quaternion.Euler(60, 250, 0);
-        rightArm.targetRotation = Quaternion.Euler(60, 110, 0);
+        leftArm.targetRotation = Quaternion.Euler(30, 250, 0);
+        rightArm.targetRotation = Quaternion.Euler(30, 110, 0);
     }
 
     private void ResetLowerArms()

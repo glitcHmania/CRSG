@@ -8,7 +8,9 @@ public class HandController : MonoBehaviour
     [SerializeField] private PlayerState playerState;
 
     [Header("Settings")]
-    [SerializeField] private bool disableOnArmed = false;
+    [SerializeField] private bool isLeftHand = false;
+    [Header("Right hand reference for left hand only")]
+    [SerializeField] private HandController rightHandReference;
 
     private FixedJoint fixedJoint;
     private GameObject collidedObject = null;
@@ -18,7 +20,20 @@ public class HandController : MonoBehaviour
 
     void Update()
     {
-        if (disableOnArmed && playerState.IsArmed) return;
+        if (!isLeftHand && playerState.IsArmed)
+        {
+            if (isHolding || isCarrying)
+            {
+                if (fixedJoint != null)
+                {
+                    Destroy(fixedJoint);
+                    fixedJoint = null;
+                    isHolding = false;
+                    isCarrying = false;
+                }
+                return;
+            }
+        }
 
         if (!isHolding && !isCarrying && Input.GetKey(controlkey))
         {
@@ -35,31 +50,37 @@ public class HandController : MonoBehaviour
                     fixedJoint = foreArm.gameObject.AddComponent<FixedJoint>();
                     fixedJoint.connectedAnchor = collidedObject.transform.position;
                     isHolding = true;
+                    playerState.IsClimbing = true;
                 }
             }
         }
-        if (Input.GetKeyUp(controlkey))
+        if (Input.GetKeyUp(controlkey) || Input.GetKeyUp(KeyCode.Space))
         {
             if (fixedJoint != null)
             {
+                Destroy(fixedJoint);
+                fixedJoint = null;
+
                 if (isCarrying)
                 {
-                    Destroy(fixedJoint);
                     isCarrying = false;
                 }
                 else
                 {
-                    Destroy(fixedJoint);
-                    fixedJoint = null;
                     isHolding = false;
                 }
             }
+        }
+
+        if (isLeftHand && !isHolding && !rightHandReference.isHolding)
+        {
+            playerState.IsClimbing = false;
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(disableOnArmed && playerState.IsArmed) return;
+        if (!isLeftHand && playerState.IsArmed) return;
 
         if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
@@ -70,7 +91,7 @@ public class HandController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (disableOnArmed && playerState.IsArmed) return;
+        if (!isLeftHand && playerState.IsArmed) return;
 
         if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
