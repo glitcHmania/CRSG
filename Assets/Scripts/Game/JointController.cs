@@ -264,10 +264,15 @@ public class JointController : NetworkBehaviour
         leftleg.targetRotation = Quaternion.Euler(120, 0, 0);
     }
 
+    private void BendLowerLeg(ConfigurableJoint leftleg)
+    {
+        leftleg.targetRotation = Quaternion.Euler(60, 0, 0);
+    }
+
     private void RaiseArms(ConfigurableJoint leftArm, ConfigurableJoint rightArm)
     {
-        leftArm.targetRotation = Quaternion.Euler(30, 250, 0);
-        rightArm.targetRotation = Quaternion.Euler(30, 110, 0);
+        leftArm.targetRotation = Quaternion.Euler(40, 250, 25);
+        rightArm.targetRotation = Quaternion.Euler(40, -250, -25);
     }
 
     private void ResetLowerArms()

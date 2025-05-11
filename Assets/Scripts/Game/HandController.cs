@@ -17,9 +17,52 @@ public class HandController : MonoBehaviour
     private bool isColliding = false;
     private bool isCarrying = false;
     private bool isHolding = false;
+    private Timer jumpTimer;
+    private GameObject[] fingers;
+    private Quaternion[] initialFingerRotations;
+
+    // New state flag
+    private bool collisionPaused = false;
+
+    private void Start()
+    {
+        fingers = new GameObject[4];
+        initialFingerRotations = new Quaternion[4];
+        for (int i = 0; i < fingers.Length; i++)
+        {
+            fingers[i] = transform.GetChild(i).gameObject;
+            initialFingerRotations[i] = fingers[i].transform.localRotation;
+        }
+
+        jumpTimer = new Timer(0.05f, () =>
+        {
+            collisionPaused = true;
+
+            if (fixedJoint != null)
+            {
+                Destroy(fixedJoint);
+                fixedJoint = null;
+                isCarrying = false;
+                isHolding = false;
+                BendFingers(false);
+            }
+        }, true);
+    }
 
     void Update()
     {
+        jumpTimer.Update();
+
+        if (Input.GetKeyDown(controlkey))
+        {
+            collisionPaused = false;
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            jumpTimer.Reset();
+        }
+
         if (!isLeftHand && playerState.IsArmed)
         {
             if (isHolding || isCarrying)
@@ -35,7 +78,7 @@ public class HandController : MonoBehaviour
             }
         }
 
-        if (!isHolding && !isCarrying && Input.GetKey(controlkey))
+        if (!collisionPaused && !isHolding && !isCarrying && Input.GetKey(controlkey))
         {
             if (isColliding && collidedObject != null)
             {
@@ -52,9 +95,11 @@ public class HandController : MonoBehaviour
                     isHolding = true;
                     playerState.IsClimbing = true;
                 }
+                BendFingers(true);
             }
         }
-        if (Input.GetKeyUp(controlkey) || Input.GetKeyUp(KeyCode.Space))
+
+        if (Input.GetKeyUp(controlkey))
         {
             if (fixedJoint != null)
             {
@@ -62,13 +107,11 @@ public class HandController : MonoBehaviour
                 fixedJoint = null;
 
                 if (isCarrying)
-                {
                     isCarrying = false;
-                }
                 else
-                {
                     isHolding = false;
-                }
+
+                BendFingers(false);
             }
         }
 
@@ -78,9 +121,25 @@ public class HandController : MonoBehaviour
         }
     }
 
+    private void BendFingers(bool state)
+    {
+        for (int i = 0; i < fingers.Length; i++)
+        {
+            if (state)
+            {
+                fingers[i].transform.localRotation = Quaternion.Euler(initialFingerRotations[i].eulerAngles.x + 60, initialFingerRotations[i].eulerAngles.y, initialFingerRotations[i].eulerAngles.z);
+            }
+            else
+            {
+                fingers[i].transform.localRotation = initialFingerRotations[i];
+            }
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!isLeftHand && playerState.IsArmed) return;
+        if (collisionPaused) return;
 
         if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
@@ -88,6 +147,18 @@ public class HandController : MonoBehaviour
             collidedObject = other.gameObject;
         }
     }
+    private void OnTriggerStay(Collider other)
+    {
+        if (!isLeftHand && playerState.IsArmed) return;
+        if (collisionPaused) return;
+
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            isColliding = true;
+            collidedObject = other.gameObject;
+        }
+    }
+
 
     private void OnTriggerExit(Collider other)
     {
