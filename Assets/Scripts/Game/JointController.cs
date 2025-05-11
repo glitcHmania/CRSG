@@ -58,7 +58,7 @@ public class JointController : NetworkBehaviour
         RaycastHit hit;
         if (Physics.Raycast(hips.transform.position, -hips.transform.up, out hit, 10f, LayerMask.GetMask("Ground")))
         {
-            currentSlope = Vector3.Angle(hips.transform.up, hit.transform.up); // calculate slope angle for step height adjustment
+            currentSlope = Mathf.Min( Vector3.Angle(hips.transform.up, hit.transform.up), 50f);
         }
 
         if (!playerState.IsRagdoll && !playerState.IsUnbalanced)
