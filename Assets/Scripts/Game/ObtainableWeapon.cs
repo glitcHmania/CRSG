@@ -50,11 +50,13 @@ public class ObtainableWeapon : NetworkBehaviour
             modelInstance.transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
         }
     }
-    void OnTriggerEnter(Collider other)
+
+    private void OnTriggerEnter(Collider collision)
     {
-        if (other.CompareTag("Player"))
+
+        if (collision.CompareTag("Player"))
         {
-            other.GetComponentInParent<WeaponHolder>()?.TryPickupWeapon(this);
+            collision.GetComponentInParent<WeaponHolder>()?.TryPickupWeapon(this);
         }
     }
 }

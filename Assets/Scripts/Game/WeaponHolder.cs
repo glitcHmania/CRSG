@@ -19,13 +19,17 @@ public class WeaponHolder : NetworkBehaviour
     private GameObject currentObtainableWeaponPrefab;
     private TextMeshProUGUI bulletUI;
     private TextMeshProUGUI reloadText;
-    public Canvas tutorialCanvas;
+    private Canvas tutorialCanvas;
+    private Timer pickUpTimer;
+
 
     [SyncVar(hook = nameof(OnWeaponChanged))]
     private NetworkIdentity currentWeaponNetIdentity;
 
     private void Start()
     {
+        pickUpTimer = new Timer(1f);
+
         var uiManager = UIManager.Instance;
         if (uiManager != null)
         {
@@ -46,6 +50,8 @@ public class WeaponHolder : NetworkBehaviour
     void Update()
     {
         if (!isLocalPlayer) return;
+
+        pickUpTimer.Update();
 
         #region Input
         if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
@@ -158,7 +164,7 @@ public class WeaponHolder : NetworkBehaviour
     {
         if (!isOwned) return;
 
-        if (!playerState.IsArmed)
+        if (!playerState.IsArmed && pickUpTimer.IsFinished)
         {
             CmdTryPickupWeapon(pickup.netIdentity);
         }
@@ -194,7 +200,16 @@ public class WeaponHolder : NetworkBehaviour
     {
         if (currentWeaponObject == null || currentWeaponPrefab == null || currentObtainableWeaponPrefab == null) return;
 
-        GameObject drop = Instantiate(currentObtainableWeaponPrefab, transform.position + transform.forward * 2f, Quaternion.identity);
+        pickUpTimer.Reset();
+
+        GameObject drop = Instantiate(currentObtainableWeaponPrefab, transform.position, Quaternion.identity);
+        //add up-forward force to the drop
+        Rigidbody dropRigidbody = drop.GetComponent<Rigidbody>();
+        if (dropRigidbody != null)
+        {
+            dropRigidbody.AddForce(transform.up * 6f, ForceMode.Impulse);
+            dropRigidbody.AddForce(transform.forward * 6f, ForceMode.Impulse);
+        }
 
         var obtainable = drop.GetComponent<ObtainableWeapon>();
         if (obtainable != null && obtainable.prefabReference != null)
