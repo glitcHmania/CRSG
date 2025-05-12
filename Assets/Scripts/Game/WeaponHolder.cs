@@ -59,6 +59,7 @@ public class WeaponHolder : NetworkBehaviour
             if (Input.GetKeyDown(KeyCode.H))
             {
                 CmdDropWeapon();
+                pickUpTimer.Reset();
             }
 
             HandleInput();
@@ -199,8 +200,6 @@ public class WeaponHolder : NetworkBehaviour
     private void CmdDropWeapon()
     {
         if (currentWeaponObject == null || currentWeaponPrefab == null || currentObtainableWeaponPrefab == null) return;
-
-        pickUpTimer.Reset();
 
         GameObject drop = Instantiate(currentObtainableWeaponPrefab, transform.position, Quaternion.identity);
         //add up-forward force to the drop

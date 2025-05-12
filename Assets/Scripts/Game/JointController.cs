@@ -43,12 +43,15 @@ public class JointController : NetworkBehaviour
     private Quaternion defaultSpineTargetRotation;
     private Chronometer stepChronometer;
     private Quaternion initialHeadLocalRotation;
+    private Movement movement;
 
     private void Start()
     {
         defaultSpineTargetRotation = spineJoint.targetRotation;
         stepChronometer = new Chronometer();
         initialHeadLocalRotation = headJoint.transform.localRotation;
+
+        movement = GetComponent<Movement>();
     }
 
     void Update()
@@ -127,7 +130,7 @@ public class JointController : NetworkBehaviour
             }
 
         }
-        else if (playerState.MovementState == PlayerState.Movement.Jumping)
+        else if (movement.CanJump && playerState.MovementState == PlayerState.Movement.Jumping)
         {
             BendLeg(leftUpLegJoint, leftLegJoint);
             BendLeg(rightUpLegJoint, rightLegJoint);

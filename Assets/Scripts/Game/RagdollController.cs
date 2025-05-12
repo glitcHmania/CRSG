@@ -20,6 +20,7 @@ public class RagdollController : NetworkBehaviour
     private List<float> initialSpringValues;
     private List<float> initialDamperValues;
     private Timer ragdollTimer;
+    private PlayerAudioPlayer playerAudioPlayer;
 
     private bool dirtyFlag = false;
 
@@ -41,6 +42,7 @@ public class RagdollController : NetworkBehaviour
         }
 
         ragdollTimer = new Timer(ragdollDuration, DisableRagdoll);
+        playerAudioPlayer = GetComponent<PlayerAudioPlayer>();
     }
 
     private void Update()
@@ -69,18 +71,16 @@ public class RagdollController : NetworkBehaviour
             ragdollTimer.Update();
         }
 
-        if (playerState.MovementState == PlayerState.Movement.Falling && legColliders[0].material != noFrictionMaterial)
+        PhysicMaterial targetMaterial = playerState.MovementState == PlayerState.Movement.Falling
+    ? noFrictionMaterial
+    : defaultMaterial;
+
+        foreach (var collider in legColliders)
         {
-            foreach (var collider in legColliders)
+            // Avoid unnecessary assignments that might clone the material internally
+            if (collider.sharedMaterial != targetMaterial)
             {
-                collider.material = noFrictionMaterial;
-            }
-        }
-        else if (playerState.MovementState != PlayerState.Movement.Falling && legColliders[0].material != defaultMaterial)
-        {
-            foreach (var collider in legColliders)
-            {
-                collider.material = defaultMaterial;
+                collider.sharedMaterial = targetMaterial;
             }
         }
 
@@ -126,6 +126,7 @@ public class RagdollController : NetworkBehaviour
 
         SetRagdollStiffnessWithoutBalance(ragdollStiffness);
         DisableBalance();
+        playerAudioPlayer.PlayRagdollSound();
     }
 
     public void DisableRagdoll()

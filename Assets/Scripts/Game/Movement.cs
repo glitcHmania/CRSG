@@ -24,6 +24,8 @@ public class Movement : NetworkBehaviour
     [SerializeField] private float maxGroundAngle;
     [SerializeField] private LayerMask groundMask;
 
+    public bool CanJump => jumpCooldownTimer.IsFinished;
+
     private Vector3 moveDir;
     private Rigidbody mainRigidBody;
     private Rigidbody hipRigidBody;
@@ -32,6 +34,11 @@ public class Movement : NetworkBehaviour
     private Timer jumpTimer;
     private Timer jumpHoldTimer;
     private Timer jumpCooldownTimer;
+    private PlayerAudioPlayer playerAudioPlayer;
+    private bool playJumpEndSound = true;
+    //private float mainRigidbodyVelocity;
+    //public float veloictyThreshold = 10.0f;
+
     void Start()
     {
         if (!isLocalPlayer)
@@ -46,23 +53,27 @@ public class Movement : NetworkBehaviour
         mainRigidBody = GetComponent<Rigidbody>();
         hipRigidBody = hip.GetComponent<Rigidbody>();
         ragdollController = GetComponent<RagdollController>();
+        playerAudioPlayer = GetComponent<PlayerAudioPlayer>();
 
+        jumpTimer = new Timer(1f);
+        jumpHoldTimer = new Timer(longJumpTime);
+        jumpCooldownTimer = new Timer(jumpCooldown);
         ungroundedTimer = new Timer(ungroundedTime, () =>
         {
             if (!playerState.IsBouncing)
             {
                 ragdollController.DisableBalance();
+                playerAudioPlayer.PlayBreathSound();
             }
         });
 
-        jumpTimer = new Timer(1f);
-        jumpHoldTimer = new Timer(longJumpTime);
-        jumpCooldownTimer = new Timer(jumpCooldown);
     }
 
     void Update()
     {
         if (!isLocalPlayer) return;
+
+        //mainRigidbodyVelocity = mainRigidBody.velocity.magnitude;
 
         #region Input
         if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
@@ -95,15 +106,19 @@ public class Movement : NetworkBehaviour
                     if (jumpHoldTimer.IsFinished)
                     {
                         ragdollController.DisableBalance();
-                        mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * newJumpForce * 1.5f, ForceMode.Impulse);
+                        hipRigidBody.AddForce((transform.forward + Vector3.up).normalized * newJumpForce * 1.5f, ForceMode.Impulse);
+                        playerAudioPlayer.PlayLaunchSound();
+                        playerAudioPlayer.PlayJumpStartSound(false);
                     }
                     else if (playerState.MovementState == PlayerState.Movement.Running)
                     {
                         mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * newJumpForce, ForceMode.Impulse);
+                        playerAudioPlayer.PlayJumpStartSound(true);
                     }
                     else
                     {
                         mainRigidBody.AddForce((Vector3.up).normalized * newJumpForce, ForceMode.Impulse);
+                        playerAudioPlayer.PlayJumpStartSound(true);
                     }
 
                     jumpTimer.Reset();
@@ -137,7 +152,7 @@ public class Movement : NetworkBehaviour
         #endregion
 
         //raycast to check if the player is grounded and take the normal of the surface
-        if (Physics.Raycast(hip.transform.position, Vector3.down, out RaycastHit hit, groundCheckDistance, groundMask))
+        if ( Physics.Raycast(hip.transform.position, Vector3.down, out RaycastHit hit, groundCheckDistance, groundMask))
         {
             Vector3 groundNormal = hit.normal;
             float angle = Vector3.Angle(Vector3.up, groundNormal);
@@ -145,6 +160,12 @@ public class Movement : NetworkBehaviour
             if (angle <= maxGroundAngle)
             {
                 playerState.IsGrounded = true;
+
+                if (playJumpEndSound)
+                {
+                    playerAudioPlayer.PlayJumpEndSound();
+                    playJumpEndSound = false;
+                }
 
                 if (jumpTimer.IsFinished)
                 {
@@ -164,6 +185,7 @@ public class Movement : NetworkBehaviour
         {
             playerState.IsGrounded = playerState.IsClimbing;
             playerState.MovementState = playerState.IsClimbing ? PlayerState.Movement.Climbing : PlayerState.Movement.Falling;
+            playJumpEndSound = true;
         }
 
         if (playerState.IsGrounded)

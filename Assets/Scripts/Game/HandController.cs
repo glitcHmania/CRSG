@@ -6,6 +6,7 @@ public class HandController : MonoBehaviour
     [SerializeField] private KeyCode controlkey;
     [SerializeField] private Rigidbody foreArm;
     [SerializeField] private PlayerState playerState;
+    [SerializeField] private PlayerAudioPlayer playerAudioPlayer;
 
     [Header("Settings")]
     [SerializeField] private bool isLeftHand = false;
@@ -128,6 +129,7 @@ public class HandController : MonoBehaviour
             if (state)
             {
                 fingers[i].transform.localRotation = Quaternion.Euler(initialFingerRotations[i].eulerAngles.x + 60, initialFingerRotations[i].eulerAngles.y, initialFingerRotations[i].eulerAngles.z);
+                playerAudioPlayer.PlayHandSound();
             }
             else
             {

@@ -333,9 +333,9 @@ MonoBehaviour:
   power: 100
   range: 100
   reloadTime: 1.2
-  recoilMultiplier: 0.05
+  recoilMultiplier: 0.02
   numbnessAmount: 1
-  recoverTime: 0.1
+  recoverTime: 0.075
   infiniteAmmo: 0
   movementWeapon: 0
   maxBounces: 1

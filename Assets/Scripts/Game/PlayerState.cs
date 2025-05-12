@@ -13,7 +13,16 @@ public class PlayerState : NetworkBehaviour
         Climbing
     }
 
+    public enum AudioField
+    {
+        Default,
+        Water,
+        Grass,
+        Dirt,
+    }
+
     [SyncVar] public Movement MovementState;
+    [SyncVar] public AudioField AudioFieldType;
     [SyncVar] public bool IsAiming;
     [SyncVar] public bool IsGrounded;
     [SyncVar] public bool IsRagdoll;
