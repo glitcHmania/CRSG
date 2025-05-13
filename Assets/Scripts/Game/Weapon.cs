@@ -60,6 +60,9 @@ public class Weapon : NetworkBehaviour
     public AudioClip MagInSound;
     public AudioClip BoltSound;
 
+    [Header("UI")]
+    public GameObject BulletSprite;
+
     private bool isLaserOn;
     private Vector3 initialBoltPos;
     private Timer recoverTimer;

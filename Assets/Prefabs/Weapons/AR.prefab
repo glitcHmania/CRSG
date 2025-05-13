@@ -349,6 +349,7 @@ MonoBehaviour:
   MagOutSound: {fileID: 8300000, guid: 8f2a11d021a6ab04ab8cfe9ef16c4a82, type: 3}
   MagInSound: {fileID: 8300000, guid: 2469e3ae7f970a54fb6d5786c348452c, type: 3}
   BoltSound: {fileID: 8300000, guid: f2d30ab22ebf2374392052e8d3d141bc, type: 3}
+  BulletSprite: {fileID: 6586823841259900001, guid: 2b68e21c13b0c76448ad55dbfc3137a6, type: 3}
 --- !u!114 &-2822595856086337125
 MonoBehaviour:
   m_ObjectHideFlags: 0
