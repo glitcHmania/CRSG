@@ -160,6 +160,7 @@ public class Movement : NetworkBehaviour
             if (angle <= maxGroundAngle)
             {
                 playerState.IsGrounded = true;
+                jumpHoldTimer.Reset();
 
                 if (playJumpEndSound)
                 {
