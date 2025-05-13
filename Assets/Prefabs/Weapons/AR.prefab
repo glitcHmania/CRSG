@@ -381,6 +381,7 @@ MonoBehaviour:
   shellEjection: {fileID: 7349363305118357509}
   stoneImpactEffect: {fileID: 19800002, guid: 56bfc2f4b4a0c534c8ef3d0fd1124c44, type: 3}
   bloodImpactEffect: {fileID: 0}
+  BulletSprite: {fileID: 6586823841259900001, guid: 2b68e21c13b0c76448ad55dbfc3137a6, type: 3}
 --- !u!114 &-2822595856086337125
 MonoBehaviour:
   m_ObjectHideFlags: 0

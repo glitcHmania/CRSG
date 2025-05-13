@@ -63,6 +63,9 @@ public class Weapon : NetworkBehaviour
     [SerializeField] private ParticleSystem stoneImpactEffect;
     [SerializeField] private ParticleSystem bloodImpactEffect;
 
+    [Header("UI")]
+    public GameObject BulletSprite;
+
     private bool isLaserOn;
     private Vector3 initialReloadPartPosition;
     private Quaternion initialReloadPartRotation;

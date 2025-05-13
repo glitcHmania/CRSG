@@ -9,7 +9,8 @@ public class UIManager : MonoBehaviour
     [Header("UI References")]
     public Canvas MainCanvas;
     public Canvas TutorialCanvas;
-    public TextMeshProUGUI BulletUI;
+    public GameObject BulletUI;
+    public TextMeshProUGUI BulletUIText;
     public TextMeshProUGUI ReloadUI;
 
     private void Awake()
@@ -29,7 +30,7 @@ public class UIManager : MonoBehaviour
         MainCanvas.GetComponent<Canvas>().enabled = true;
 
         // Initialize UI elements
-        BulletUI.enabled = false; // Disable bullet UI by default
+        BulletUIText.enabled = false; // Disable bullet UI by default
         ReloadUI.enabled = false; // Disable reload UI by default
     }
 }
