@@ -1475,6 +1475,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: ebe4395a0da09c2438c433c029e5b5db, type: 3}
       insertIndex: 2
       addedObject: {fileID: 1651203244396975781}
+    - targetCorrespondingSourceObject: {fileID: -3321919801592875672, guid: ebe4395a0da09c2438c433c029e5b5db, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3720905750752328668}
     - targetCorrespondingSourceObject: {fileID: 1852576806548013000, guid: ebe4395a0da09c2438c433c029e5b5db, type: 3}
       insertIndex: 3
       addedObject: {fileID: 4348616691100951082}
@@ -1807,7 +1810,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.000000105941794, y: 0.4083924, z: -0.012419177}
+  m_ConnectedAnchor: {x: -3.2797354e-12, y: 0.40840766, z: -0.0124189425}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -2126,7 +2129,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.18657884, y: 0.16407624, z: -0.06344454}
+  m_ConnectedAnchor: {x: -0.18657857, y: 0.16408387, z: -0.06344511}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -2337,7 +2340,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 1, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.0000005614711, y: 0.27567756, z: 0.0000036209822}
+  m_ConnectedAnchor: {x: -0.000000007450581, y: 0.27567798, z: 0.0000112354755}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 0, z: 0}
   m_XMotion: 0
@@ -2528,7 +2531,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.00000087732906, y: 0.4085523, z: 0.0000001094304}
+  m_ConnectedAnchor: {x: 0.0000000018335697, y: 0.40854466, z: 0.00000004307367}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: -1}
   m_XMotion: 0
@@ -2727,7 +2730,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.00022999763, y: 0.33551514, z: 0.009720808}
+  m_ConnectedAnchor: {x: 0.00023005945, y: 0.3355075, z: 0.009719331}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -2962,7 +2965,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.10121346, y: -0.053164154, z: 0.0016336504}
+  m_ConnectedAnchor: {x: 0.1012131, y: -0.053164154, z: 0.0016304965}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -3220,7 +3223,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.00000028475182, y: 0.4085505, z: -0.0000015117694}
+  m_ConnectedAnchor: {x: 0.0000000016155468, y: 0.40854293, z: 0.000000041211024}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: -1}
   m_XMotion: 0
@@ -3430,7 +3433,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.10121345, y: -0.05316457, z: 0.0016336485}
+  m_ConnectedAnchor: {x: -0.10121309, y: -0.05316457, z: 0.0016304686}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -3598,7 +3601,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.011690913, y: 0.6067674, z: 0.14308973}
+  m_ConnectedAnchor: {x: -0.011691197, y: 0.606752, z: 0.1430919}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -3824,7 +3827,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: -1, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.0000006464543, y: 0.275679, z: 0.0000030398369}
+  m_ConnectedAnchor: {x: 0.00000006367918, y: 0.27567798, z: -0.000004604459}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 0, z: 0}
   m_XMotion: 0
@@ -4081,7 +4084,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.18657866, y: 0.1640763, z: -0.06344459}
+  m_ConnectedAnchor: {x: 0.18657784, y: 0.16408393, z: -0.06344515}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -4931,7 +4934,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0, y: 1.0758667, z: -0.0029296875}
+  m_ConnectedAnchor: {x: 0.00000010258214, y: 1.0758667, z: -0.0029306465}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -5148,7 +5151,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.011692217, y: 0.6067581, z: 0.14309749}
+  m_ConnectedAnchor: {x: 0.011691337, y: 0.6067507, z: 0.14309354}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -5250,7 +5253,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 31.926231, y: 76.49935, z: -124.71274}
+  m_ConnectedAnchor: {x: 0.11290462, y: 300.00006, z: -0.108349144}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 2
@@ -5411,4 +5414,69 @@ MonoBehaviour:
 Transform:
   m_CorrespondingSourceObject: {fileID: 1852576806548013000, guid: ebe4395a0da09c2438c433c029e5b5db, type: 3}
   m_PrefabInstance: {fileID: 6966248018681797579}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7339827702760705917
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3552001040007327395}
+    m_Modifications:
+    - target: {fileID: 6232733913200161953, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6232733913200161953, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.146
+      objectReference: {fileID: 0}
+    - target: {fileID: 6232733913200161953, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.002
+      objectReference: {fileID: 0}
+    - target: {fileID: 6232733913200161953, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6232733913200161953, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6232733913200161953, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6232733913200161953, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6232733913200161953, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6232733913200161953, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 6232733913200161953, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6716220354804788763, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+      propertyPath: m_Name
+      value: CowboyHat_LightRough
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 1163338079664980944, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 4208766741490201603, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+    - {fileID: 2970552341765712825, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+--- !u!4 &3720905750752328668 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6232733913200161953, guid: e5035bd375184da49a30eed8704974c2, type: 3}
+  m_PrefabInstance: {fileID: 7339827702760705917}
   m_PrefabAsset: {fileID: 0}

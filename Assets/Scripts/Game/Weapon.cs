@@ -7,11 +7,11 @@ public class Weapon : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] private Transform muzzleTransform;
-    [SerializeField] private Transform magDropTansform;
+    //[SerializeField] private Transform magDropTansform;
     [SerializeField] private GameObject laser;
-    [SerializeField] private GameObject mag;
-    [SerializeField] private GameObject magPrefab;
-    [SerializeField] private GameObject bolt;
+    //[SerializeField] private GameObject mag;
+    //[SerializeField] private GameObject magPrefab;
+    //[SerializeField] private GameObject bolt;
 
     [HideInInspector] public PlayerState PlayerState;
     [HideInInspector] public WeaponHolder WeaponHolder;
@@ -99,7 +99,7 @@ public class Weapon : NetworkBehaviour
         }, true);
 
         audioSource = GetComponent<AudioSource>();
-        initialBoltPos = bolt.transform.localPosition;
+        //initialBoltPos = bolt.transform.localPosition;
         trailPool = new ObjectPool<BulletTrail>(bulletTrailPrefab, trailPoolSize);
     }
 
@@ -132,7 +132,7 @@ public class Weapon : NetworkBehaviour
 
             RpcAdjustBolt(false);
             RpcAdjustMag(false);
-            RpcSpawnDroppedMag(magDropTansform.position);
+            //RpcSpawnDroppedMag(magDropTansform.position);
         }
     }
 
@@ -357,13 +357,13 @@ public class Weapon : NetworkBehaviour
     {
         if (adjust)
         {
-            mag.SetActive(true);
+            //mag.SetActive(true);
             audioSource.PlayOneShot(MagInSound);
             WeaponHandRigidbody.AddForce(transform.up * 2f, ForceMode.Impulse);
         }
         else
         {
-            mag.SetActive(false);
+            //mag.SetActive(false);
             audioSource.PlayOneShot(MagOutSound);
             WeaponHandRigidbody.AddForce(-transform.up * 4f, ForceMode.Impulse);
         }
@@ -374,13 +374,13 @@ public class Weapon : NetworkBehaviour
     {
         if (adjust)
         {
-            bolt.transform.localPosition = initialBoltPos;
+            //bolt.transform.localPosition = initialBoltPos;
             audioSource.PlayOneShot(BoltSound);
             WeaponHandRigidbody.AddForce(transform.forward * 2f, ForceMode.Impulse);
         }
         else
         {
-            bolt.transform.localPosition = initialBoltPos + Vector3.back * 0.08f;
+            //bolt.transform.localPosition = initialBoltPos + Vector3.back * 0.08f;
             audioSource.PlayOneShot(BoltSound);
         }
     }
@@ -388,8 +388,8 @@ public class Weapon : NetworkBehaviour
     [ClientRpc]
     void RpcSpawnDroppedMag(Vector3 position)
     {
-        GameObject droppedMag = Instantiate(magPrefab, position, Quaternion.Euler(0, 180, 0));
-        droppedMag.GetComponent<Rigidbody>().AddForce(Vector3.forward * -2f, ForceMode.Impulse);
+        //GameObject droppedMag = Instantiate(magPrefab, position, Quaternion.Euler(0, 180, 0));
+        //droppedMag.GetComponent<Rigidbody>().AddForce(Vector3.forward * -2f, ForceMode.Impulse);
     }
 
 

@@ -658,13 +658,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneMusicList:
   - sceneName: MainMenu
-    musicClip: {fileID: 8300000, guid: 244c662601a9f8943806ca2c17e1982e, type: 3}
-  - sceneName: Lobby
-    musicClip: {fileID: 8300000, guid: 992ee338515945949830918c8dec0b3d, type: 3}
+    musicClip: {fileID: 8300000, guid: 630bb467c42ec4fe289f09acd31e2929, type: 3}
   - sceneName: Game
-    musicClip: {fileID: 8300000, guid: 79960024438951b4eae0eed8836888aa, type: 3}
+    musicClip: {fileID: 8300000, guid: b4a57636a4cc64f6c822a6bd1aec36e9, type: 3}
   fadeDuration: 0
-  volume: 0.01
+  volume: 0.02
 --- !u!1 &1439483493
 GameObject:
   m_ObjectHideFlags: 0

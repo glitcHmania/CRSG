@@ -50,7 +50,7 @@ public class MusicManager : MonoBehaviour
         }
         else
         {
-            StartCoroutine(FadeOutAndStop());
+            //StartCoroutine(FadeOutAndStop());
         }
     }
 
