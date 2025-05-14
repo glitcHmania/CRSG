@@ -196,30 +196,39 @@ public class LobbyController : MonoBehaviour
 
     public void RemovePlayerItem()
     {
+        // List to hold items we want to remove
         List<PlayerListItem> playerListItemsToRemove = new List<PlayerListItem>();
 
         foreach (PlayerListItem playerListItem in playerListItems)
         {
+            if (playerListItem == null || playerListItem.gameObject == null)
+            {
+                // Already destroyed, safe to remove
+                playerListItemsToRemove.Add(playerListItem);
+                continue;
+            }
+
             if (!Manager.GamePlayers.Any(x => x.ConnectionID == playerListItem.ConectionID))
             {
                 playerListItemsToRemove.Add(playerListItem);
             }
         }
 
-        if(playerListItemsToRemove.Count > 0)
+        // Now safely remove and destroy them
+        foreach (PlayerListItem itemToRemove in playerListItemsToRemove)
         {
-            foreach (PlayerListItem playerListItemToRemove in playerListItemsToRemove)
+            if (itemToRemove != null && itemToRemove.gameObject != null)
             {
-                GameObject objectToRemove = playerListItemToRemove.gameObject;
-                playerListItems.Remove(playerListItemToRemove);
-                Destroy(objectToRemove);
-                objectToRemove = null;
+                Destroy(itemToRemove.gameObject);
             }
+
+            playerListItems.Remove(itemToRemove);
         }
     }
 
-    //public void StartGame(string sceneName)
-    //{
-    //    LocalPlayerController.CanStartGame(sceneName);
-    //}
+
+    public void StartGame(string sceneName)
+    {
+        LocalPlayerController.CanStartGame(sceneName);
+    }
 }

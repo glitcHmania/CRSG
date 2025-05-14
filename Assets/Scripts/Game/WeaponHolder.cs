@@ -21,6 +21,7 @@ public class WeaponHolder : NetworkBehaviour
     private TextMeshProUGUI reloadText;
     private Canvas tutorialCanvas;
     private Timer pickUpTimer;
+    private bool initialized = false;
 
 
     [SyncVar(hook = nameof(OnWeaponChanged))]
@@ -40,6 +41,8 @@ public class WeaponHolder : NetworkBehaviour
             bulletUI.enabled = false; // Disable bullet UI by default
             reloadText.enabled = false; // Disable reload UI by default
             tutorialCanvas.enabled = true; // Disable tutorial UI by default
+
+            TryInitializeUI();
         }
         else
         {
@@ -50,6 +53,11 @@ public class WeaponHolder : NetworkBehaviour
     void Update()
     {
         if (!isLocalPlayer) return;
+
+        if(!initialized)
+        {
+            TryInitializeUI();
+        }
 
         pickUpTimer.Update();
 
@@ -67,6 +75,26 @@ public class WeaponHolder : NetworkBehaviour
         }
         #endregion
     }
+
+    private void TryInitializeUI()
+    {
+        if (bulletUI != null && reloadText != null && tutorialCanvas != null)
+            return; // Already initialized
+
+        var uiManager = UIManager.Instance;
+        if (uiManager != null)
+        {
+            bulletUI = uiManager.BulletUI;
+            reloadText = uiManager.ReloadUI;
+            tutorialCanvas = uiManager.TutorialCanvas;
+
+            bulletUI.enabled = false;
+            reloadText.enabled = false;
+            tutorialCanvas.enabled = true;
+            initialized = true;
+        }
+    }
+
 
     private void HandleInput()
     {

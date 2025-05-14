@@ -53,7 +53,6 @@ public class ObtainableWeapon : NetworkBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-
         if (collision.CompareTag("Player"))
         {
             collision.GetComponentInParent<WeaponHolder>()?.TryPickupWeapon(this);

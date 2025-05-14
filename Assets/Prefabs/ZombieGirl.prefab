@@ -47,7 +47,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1482593518758668327}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
@@ -264,15 +264,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ebe4395a0da09c2438c433c029e5b5db, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 31.813326
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ebe4395a0da09c2438c433c029e5b5db, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 76.4993
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ebe4395a0da09c2438c433c029e5b5db, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -124.604385
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ebe4395a0da09c2438c433c029e5b5db, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1527,6 +1527,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ebe4395a0da09c2438c433c029e5b5db, type: 3}
       insertIndex: -1
       addedObject: {fileID: -3528547134809363938}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ebe4395a0da09c2438c433c029e5b5db, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 229988266360777427}
     - targetCorrespondingSourceObject: {fileID: 1082271958561512970, guid: ebe4395a0da09c2438c433c029e5b5db, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2909819879674983596}
@@ -4331,6 +4334,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  playerCamera: {fileID: 4542151512622581866}
   MovementState: 0
   AudioFieldType: 0
   IsAiming: 0
@@ -4372,7 +4376,6 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 8192
-  veloictyThreshold: 10
 --- !u!114 &5294676520148392953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4837,6 +4840,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &229988266360777427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7812756325309425306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d85621c227344a44aaa80787b107b98e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  ConnectionID: 0
+  PlayerIdNumer: 0
+  PlayerSteamID: 0
+  PlayerName: 
+  Ready: 0
 --- !u!1 &8045704058966689217 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1082271958561512970, guid: ebe4395a0da09c2438c433c029e5b5db, type: 3}

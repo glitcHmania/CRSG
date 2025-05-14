@@ -341,7 +341,7 @@ MonoBehaviour:
   maxBounces: 1
   bounceSurfaces:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 8192
   bulletTrailPrefab: {fileID: 8483647679569776263, guid: 2414faf7e632ab743a3474446c779a74, type: 3}
   trailPoolSize: 10
   muzzleFlash: {fileID: 7534688564351721480}

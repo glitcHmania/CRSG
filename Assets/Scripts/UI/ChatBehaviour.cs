@@ -4,6 +4,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ChatBehaviour : NetworkBehaviour
@@ -13,11 +14,11 @@ public class ChatBehaviour : NetworkBehaviour
     private GameObject chatUI = null;
     private ScrollRect scrollRect = null;
     private TMP_InputField inputField = null;
-
     private TMP_Text chatText = null;
     private Graphic placeholderText = null;
     private Image scrollRectImage = null;
     private Image inputFieldImage = null;
+
     private Color scrollRectOpenColor = new Color(0, 0, 0, 0.4f);
     private Color scrollRectClosedColor;
     private Color inputFieldOpenColor = new Color(0, 0, 0, 0.7f);
@@ -28,17 +29,45 @@ public class ChatBehaviour : NetworkBehaviour
     private bool isInputActive = false;
     public bool IsInputActive => isInputActive;
 
+    private bool initialized = false;
+
     public override void OnStartAuthority()
     {
         Instance = this;
+    }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        if (Instance == this) Instance = null;
+        if (isOwned) OnMessage -= HandleMessage;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (!isOwned || scene.name != "Game" || initialized) return;
+        InitializeChat();
+    }
+
+    public void InitializeChat()
+    {
         chatUI = GameObject.FindWithTag("ChatUI");
+        if (chatUI == null)
+        {
+            Debug.LogWarning("ChatUI not found in the scene.");
+            return;
+        }
+
         inputField = chatUI.GetComponentInChildren<TMP_InputField>(true);
         scrollRect = chatUI.GetComponentInChildren<ScrollRect>(true);
         chatText = scrollRect.GetComponentInChildren<TMP_Text>();
 
         placeholderText = inputField.placeholder;
-
         scrollRectImage = scrollRect.GetComponent<Image>();
         inputFieldImage = inputField.GetComponent<Image>();
 
@@ -46,27 +75,15 @@ public class ChatBehaviour : NetworkBehaviour
         inputFieldClosedColor = inputFieldImage.color;
 
         chatUI.SetActive(true);
-        OnMessage += HandleMessage;
-
         inputField.interactable = false;
-    }
 
-    [ClientCallback]
-    private void OnDestroy()
-    {
-        if (Instance == this) Instance = null;
-        if (!isOwned) return;
-        OnMessage -= HandleMessage;
-    }
-
-    private void HandleMessage(string message)
-    {
-        chatText.text += $"\n{message}";
+        OnMessage += HandleMessage;
+        initialized = true;
     }
 
     private void Update()
     {
-        if (!isOwned) return;
+        if (!isOwned || !initialized) return;
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
@@ -116,7 +133,7 @@ public class ChatBehaviour : NetworkBehaviour
             return;
         }
 
-        string playerName = SteamFriends.GetPersonaName(); // Get Steam name on client
+        string playerName = SteamFriends.GetPersonaName();
         CmdSendMessage(playerName, message);
     }
 
@@ -126,10 +143,14 @@ public class ChatBehaviour : NetworkBehaviour
         RpcHandleMessage($"[{playerName}]: {message}");
     }
 
-
     [ClientRpc]
     private void RpcHandleMessage(string message)
     {
         OnMessage?.Invoke(message);
+    }
+
+    private void HandleMessage(string message)
+    {
+        chatText.text += $"\n{message}";
     }
 }

@@ -23,10 +23,10 @@ public class PlayerObjectController : NetworkBehaviour
         }
     }
 
-    //private void Start()
-    //{
-    //    DontDestroyOnLoad(this.gameObject);
-    //}
+    private void Start()
+    {
+        DontDestroyOnLoad(this.gameObject);
+    }
 
     private void PlayerReadyUpdate(bool oldValue, bool newValue)
     {
@@ -95,17 +95,17 @@ public class PlayerObjectController : NetworkBehaviour
         }
     }
 
-    //public void CanStartGame(string sceneName)
-    //{
-    //    if (isOwned)
-    //    {
-    //        CmdCanStartGame(sceneName);
-    //    }
-    //}
+    public void CanStartGame(string sceneName)
+    {
+        if (isOwned)
+        {
+            CmdCanStartGame(sceneName);
+        }
+    }
 
-    //[Command]
-    //public void CmdCanStartGame(string sceneName)
-    //{
-    //    Manager.StartGame(sceneName);
-    //}
+    [Command]
+    public void CmdCanStartGame(string sceneName)
+    {
+        Manager.StartGame(sceneName);
+    }
 }

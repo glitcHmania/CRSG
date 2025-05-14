@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RagdollController : NetworkBehaviour
 {
@@ -48,6 +49,7 @@ public class RagdollController : NetworkBehaviour
     private void Update()
     {
         if (!isLocalPlayer) return;
+        if (!PlayerState.IsInGameScene) return;
 
         #region Input
         if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)

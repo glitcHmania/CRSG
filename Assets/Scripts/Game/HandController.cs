@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class HandController : MonoBehaviour
 {
@@ -52,6 +53,8 @@ public class HandController : MonoBehaviour
 
     void Update()
     {
+        if (!PlayerState.IsInGameScene) return;
+
         jumpTimer.Update();
 
         if (Input.GetKeyDown(controlkey))

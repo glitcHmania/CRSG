@@ -22,8 +22,8 @@ public class CustomNetworkManager : NetworkManager
         }
     }
 
-    //public void StartGame(string sceneName)
-    //{
-    //    ServerChangeScene(sceneName);
-    //}
+    public void StartGame(string sceneName)
+    {
+        ServerChangeScene(sceneName);
+    }
 }

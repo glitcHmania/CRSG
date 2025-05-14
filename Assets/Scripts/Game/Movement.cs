@@ -1,5 +1,7 @@
 using Mirror;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Movement : NetworkBehaviour
 {
@@ -60,7 +62,7 @@ public class Movement : NetworkBehaviour
         jumpCooldownTimer = new Timer(jumpCooldown);
         ungroundedTimer = new Timer(ungroundedTime, () =>
         {
-            if (!playerState.IsBouncing)
+            if (!playerState.IsBouncing && !playerState.IsClimbing)
             {
                 ragdollController.DisableBalance();
                 playerAudioPlayer.PlayBreathSound();
@@ -72,22 +74,18 @@ public class Movement : NetworkBehaviour
     void Update()
     {
         if (!isLocalPlayer) return;
+        if (SceneManager.GetActiveScene().name != "Game") return;
 
         //mainRigidbodyVelocity = mainRigidBody.velocity.magnitude;
 
         #region Input
         if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
         {
-            if (Input.GetKey(KeyCode.M))
+            if (Input.GetKeyDown(KeyCode.M))
             {
-                //reset all child rigidbodies velocity
-                foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
-                {
-                    rb.velocity = Vector3.zero;
-                    rb.angularVelocity = Vector3.zero;
-                }
-                gameObject.transform.position = new Vector3(-1, 1.5f, -8);
+                StartCoroutine(SafeRagdollMove(new Vector3(44f, 78f, -91f), transform.rotation));
             }
+
 
             jumpTimer.Update();
             jumpCooldownTimer.Update();
@@ -105,7 +103,10 @@ public class Movement : NetworkBehaviour
 
                     if (jumpHoldTimer.IsFinished)
                     {
-                        ragdollController.DisableBalance();
+                        if (!playerState.IsClimbing)
+                        {
+                            ragdollController.DisableBalance();
+                        }
                         hipRigidBody.AddForce((transform.forward + Vector3.up).normalized * newJumpForce * 1.5f, ForceMode.Impulse);
                         playerAudioPlayer.PlayLaunchSound();
                         playerAudioPlayer.PlayJumpStartSound(false);
@@ -152,7 +153,7 @@ public class Movement : NetworkBehaviour
         #endregion
 
         //raycast to check if the player is grounded and take the normal of the surface
-        if ( Physics.Raycast(hip.transform.position, Vector3.down, out RaycastHit hit, groundCheckDistance, groundMask))
+        if (Physics.Raycast(hip.transform.position, Vector3.down, out RaycastHit hit, groundCheckDistance, groundMask))
         {
             Vector3 groundNormal = hit.normal;
             float angle = Vector3.Angle(Vector3.up, groundNormal);
@@ -215,6 +216,8 @@ public class Movement : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         if (playerState.IsRagdoll) return;
+        if (!PlayerState.IsInGameScene) return;
+        if (hipRigidBody.isKinematic) return;
 
         float speed = playerState.MovementState == PlayerState.Movement.Running ? moveSpeed * runMultiplier : moveSpeed;
 
@@ -288,6 +291,45 @@ public class Movement : NetworkBehaviour
             mainRigidBody.rotation = Quaternion.Slerp(mainRigidBody.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
         }
     }
+
+    private IEnumerator SafeRagdollMove(Vector3 targetPosition, Quaternion targetRotation)
+    {
+        Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
+
+        // Step 1: Make all rigidbodies kinematic and clear velocity
+        foreach (Rigidbody rb in rigidbodies)
+        {
+            if (rb == null) continue;
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
+        }
+
+        yield return new WaitForFixedUpdate(); // Wait one physics frame
+
+        // Step 2: Move root object
+        Rigidbody root = GetComponent<Rigidbody>();
+        if (root != null)
+        {
+            root.position = targetPosition;
+            root.rotation = targetRotation;
+        }
+        else
+        {
+            transform.position = targetPosition;
+            transform.rotation = targetRotation;
+        }
+
+        yield return new WaitForFixedUpdate(); // Let physics stabilize
+
+        // Step 3: Re-enable physics
+        foreach (Rigidbody rb in rigidbodies)
+        {
+            if (rb == null) continue;
+            rb.isKinematic = false;
+        }
+    }
+
 
     void OnDrawGizmosSelected()
     {

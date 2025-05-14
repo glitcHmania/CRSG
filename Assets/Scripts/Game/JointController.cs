@@ -1,5 +1,6 @@
 ﻿using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class JointController : NetworkBehaviour
 {
@@ -56,7 +57,7 @@ public class JointController : NetworkBehaviour
 
     void Update()
     {
-        if (!isLocalPlayer) return;
+        if (!isLocalPlayer || !PlayerState.IsInGameScene) return;
 
         RaycastHit hit;
         if (Physics.Raycast(hips.transform.position, -hips.transform.up, out hit, 10f, LayerMask.GetMask("Ground")))

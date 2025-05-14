@@ -11,31 +11,27 @@ public class DropSound : NetworkBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
-    void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
-        //check the layer for ground
+        // Let the SERVER handle the sound logic
+        if (!isServer) return;
+
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
-            CmdPlaySound();
-            if(isServer)
-            {
-                //randomize the pitch
-                audioSource.pitch = 1f + Random.Range(0f, 0.4f);
-                audioSource.PlayOneShot(clip);
-            }
+            RpcPlaySound(); // Broadcast to all clients
+
+            // Play the sound on server (host player too)
+            audioSource.pitch = 1f + Random.Range(0f, 0.4f);
+            audioSource.PlayOneShot(clip);
         }
     }
 
-    //play the sound on all clients
-    [Command]
-    public void CmdPlaySound()
-    {
-        RpcPlaySound();
-    }
-
     [ClientRpc]
-    public void RpcPlaySound()
+    private void RpcPlaySound()
     {
+        // Play on remote clients
+        if (isServer) return; // Skip if we're also the server
+
         audioSource.pitch = 1f + Random.Range(0f, 0.4f);
         audioSource.PlayOneShot(clip);
     }

@@ -20,16 +20,18 @@ public class CameraMovement : MonoBehaviour
     private float mouseY;
     private float mouseX;
     private bool fovDirtyFlag = false;
-
-    private void Start()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
+    private bool locked = false;
 
     void LateUpdate()
     {
-        if (target == null) return;
+        if (!PlayerState.IsInGameScene) return;
+
+        if (!locked)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            locked = true;
+        }
 
         if (playerState.IsAiming)
         {
