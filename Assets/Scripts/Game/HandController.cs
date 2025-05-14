@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,7 +11,9 @@ public class HandController : MonoBehaviour
     [SerializeField] private PlayerAudioPlayer playerAudioPlayer;
 
     [Header("Settings")]
-    [SerializeField] private bool isLeftHand = false;
+    [SerializeField] private bool isLeftHand = false; 
+    [SerializeField] private LayerMask allowedLayers;
+
     [Header("Right hand reference for left hand only")]
     [SerializeField] private HandController rightHandReference;
 
@@ -146,18 +149,19 @@ public class HandController : MonoBehaviour
         if (!isLeftHand && playerState.IsArmed) return;
         if (collisionPaused) return;
 
-        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        if (((1 << other.gameObject.layer) & allowedLayers) != 0)
         {
             isColliding = true;
             collidedObject = other.gameObject;
         }
     }
+
     private void OnTriggerStay(Collider other)
     {
         if (!isLeftHand && playerState.IsArmed) return;
         if (collisionPaused) return;
 
-        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        if (((1 << other.gameObject.layer) & allowedLayers) != 0)
         {
             isColliding = true;
             collidedObject = other.gameObject;
@@ -169,7 +173,7 @@ public class HandController : MonoBehaviour
     {
         if (!isLeftHand && playerState.IsArmed) return;
 
-        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        if (((1 << other.gameObject.layer) & allowedLayers) != 0)
         {
             isColliding = false;
             collidedObject = null;

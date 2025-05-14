@@ -37,7 +37,7 @@ public class Movement : NetworkBehaviour
     private Timer jumpHoldTimer;
     private Timer jumpCooldownTimer;
     private PlayerAudioPlayer playerAudioPlayer;
-    private bool playJumpEndSound = true;
+    private bool completeJump = true;
     //private float mainRigidbodyVelocity;
     //public float veloictyThreshold = 10.0f;
 
@@ -74,7 +74,7 @@ public class Movement : NetworkBehaviour
     void Update()
     {
         if (!isLocalPlayer) return;
-        if (SceneManager.GetActiveScene().name != "Game") return;
+        if (!PlayerState.IsInGameScene) return;
 
         //mainRigidbodyVelocity = mainRigidBody.velocity.magnitude;
 
@@ -86,7 +86,6 @@ public class Movement : NetworkBehaviour
                 StartCoroutine(SafeRagdollMove(new Vector3(44f, 78f, -91f), transform.rotation));
             }
 
-
             jumpTimer.Update();
             jumpCooldownTimer.Update();
 
@@ -95,6 +94,7 @@ public class Movement : NetworkBehaviour
                 if (Input.GetKey(KeyCode.Space) && playerState.IsGrounded)
                 {
                     jumpHoldTimer.Update();
+                    Debug.Log(jumpHoldTimer.RemainingTime);
                 }
 
                 if (Input.GetKeyUp(KeyCode.Space) && playerState.IsGrounded)
@@ -161,33 +161,35 @@ public class Movement : NetworkBehaviour
             if (angle <= maxGroundAngle)
             {
                 playerState.IsGrounded = true;
-                jumpHoldTimer.Reset();
 
-                if (playJumpEndSound)
+                if (completeJump)
                 {
                     playerAudioPlayer.PlayJumpEndSound();
-                    playJumpEndSound = false;
+                    completeJump = false;
+
+                    jumpHoldTimer.Reset();
+
+                    if (jumpTimer.IsFinished)
+                    {
+                        if (!playerState.IsRagdoll)
+                        {
+                            ragdollController.EnableBalance();
+                        }
+
+                        if (playerState.MovementState != PlayerState.Movement.Falling)
+                        {
+                            playerState.IsBouncing = false;
+                        }
+                    }
                 }
 
-                if (jumpTimer.IsFinished)
-                {
-                    if (!playerState.IsRagdoll)
-                    {
-                        ragdollController.EnableBalance();
-                    }
-
-                    if (playerState.MovementState != PlayerState.Movement.Falling)
-                    {
-                        playerState.IsBouncing = false;
-                    }
-                }
             }
         }
         else
         {
             playerState.IsGrounded = playerState.IsClimbing;
             playerState.MovementState = playerState.IsClimbing ? PlayerState.Movement.Climbing : PlayerState.Movement.Falling;
-            playJumpEndSound = true;
+            completeJump = true;
         }
 
         if (playerState.IsGrounded)

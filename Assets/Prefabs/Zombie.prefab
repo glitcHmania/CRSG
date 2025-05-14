@@ -3254,6 +3254,9 @@ MonoBehaviour:
   playerState: {fileID: -8150470886946853929}
   playerAudioPlayer: {fileID: 6257987156430526624}
   isLeftHand: 1
+  allowedLayers:
+    serializedVersion: 2
+    m_Bits: 270336
   rightHandReference: {fileID: 3908616008693954722}
 --- !u!1 &5393420517641593754 stripped
 GameObject:
@@ -4127,6 +4130,9 @@ MonoBehaviour:
   playerState: {fileID: -8150470886946853929}
   playerAudioPlayer: {fileID: 6257987156430526624}
   isLeftHand: 0
+  allowedLayers:
+    serializedVersion: 2
+    m_Bits: 270336
   rightHandReference: {fileID: 0}
 --- !u!4 &7042940409284967621 stripped
 Transform:
@@ -4513,7 +4519,7 @@ MonoBehaviour:
   moveSpeed: 2.8
   runMultiplier: 1.4
   rotationSpeed: 6
-  longJumpTime: 1
+  longJumpTime: 0.7
   jumpForce: 120
   jumpCooldown: 1
   groundCheckDistance: 1.6
@@ -4521,7 +4527,7 @@ MonoBehaviour:
   maxGroundAngle: 100
   groundMask:
     serializedVersion: 2
-    m_Bits: 8192
+    m_Bits: 270336
 --- !u!114 &8757769546477567384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4679,7 +4685,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8415338635620679260}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 324ed77e99b74df4d9499e1ea28afcf3, type: 3}
   m_Name: 

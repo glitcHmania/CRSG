@@ -3144,6 +3144,9 @@ MonoBehaviour:
   playerState: {fileID: 5436185569749787226}
   playerAudioPlayer: {fileID: 725497453780242007}
   isLeftHand: 0
+  allowedLayers:
+    serializedVersion: 2
+    m_Bits: 270336
   rightHandReference: {fileID: 0}
 --- !u!4 &5248004275723767139 stripped
 Transform:
@@ -4007,6 +4010,9 @@ MonoBehaviour:
   playerState: {fileID: 5436185569749787226}
   playerAudioPlayer: {fileID: 725497453780242007}
   isLeftHand: 1
+  allowedLayers:
+    serializedVersion: 2
+    m_Bits: 270336
   rightHandReference: {fileID: 4395428727627540227}
 --- !u!1 &7111808135216847245 stripped
 GameObject:
@@ -4367,7 +4373,7 @@ MonoBehaviour:
   moveSpeed: 2.8
   runMultiplier: 1.4
   rotationSpeed: 6
-  longJumpTime: 1
+  longJumpTime: 0.7
   jumpForce: 120
   jumpCooldown: 1
   groundCheckDistance: 1.6
@@ -4375,7 +4381,7 @@ MonoBehaviour:
   maxGroundAngle: 100
   groundMask:
     serializedVersion: 2
-    m_Bits: 8192
+    m_Bits: 270336
 --- !u!114 &5294676520148392953
 MonoBehaviour:
   m_ObjectHideFlags: 0

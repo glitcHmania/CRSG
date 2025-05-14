@@ -1,32 +1,80 @@
 using UnityEngine;
+using Mirror;
 
-public class Bouncer : MonoBehaviour
+[RequireComponent(typeof(AudioSource))]
+public class Bouncer : NetworkBehaviour
 {
     [Header("Settings")]
     [SerializeField] private float bounceForce = 10f;
+    [SerializeField] private float bounceCooldown = 1f;
 
-    private void OnCollisionEnter(Collision other)
+    [Header("Audio")]
+    [SerializeField] private bool randomizePitch = true;
+
+    private AudioSource audioSource;
+    private Timer bounceCooldownTimer; 
+    private AudioClip bounceClip;
+
+    private void Awake()
     {
-        GameObject otherObj = other.gameObject;
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            Debug.LogWarning("Bouncer: No AudioSource found on object.");
 
-        if (otherObj.layer <= 12)
+        bounceCooldownTimer = new Timer(bounceCooldown, startFinished: true);
+        bounceClip = audioSource.clip;
+    }
+
+    private void Update()
+    {
+        bounceCooldownTimer.Update();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        GameObject otherObj = collision.gameObject;
+
+        if (otherObj.layer > 12) return;
+
+        var mScript = otherObj.GetComponentInParent<Movement>();
+        var psScript = otherObj.GetComponentInParent<PlayerState>();
+        var rcScript = otherObj.GetComponentInParent<RagdollController>();
+
+        if (mScript != null && psScript != null && rcScript != null && mScript.isLocalPlayer)
         {
-            var mScript = otherObj.GetComponentInParent<Movement>();
-            var psScript = otherObj.GetComponentInParent<PlayerState>();
-            var rcScript = otherObj.GetComponentInParent<RagdollController>();
+            if (!bounceCooldownTimer.IsFinished)
+                return;
 
-            if (psScript != null)
-            {
-                Debug.Log(psScript.gameObject.GetComponent<Rigidbody>().velocity);
-                psScript.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            bounceCooldownTimer.Reset();
 
-                //Vector3 bounceDirection = (other.transform.position - transform.position).normalized;
-                Vector3 bounceDirection = Vector3.up;
-                mScript.AddForceToPlayer(bounceDirection, bounceForce, ForceMode.VelocityChange);
-                psScript.IsBouncing = true;
-                rcScript.EnableBalance();
-            }
+            Rigidbody rb = psScript.GetComponent<Rigidbody>();
+            if (rb != null) rb.velocity = Vector3.zero;
+
+            mScript.AddForceToPlayer(Vector3.up, bounceForce, ForceMode.VelocityChange);
+            psScript.IsBouncing = true;
+            rcScript.EnableBalance();
+
+            CmdPlayBounceSound();
         }
     }
 
+    [Command(requiresAuthority = false)]
+    private void CmdPlayBounceSound()
+    {
+        RpcPlayBounceSound();
+    }
+
+    [ClientRpc]
+    private void RpcPlayBounceSound()
+    {
+        PlayBounceSound();
+    }
+
+    private void PlayBounceSound()
+    {
+        if (audioSource == null || bounceClip == null) return;
+
+        audioSource.pitch = randomizePitch ? 1f + Random.Range(-0.1f, 0.1f) : 1f;
+        audioSource.PlayOneShot(bounceClip);
+    }
 }

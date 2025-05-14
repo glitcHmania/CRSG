@@ -27,7 +27,7 @@ TagManager:
   - Weapon
   - AudioField
   - NoCollision
-  - 
+  - GroundNoCamCollision
   - 
   - 
   - 

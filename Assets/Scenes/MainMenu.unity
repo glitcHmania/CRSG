@@ -246,7 +246,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 04219064d9f52be4f9e721bfa84173f1, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.424
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -663,8 +663,8 @@ MonoBehaviour:
     musicClip: {fileID: 8300000, guid: 992ee338515945949830918c8dec0b3d, type: 3}
   - sceneName: Game
     musicClip: {fileID: 8300000, guid: 79960024438951b4eae0eed8836888aa, type: 3}
-  fadeDuration: 1
-  volume: 0.7
+  fadeDuration: 0
+  volume: 0.01
 --- !u!1 &1439483493
 GameObject:
   m_ObjectHideFlags: 0
