@@ -1,7 +1,6 @@
 ﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Weapon : NetworkBehaviour
 {
@@ -37,6 +36,7 @@ public class Weapon : NetworkBehaviour
     [SerializeField] private float recoilMultiplier;
     [SerializeField] private float numbnessAmount;
     [SerializeField] private float recoverTime;
+    [SerializeField] private bool ejectShells = false;
     [SerializeField] private bool infiniteAmmo = false;
     [SerializeField] private bool movementWeapon = false;
 
@@ -300,7 +300,10 @@ public class Weapon : NetworkBehaviour
     private void RpcPlayWeaponEffects()
     {
         muzzleFlash?.Play();
-        shellEjection?.Play();
+        if (ejectShells)
+        {
+            shellEjection?.Play();
+        }
         audioSource.PlayOneShot(FireSound);
     }
 
@@ -351,6 +354,16 @@ public class Weapon : NetworkBehaviour
             isLaserOn = state;
         }
     }
+
+    public void ToggleLaser(bool state)
+    {
+        if (laser != null)
+        {
+            laser.SetActive(state);
+            isLaserOn = state;
+        }
+    }
+
 
     [ClientRpc]
     void RpcAdjustMag(bool adjust)

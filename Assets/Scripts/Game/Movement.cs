@@ -23,7 +23,6 @@ public class Movement : NetworkBehaviour
     [Header("Ground Check")]
     [SerializeField] private float groundCheckDistance;
     [SerializeField] private float ungroundedTime;
-    [SerializeField] private float maxGroundAngle;
     [SerializeField] private LayerMask groundMask;
 
     public bool CanJump => jumpCooldownTimer.IsFinished;
@@ -155,34 +154,27 @@ public class Movement : NetworkBehaviour
         //raycast to check if the player is grounded and take the normal of the surface
         if (Physics.Raycast(hip.transform.position, Vector3.down, out RaycastHit hit, groundCheckDistance, groundMask))
         {
-            Vector3 groundNormal = hit.normal;
-            float angle = Vector3.Angle(Vector3.up, groundNormal);
+            playerState.IsGrounded = true;
 
-            if (angle <= maxGroundAngle)
+            if (completeJump)
             {
-                playerState.IsGrounded = true;
+                playerAudioPlayer.PlayJumpEndSound();
+                completeJump = false;
 
-                if (completeJump)
+                jumpHoldTimer.Reset();
+
+                if (jumpTimer.IsFinished)
                 {
-                    playerAudioPlayer.PlayJumpEndSound();
-                    completeJump = false;
-
-                    jumpHoldTimer.Reset();
-
-                    if (jumpTimer.IsFinished)
+                    if (!playerState.IsRagdoll)
                     {
-                        if (!playerState.IsRagdoll)
-                        {
-                            ragdollController.EnableBalance();
-                        }
+                        ragdollController.EnableBalance();
+                    }
 
-                        if (playerState.MovementState != PlayerState.Movement.Falling)
-                        {
-                            playerState.IsBouncing = false;
-                        }
+                    if (playerState.MovementState != PlayerState.Movement.Falling)
+                    {
+                        playerState.IsBouncing = false;
                     }
                 }
-
             }
         }
         else

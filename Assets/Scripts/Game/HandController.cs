@@ -8,6 +8,7 @@ public class HandController : MonoBehaviour
     [SerializeField] private KeyCode controlkey;
     [SerializeField] private Rigidbody foreArm;
     [SerializeField] private PlayerState playerState;
+    [SerializeField] private RagdollController ragdollController;
     [SerializeField] private PlayerAudioPlayer playerAudioPlayer;
 
     [Header("Settings")]
@@ -101,6 +102,8 @@ public class HandController : MonoBehaviour
                     fixedJoint.connectedAnchor = collidedObject.transform.position;
                     isHolding = true;
                     playerState.IsClimbing = true;
+                    ragdollController.EnableBalance();
+
                 }
                 BendFingers(true);
             }

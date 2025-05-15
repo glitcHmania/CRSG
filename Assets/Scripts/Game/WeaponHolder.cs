@@ -106,7 +106,8 @@ public class WeaponHolder : NetworkBehaviour
                 {
                     if (!currentWeaponScript.IsLaserOn)
                     {
-                        currentWeaponScript.CmdToggleLaser(true);
+                        //currentWeaponScript.CmdToggleLaser(true);
+                        currentWeaponScript.ToggleLaser(true);
                     }
 
                     if (currentWeaponScript.IsAvailable && currentWeaponScript.IsAutomatic && !currentWeaponScript.OutOfAmmo)
@@ -127,7 +128,8 @@ public class WeaponHolder : NetworkBehaviour
             }
             else if (currentWeaponScript != null && currentWeaponScript.IsLaserOn)
             {
-                currentWeaponScript.CmdToggleLaser(false);
+                //currentWeaponScript.CmdToggleLaser(false);
+                currentWeaponScript.ToggleLaser(false);
             }
 
             if (Input.GetKeyDown(KeyCode.R) && currentWeaponScript.BulletCount < currentWeaponScript.MagazineSize)
@@ -171,7 +173,7 @@ public class WeaponHolder : NetworkBehaviour
     public void UpdateBulletCountText()
     {
         if (!isLocalPlayer || bulletUI == null || currentWeaponScript == null) return;
-        bulletUI.text = $"{currentWeaponScript.BulletCount}/∞";
+        bulletUI.text = $"{currentWeaponScript.BulletCount} / inf";
     }
 
     [Command]

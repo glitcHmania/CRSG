@@ -122,7 +122,7 @@ Material:
     - _Glossiness: 1
     - _GlossyReflections: 1
     - _InvFade: 1
-    - _MaskFade: 0.37
+    - _MaskFade: 0.303
     - _Metallic: 1
     - _Mode: 1
     - _OcclusionStrength: 1

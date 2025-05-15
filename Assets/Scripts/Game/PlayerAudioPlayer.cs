@@ -170,9 +170,9 @@ public class PlayerAudioPlayer : NetworkBehaviour
         }
 
         if ((PlayerState.Movement)movementType == PlayerState.Movement.Walking)
-            PlayRandomSound(walkingSounds, 0.3f, true);
+            PlayRandomSound(walkingSounds, 0.15f, true);
         else if ((PlayerState.Movement)movementType == PlayerState.Movement.Running)
-            PlayRandomSound(runningSounds, 0.3f, true);
+            PlayRandomSound(runningSounds, 0.15f, true);
     }
 
     [ClientRpc]
