@@ -77,7 +77,7 @@ public class Weapon : NetworkBehaviour
         {
             if (WeaponHolder != null)
             {
-                WeaponHolder.UpdateBulletCountText();
+                WeaponHolder.UpdateBulletCount();
             }
         }
     }
@@ -89,7 +89,7 @@ public class Weapon : NetworkBehaviour
         {
             BulletCount = MagazineSize;
             IsAvailable = true;
-            WeaponHolder.UpdateBulletCountText();
+            WeaponHolder.UpdateBulletCount();
             WeaponHolder.TargetShowReloadText(WeaponHolder.gameObject.GetComponent<NetworkIdentity>().connectionToClient, false);
 
             RpcAdjustBolt(true);
@@ -109,7 +109,7 @@ public class Weapon : NetworkBehaviour
     private void Start()
     {
         BulletCount = MagazineSize;
-        WeaponHolder?.UpdateBulletCountText();
+        WeaponHolder?.UpdateBulletCount();
     }
 
     private void OnDestroy()
