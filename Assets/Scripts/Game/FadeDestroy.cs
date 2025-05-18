@@ -15,7 +15,10 @@ public class FadeDestroy : MonoBehaviour
     void Start()
     {
         timer = new Timer(lifeTime, () => Destroy(gameObject));
-        rendererComponent = fadeTarget.GetComponent<Renderer>();
+        if(fadeOut)
+        {
+            rendererComponent = fadeTarget.GetComponent<Renderer>();
+        }
     }
 
     void Update()

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class MusicManager : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class MusicManager : MonoBehaviour
     [Header("Scene Music Map")]
     public List<SceneMusic> sceneMusicList = new List<SceneMusic>();
 
-    private Dictionary<string, AudioClip> sceneMusicMap = new Dictionary<string, AudioClip>();
+    private Dictionary<string, Tuple<AudioClip, float>> sceneMusicMap = new Dictionary<string, Tuple<AudioClip, float>>();
 
     private AudioSource audioSource;
 
@@ -36,7 +37,9 @@ public class MusicManager : MonoBehaviour
         foreach (var entry in sceneMusicList)
         {
             if (!sceneMusicMap.ContainsKey(entry.sceneName))
-                sceneMusicMap.Add(entry.sceneName, entry.musicClip);
+            {
+                sceneMusicMap.Add(entry.sceneName, Tuple.Create(entry.musicClip, entry.volume));
+            }
         }
 
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -44,13 +47,10 @@ public class MusicManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (sceneMusicMap.TryGetValue(scene.name, out AudioClip newClip))
+        if (sceneMusicMap.TryGetValue(scene.name, out var musicData))
         {
-            StartCoroutine(SwitchMusic(newClip));
-        }
-        else
-        {
-            //StartCoroutine(FadeOutAndStop());
+            volume = musicData.Item2; // Scene'e özel volume
+            StartCoroutine(SwitchMusic(musicData.Item1));
         }
     }
 
@@ -98,4 +98,5 @@ public class SceneMusic
 {
     public string sceneName;
     public AudioClip musicClip;
+    public float volume = 0.7f;
 }

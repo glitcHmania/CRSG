@@ -4,16 +4,24 @@ using UnityEngine;
 
 public class Weapon : NetworkBehaviour
 {
+    public enum WeaponType
+    {
+        Pistol,
+        Rifle,
+        Shotgun
+    }
+
     [Header("References")]
     [SerializeField] private Transform muzzleTransform;
-    //[SerializeField] private Transform magDropTansform;
+    [SerializeField] private Transform casingDropTransform;
     [SerializeField] private GameObject laser;
-    //[SerializeField] private GameObject mag;
-    //[SerializeField] private GameObject magPrefab;
-    //[SerializeField] private GameObject bolt;
+    [SerializeField] private GameObject reloadPart;
+    [SerializeField] private Transform reloadPartTransform;
+    [SerializeField] private GameObject casing;
 
     [HideInInspector] public PlayerState PlayerState;
     [HideInInspector] public WeaponHolder WeaponHolder;
+    [HideInInspector] public PlayerAudioPlayer PlayerAudioPlayer;
     [HideInInspector] public Movement Movement;
     [HideInInspector] public Rigidbody ReloadHandRigidbody;
     [HideInInspector] public Rigidbody WeaponHandRigidbody;
@@ -28,6 +36,7 @@ public class Weapon : NetworkBehaviour
     [SyncVar] public bool IsAvailable = true;
 
     [Header("Weapon Settings")]
+    public WeaponType Type;
     public bool IsAutomatic;
     public int MagazineSize;
     [SerializeField] private int power;
@@ -52,20 +61,14 @@ public class Weapon : NetworkBehaviour
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] private ParticleSystem shellEjection;
     [SerializeField] private ParticleSystem stoneImpactEffect;
-
-    [Header("Audio")]
-    public AudioClip FireSound;
-    public AudioClip EmptyClickSound;
-    public AudioClip MagOutSound;
-    public AudioClip MagInSound;
-    public AudioClip BoltSound;
+    [SerializeField] private ParticleSystem bloodImpactEffect;
 
     private bool isLaserOn;
-    private Vector3 initialBoltPos;
+    private Vector3 initialReloadPartPosition;
+    private Quaternion initialReloadPartRotation;
     private Timer recoverTimer;
-    private Timer boltTimer;
-    private Timer magTimer;
-    private AudioSource audioSource;
+    private Timer reloadTimer;
+    private Timer reloadPartTimer;
     private ObjectPool<BulletTrail> trailPool;
 
     private void OnBulletCountChanged(int oldCount, int newCount)
@@ -82,24 +85,23 @@ public class Weapon : NetworkBehaviour
     void Awake()
     {
         recoverTimer = new Timer(recoverTime, () => IsAvailable = true, true);
-        boltTimer = new Timer(reloadTime, () =>
+        reloadTimer = new Timer(reloadTime, () =>
         {
             BulletCount = MagazineSize;
             IsAvailable = true;
             WeaponHolder.UpdateBulletCountText();
             WeaponHolder.TargetShowReloadText(WeaponHolder.gameObject.GetComponent<NetworkIdentity>().connectionToClient, false);
-
-            RpcAdjustBolt(true);
+            PlayerAudioPlayer.PlayWeaponSound((int)Type, 3);
 
         }, true);
 
-        magTimer = new Timer(reloadTime * 0.5f, () =>
+        reloadPartTimer = new Timer(reloadTime * 0.5f, () =>
         {
-            RpcAdjustMag(true);
+            SetReloadPartTransform(true);
         }, true);
 
-        audioSource = GetComponent<AudioSource>();
-        //initialBoltPos = bolt.transform.localPosition;
+        initialReloadPartPosition = reloadPart.transform.localPosition;
+        initialReloadPartRotation = reloadPart.transform.localRotation;
         trailPool = new ObjectPool<BulletTrail>(bulletTrailPrefab, trailPoolSize);
     }
 
@@ -107,6 +109,7 @@ public class Weapon : NetworkBehaviour
     {
         BulletCount = MagazineSize;
         WeaponHolder?.UpdateBulletCountText();
+        PlayerAudioPlayer.PlayWeaponSound((int)Type, -2);
     }
 
     private void OnDestroy()
@@ -117,8 +120,8 @@ public class Weapon : NetworkBehaviour
     void Update()
     {
         recoverTimer.Update();
-        boltTimer.Update();
-        magTimer.Update();
+        reloadTimer.Update();
+        reloadPartTimer.Update();
     }
 
     public void Reload()
@@ -127,12 +130,11 @@ public class Weapon : NetworkBehaviour
         {
             WeaponHolder.TargetShowReloadText(WeaponHolder.gameObject.GetComponent<NetworkIdentity>().connectionToClient, true);
             IsAvailable = false;
-            boltTimer.Reset();
-            magTimer.Reset();
+            reloadTimer.Reset();
+            reloadPartTimer.Reset();
 
-            RpcAdjustBolt(false);
-            RpcAdjustMag(false);
-            //RpcSpawnDroppedMag(magDropTansform.position);
+            SetReloadPartTransform(false);
+            RpcSpawnCasing(casingDropTransform.position);
         }
     }
 
@@ -145,7 +147,7 @@ public class Weapon : NetworkBehaviour
 
         if (BulletCount <= 0)
         {
-            audioSource.PlayOneShot(EmptyClickSound);
+            PlayerAudioPlayer.PlayWeaponSound((int)Type, -1);
             return;
         }
 
@@ -161,11 +163,6 @@ public class Weapon : NetworkBehaviour
         if (!infiniteAmmo)
         {
             BulletCount--; // server modifies
-        }
-
-        if (OutOfAmmo)
-        {
-            RpcAdjustBolt(false);
         }
     }
 
@@ -304,7 +301,7 @@ public class Weapon : NetworkBehaviour
         {
             shellEjection?.Play();
         }
-        audioSource.PlayOneShot(FireSound);
+        PlayerAudioPlayer.PlayWeaponSound((int)Type, 0);
     }
 
     [ClientRpc]
@@ -366,43 +363,38 @@ public class Weapon : NetworkBehaviour
 
 
     [ClientRpc]
-    void RpcAdjustMag(bool adjust)
+    void SetReloadPartTransform(bool adjust)
     {
-        if (adjust)
+        if (!adjust)
         {
-            //mag.SetActive(true);
-            audioSource.PlayOneShot(MagInSound);
-            WeaponHandRigidbody.AddForce(transform.up * 2f, ForceMode.Impulse);
-        }
-        else
-        {
-            //mag.SetActive(false);
-            audioSource.PlayOneShot(MagOutSound);
+            // Move to reloadPartTransform's local position
+            PlayerAudioPlayer.PlayWeaponSound((int)Type, 1);
+            reloadPart.transform.localPosition = reloadPartTransform.localPosition;
+            reloadPart.transform.localRotation = reloadPartTransform.localRotation;
             WeaponHandRigidbody.AddForce(-transform.up * 4f, ForceMode.Impulse);
         }
-    }
-
-    [ClientRpc]
-    void RpcAdjustBolt(bool adjust)
-    {
-        if (adjust)
-        {
-            //bolt.transform.localPosition = initialBoltPos;
-            audioSource.PlayOneShot(BoltSound);
-            WeaponHandRigidbody.AddForce(transform.forward * 2f, ForceMode.Impulse);
-        }
         else
         {
-            //bolt.transform.localPosition = initialBoltPos + Vector3.back * 0.08f;
-            audioSource.PlayOneShot(BoltSound);
+            // Return to original local position
+            PlayerAudioPlayer.PlayWeaponSound((int)Type, 2);
+            reloadPart.transform.localPosition = initialReloadPartPosition;
+            reloadPart.transform.localRotation = initialReloadPartRotation;
+            WeaponHandRigidbody.AddForce(transform.up * 2f, ForceMode.Impulse);
         }
     }
 
+
     [ClientRpc]
-    void RpcSpawnDroppedMag(Vector3 position)
+    void RpcSpawnCasing(Vector3 position)
     {
-        //GameObject droppedMag = Instantiate(magPrefab, position, Quaternion.Euler(0, 180, 0));
-        //droppedMag.GetComponent<Rigidbody>().AddForce(Vector3.forward * -2f, ForceMode.Impulse);
+        GameObject droppedMag = Instantiate(casing, position, Quaternion.Euler(0, 0, 0));
+        //add force to all rigidbodies
+        Rigidbody[] rb = droppedMag.GetComponentsInChildren<Rigidbody>();
+        foreach (Rigidbody r in rb)
+        {
+            r.AddForce((transform.up + transform.right * 0.6f).normalized * Random.Range(3f, 6f), ForceMode.Impulse);
+
+        }
     }
 
 

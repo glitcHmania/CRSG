@@ -30,6 +30,7 @@ public class WeaponHolder : NetworkBehaviour
     private void Start()
     {
         pickUpTimer = new Timer(1f);
+        pickUpTimer = new Timer(1f);
 
         var uiManager = UIManager.Instance;
         if (uiManager != null)
@@ -222,8 +223,6 @@ public class WeaponHolder : NetworkBehaviour
 
         // Notify only local player to enable UI
         TargetShowBulletUI(connectionToClient, true);
-
-        //equipSound.Play();
     }
 
     [Command]
@@ -262,6 +261,11 @@ public class WeaponHolder : NetworkBehaviour
 
         // Notify local player to disable UI
         TargetShowBulletUI(connectionToClient, false);
+
+        if (reloadText != null)
+        {
+            reloadText.enabled = false;
+        }
     }
 
     [TargetRpc]
@@ -302,6 +306,7 @@ public class WeaponHolder : NetworkBehaviour
             currentWeaponScript = gunScript;
             currentWeaponScript.WeaponHandRigidbody = weaponHand;
             currentWeaponScript.ReloadHandRigidbody = reloadHand;
+            currentWeaponScript.PlayerAudioPlayer = GetComponent<PlayerAudioPlayer>();
             currentWeaponScript.Movement = GetComponent<Movement>();
             currentWeaponScript.PlayerState = playerState;
             currentWeaponScript.WeaponHolder = this;

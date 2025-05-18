@@ -1,9 +1,10 @@
-using UnityEngine;
 using Mirror;
+using UnityEngine;
 
 public class PlayerAudioPlayer : NetworkBehaviour
 {
     [SerializeField] private AudioSource vocalAudioSource;
+    [SerializeField] private AudioSource weaponAudioSource;
     private AudioSource audioSource;
     private PlayerState playerState;
 
@@ -38,10 +39,28 @@ public class PlayerAudioPlayer : NetworkBehaviour
     [SerializeField] private AudioClip[] dirtJumpStartSounds;
     [SerializeField] private AudioClip[] dirtJumpEndSounds;
 
+    [Header("Weapons")]
+    [SerializeField] private AudioClip emptyClickSound;
+    [SerializeField] private AudioClip pickUpSound;
+
+    [Header("Pistol")]
+    [SerializeField] private AudioClip[] pistolSounds;
+
+    [Header("Rifle")]
+    [SerializeField] private AudioClip[] rifleSounds;
+
+    [Header("Shotgun")]
+    [SerializeField] private AudioClip[] shotgunSounds;
+
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
         playerState = GetComponent<PlayerState>();
+    }
+
+    public void PlayWeaponSound(int weaponType, int index, float volume = 0.1f)
+    {
+        CmdPlayWeaponSound(weaponType, index, volume);
     }
 
     public void PlayBreathSound()
@@ -77,6 +96,12 @@ public class PlayerAudioPlayer : NetworkBehaviour
     public void PlayJumpEndSound()
     {
         CmdPlayJumpEnd((int)playerState.AudioFieldType);
+    }
+
+    [Command]
+    public void CmdPlayWeaponSound(int weaponType, int index, float volume)
+    {
+        RpcPlayWeaponSound(weaponType, index, volume);
     }
 
     [Command]
@@ -119,6 +144,37 @@ public class PlayerAudioPlayer : NetworkBehaviour
     void CmdPlayJumpEnd(int fieldType)
     {
         RpcPlayJumpEnd(fieldType);
+    }
+
+    [ClientRpc]
+    void RpcPlayWeaponSound(int weaponType, int index, float volume)
+    {
+        if (index == -2)
+        {
+            PlayWeaponSound(pickUpSound, volume, true);
+            return;
+        }
+        else if (index == -1)
+        {
+            PlayWeaponSound(emptyClickSound, volume, true);
+            return;
+        }
+
+        AudioClip[] weaponSounds = null;
+        switch ((Weapon.WeaponType)weaponType)
+        {
+            case Weapon.WeaponType.Pistol:
+                weaponSounds = pistolSounds;
+                break;
+            case Weapon.WeaponType.Rifle:
+                weaponSounds = rifleSounds;
+                break;
+            case Weapon.WeaponType.Shotgun:
+                weaponSounds = shotgunSounds;
+                break;
+        }
+
+        PlayWeaponSound(weaponSounds[index], volume, true);
     }
 
     [ClientRpc]
@@ -217,6 +273,15 @@ public class PlayerAudioPlayer : NetworkBehaviour
         int randomIndex = Random.Range(0, sounds.Length);
         audioSource.volume = volume;
         audioSource.PlayOneShot(sounds[randomIndex]);
+    }
+
+    private void PlayWeaponSound(AudioClip sound, float volume, bool randomizeMore)
+    {
+        if (sound == null) return;
+        if (randomizeMore)
+            weaponAudioSource.pitch = 1f + Random.Range(-0.05f, 0.05f);
+        weaponAudioSource.volume = volume;
+        weaponAudioSource.PlayOneShot(sound);
     }
 
     private void PlayRandomVocalSound(AudioClip[] sounds, float volume = 0.15f)

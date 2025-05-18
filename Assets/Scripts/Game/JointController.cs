@@ -62,7 +62,7 @@ public class JointController : NetworkBehaviour
         RaycastHit hit;
         if (Physics.Raycast(hips.transform.position, -hips.transform.up, out hit, 10f, LayerMask.GetMask("Ground")))
         {
-            currentSlope = Mathf.Min( Vector3.Angle(hips.transform.up, hit.transform.up), 50f);
+            currentSlope = Mathf.Min( Vector3.Angle(hips.transform.up, hit.transform.up), 40f);
         }
 
         if (!playerState.IsRagdoll && !playerState.IsUnbalanced)

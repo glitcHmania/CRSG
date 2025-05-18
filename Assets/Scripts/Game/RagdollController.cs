@@ -44,6 +44,8 @@ public class RagdollController : NetworkBehaviour
 
         ragdollTimer = new Timer(ragdollDuration, DisableRagdoll);
         playerAudioPlayer = GetComponent<PlayerAudioPlayer>();
+
+        EnableRagdoll();
     }
 
     private void Update()

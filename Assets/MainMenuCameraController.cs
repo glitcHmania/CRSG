@@ -60,7 +60,7 @@ public class MenuCameraMotion : MonoBehaviour
         );
 
         Vector3 mouseOffset = new Vector3(
-            normalizedMouse.x,
+            -normalizedMouse.x,
             normalizedMouse.y,
             0f
         ) * mouseFollowIntensity;

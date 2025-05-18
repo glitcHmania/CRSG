@@ -82,6 +82,10 @@ public class Movement : NetworkBehaviour
         {
             if (Input.GetKeyDown(KeyCode.M))
             {
+                StartCoroutine(SafeRagdollMove(transform.position, transform.rotation));
+            }
+            if (Input.GetKeyDown(KeyCode.N))
+            {
                 StartCoroutine(SafeRagdollMove(new Vector3(44f, 78f, -91f), transform.rotation));
             }
 
@@ -112,7 +116,7 @@ public class Movement : NetworkBehaviour
                     }
                     else if (playerState.MovementState == PlayerState.Movement.Running)
                     {
-                        mainRigidBody.AddForce((transform.forward + Vector3.up).normalized * newJumpForce, ForceMode.Impulse);
+                        mainRigidBody.AddForce((transform.forward * 0.5f + Vector3.up).normalized * newJumpForce, ForceMode.Impulse);
                         playerAudioPlayer.PlayJumpStartSound(true);
                     }
                     else
