@@ -21,11 +21,10 @@ public class Wrecker : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!isServer) return; // Let the server handle all logic
-
         if (cooldownTimer.IsFinished &&
             (other.gameObject.layer == LayerMask.NameToLayer("PlayerSpine") ||
-             other.gameObject.layer == LayerMask.NameToLayer("PlayerHip")))
+             other.gameObject.layer == LayerMask.NameToLayer("PlayerHip")) ||
+             other.gameObject.layer == LayerMask.NameToLayer("PlayerHead"))
         {
             var ragdoll = other.GetComponentInParent<RagdollController>();
             if (ragdoll != null)
@@ -35,10 +34,10 @@ public class Wrecker : NetworkBehaviour
 
             cooldownTimer.Reset();
 
-            // Play sound locally on server
-            audioSource.PlayOneShot(audioClip);
-
-            // Play sound on clients
+            if (isServer)
+            {
+                audioSource.PlayOneShot(audioClip);
+            }
             RpcPlaySound();
         }
     }
@@ -46,8 +45,6 @@ public class Wrecker : NetworkBehaviour
     [ClientRpc]
     private void RpcPlaySound()
     {
-        if (isServer) return; // Prevent server from playing twice
-
         audioSource.PlayOneShot(audioClip);
     }
 }
