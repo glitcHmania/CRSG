@@ -64,7 +64,7 @@ public class Weapon : NetworkBehaviour
     [SerializeField] private ParticleSystem bloodImpactEffect;
 
     [Header("UI")]
-    public GameObject BulletSprite;
+    public GameObject BulletUI;
 
     private bool isLaserOn;
     private Vector3 initialReloadPartPosition;

@@ -381,6 +381,13 @@ MonoBehaviour:
   shellEjection: {fileID: 2879757551824901895}
   stoneImpactEffect: {fileID: 19800002, guid: 56bfc2f4b4a0c534c8ef3d0fd1124c44, type: 3}
   bloodImpactEffect: {fileID: 0}
+  stoneImpactEffect: {fileID: 198000012529019072, guid: 4edabb1c0dde62743b137378c7d22980, type: 3}
+  FireSound: {fileID: 8300000, guid: ec3b5cbcebc927c468ba32372e8867e7, type: 3}
+  EmptyClickSound: {fileID: 8300000, guid: 2173a4fe9414c1146bacd6e486f53002, type: 3}
+  MagOutSound: {fileID: 8300000, guid: 8f2a11d021a6ab04ab8cfe9ef16c4a82, type: 3}
+  MagInSound: {fileID: 8300000, guid: 2469e3ae7f970a54fb6d5786c348452c, type: 3}
+  BoltSound: {fileID: 8300000, guid: f2d30ab22ebf2374392052e8d3d141bc, type: 3}
+  BulletUI: {fileID: 7731640290192192262, guid: 4eb56b72cc445db408133f98a4bb9406, type: 3}
 --- !u!114 &-2822595856086337125
 MonoBehaviour:
   m_ObjectHideFlags: 0

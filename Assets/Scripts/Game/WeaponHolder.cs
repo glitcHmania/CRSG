@@ -17,12 +17,13 @@ public class WeaponHolder : NetworkBehaviour
     private Weapon currentWeaponScript;
     private GameObject currentWeaponPrefab;
     private GameObject currentObtainableWeaponPrefab;
-    private GameObject bulletUI;
+    private GameObject bulletUIPoint;
     private TextMeshProUGUI reloadText;
     private Canvas tutorialCanvas;
     private Timer pickUpTimer;
     private bool initialized = false;
 
+    public BulletUI bulletUI;
 
     [SyncVar(hook = nameof(OnWeaponChanged))]
     private NetworkIdentity currentWeaponNetIdentity;
@@ -35,11 +36,11 @@ public class WeaponHolder : NetworkBehaviour
         var uiManager = UIManager.Instance;
         if (uiManager != null)
         {
-            bulletUI = uiManager.BulletUI;
+            bulletUIPoint = uiManager.BulletUI;
             reloadText = uiManager.ReloadUI;
             tutorialCanvas = uiManager.TutorialCanvas;
 
-            bulletUI.SetActive(false);// Disable bullet UI by default
+            bulletUIPoint.SetActive(false);// Disable bullet UI by default
             reloadText.enabled = false; // Disable reload UI by default
             tutorialCanvas.enabled = true; // Disable tutorial UI by default
 
@@ -79,17 +80,17 @@ public class WeaponHolder : NetworkBehaviour
 
     private void TryInitializeUI()
     {
-        if (bulletUI != null && reloadText != null && tutorialCanvas != null)
+        if (bulletUIPoint != null && reloadText != null && tutorialCanvas != null)
             return; // Already initialized
 
         var uiManager = UIManager.Instance;
         if (uiManager != null)
         {
-            bulletUI = uiManager.BulletUI;
+            bulletUIPoint = uiManager.BulletUI;
             reloadText = uiManager.ReloadUI;
             tutorialCanvas = uiManager.TutorialCanvas;
 
-            bulletUI.SetActive(false);
+            bulletUIPoint.SetActive(false);
             reloadText.enabled = false;
             tutorialCanvas.enabled = true;
             initialized = true;
@@ -173,8 +174,10 @@ public class WeaponHolder : NetworkBehaviour
 
     public void UpdateBulletCount()
     {
-        if (!isLocalPlayer || bulletUI == null || currentWeaponScript == null) return;
+        if (!isLocalPlayer || bulletUIPoint == null || currentWeaponScript == null) return;
         //bulletUI.text = $"{currentWeaponScript.BulletCount} / inf";
+
+        bulletUI.UpdateBulletCount(currentWeaponScript.BulletCount);
     }
 
     [Command]
@@ -271,9 +274,9 @@ public class WeaponHolder : NetworkBehaviour
     [TargetRpc]
     private void TargetShowBulletUI(NetworkConnection target, bool enabled)
     {
-        if (bulletUI != null)
+        if (bulletUIPoint != null)
         {
-            bulletUI.SetActive(enabled);
+            bulletUIPoint.SetActive(enabled);
         }
     }
 
@@ -301,15 +304,23 @@ public class WeaponHolder : NetworkBehaviour
     {
         currentWeaponObject = weaponObj;
 
-        if (weaponObj.TryGetComponent<Weapon>(out var gunScript))
+        if (weaponObj.TryGetComponent<Weapon>(out var weaponScript))
         {
-            currentWeaponScript = gunScript;
+            currentWeaponScript = weaponScript;
             currentWeaponScript.WeaponHandRigidbody = weaponHand;
             currentWeaponScript.ReloadHandRigidbody = reloadHand;
             currentWeaponScript.PlayerAudioPlayer = GetComponent<PlayerAudioPlayer>();
             currentWeaponScript.Movement = GetComponent<Movement>();
             currentWeaponScript.PlayerState = playerState;
             currentWeaponScript.WeaponHolder = this;
+
+
+            foreach (GameObject obj in bulletUIPoint.transform)
+            {
+                Destroy(obj);
+            }
+
+            bulletUI = Instantiate(weaponScript.BulletUI, bulletUIPoint.transform, false).GetComponent<BulletUI>();
         }
 
         weaponObj.transform.SetParent(weaponBone.transform);
