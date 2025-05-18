@@ -26,15 +26,6 @@ public class Weapon : NetworkBehaviour
     [HideInInspector] public Rigidbody ReloadHandRigidbody;
     [HideInInspector] public Rigidbody WeaponHandRigidbody;
 
-    public bool IsLaserOn => isLaserOn;
-
-    public bool OutOfAmmo => BulletCount <= 0 && !infiniteAmmo;
-
-    [SyncVar(hook = nameof(OnBulletCountChanged))]
-    [HideInInspector] public int BulletCount;
-
-    [SyncVar] public bool IsAvailable = true;
-
     [Header("Weapon Settings")]
     public WeaponType Type;
     public bool IsAutomatic;
@@ -62,6 +53,14 @@ public class Weapon : NetworkBehaviour
     [SerializeField] private ParticleSystem shellEjection;
     [SerializeField] private ParticleSystem stoneImpactEffect;
     [SerializeField] private ParticleSystem bloodImpactEffect;
+
+    public bool IsLaserOn => isLaserOn;
+    public bool OutOfAmmo => BulletCount <= 0 && !infiniteAmmo;
+
+    [SyncVar(hook = nameof(OnBulletCountChanged))]
+    [HideInInspector] public int BulletCount;
+
+    [SyncVar] public bool IsAvailable = true;
 
     private bool isLaserOn;
     private Vector3 initialReloadPartPosition;
