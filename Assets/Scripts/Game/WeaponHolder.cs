@@ -17,7 +17,7 @@ public class WeaponHolder : NetworkBehaviour
     private Weapon currentWeaponScript;
     private GameObject currentWeaponPrefab;
     private GameObject currentObtainableWeaponPrefab;
-    private TextMeshProUGUI bulletUI;
+    private GameObject bulletUI;
     private TextMeshProUGUI reloadText;
     private Canvas tutorialCanvas;
     private Timer pickUpTimer;
@@ -39,7 +39,7 @@ public class WeaponHolder : NetworkBehaviour
             reloadText = uiManager.ReloadUI;
             tutorialCanvas = uiManager.TutorialCanvas;
 
-            bulletUI.enabled = false; // Disable bullet UI by default
+            bulletUI.SetActive(false);// Disable bullet UI by default
             reloadText.enabled = false; // Disable reload UI by default
             tutorialCanvas.enabled = true; // Disable tutorial UI by default
 
@@ -89,7 +89,7 @@ public class WeaponHolder : NetworkBehaviour
             reloadText = uiManager.ReloadUI;
             tutorialCanvas = uiManager.TutorialCanvas;
 
-            bulletUI.enabled = false;
+            bulletUI.SetActive(false);
             reloadText.enabled = false;
             tutorialCanvas.enabled = true;
             initialized = true;
@@ -171,10 +171,10 @@ public class WeaponHolder : NetworkBehaviour
         CmdReload();
     }
 
-    public void UpdateBulletCountText()
+    public void UpdateBulletCount()
     {
         if (!isLocalPlayer || bulletUI == null || currentWeaponScript == null) return;
-        bulletUI.text = $"{currentWeaponScript.BulletCount} / inf";
+        //bulletUI.text = $"{currentWeaponScript.BulletCount} / inf";
     }
 
     [Command]
@@ -273,7 +273,7 @@ public class WeaponHolder : NetworkBehaviour
     {
         if (bulletUI != null)
         {
-            bulletUI.enabled = enabled;
+            bulletUI.SetActive(enabled);
         }
     }
 
