@@ -80,7 +80,7 @@ public class Weapon : NetworkBehaviour
         {
             if (WeaponHolder != null)
             {
-                WeaponHolder.UpdateBulletCountText();
+                WeaponHolder.UpdateBulletCount();
             }
         }
     }
@@ -92,14 +92,14 @@ public class Weapon : NetworkBehaviour
         {
             BulletCount = MagazineSize;
             IsAvailable = true;
-            WeaponHolder.UpdateBulletCountText();
+            WeaponHolder.UpdateBulletCount();
             WeaponHolder.TargetShowReloadText(WeaponHolder.gameObject.GetComponent<NetworkIdentity>().connectionToClient, false);
             PlayerAudioPlayer.PlayWeaponSound((int)Type, 3);
-
         }, true);
 
         reloadPartTimer = new Timer(reloadTime * 0.5f, () =>
         {
+            //yeni mermiler gelsin
             SetReloadPartTransform(true);
         }, true);
 
@@ -111,7 +111,7 @@ public class Weapon : NetworkBehaviour
     private void Start()
     {
         BulletCount = MagazineSize;
-        WeaponHolder?.UpdateBulletCountText();
+        WeaponHolder?.UpdateBulletCount();
         PlayerAudioPlayer.PlayWeaponSound((int)Type, -2);
     }
 

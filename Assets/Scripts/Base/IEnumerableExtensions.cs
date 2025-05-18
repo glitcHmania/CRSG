@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Base
@@ -14,6 +11,14 @@ namespace Assets.Scripts.Base
             foreach (T child in enumerable)
             {
                 action.Invoke(child);
+            }
+        }
+
+        public static void DestroyAll(this Transform transform)
+        {
+            foreach (Transform child in transform)
+            {
+                GameObject.Destroy(child.gameObject);
             }
         }
     }

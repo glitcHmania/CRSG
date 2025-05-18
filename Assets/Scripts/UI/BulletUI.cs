@@ -1,9 +1,8 @@
-using System.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Assets.Scripts.Base;
+using UnityEngine;
 
 public class BulletUI : MonoBehaviour
 {
@@ -21,22 +20,26 @@ public class BulletUI : MonoBehaviour
 
         if (count < 0)
             throw new ArgumentException($"Mermi sayýsý 0'dan küçük olamaz");
-
-        foreach (Transform child in transform)
-        {
-            Destroy(child.gameObject);
-        }
+        
+        EmptyMagazine();
 
         foreach (Vector3 point in BulletPositions.Take(BulletPositions.Count - count))
         {
             GameObject bullet = Instantiate(ShotBullet, transform, false);
             bullet.transform.localPosition = point;
-        }        
-        
+            //bullet.transform.localRotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(0, 360));
+        }
+
         foreach (Vector3 point in BulletPositions.TakeLast(count))
         {
             GameObject bullet = Instantiate(Bullet, transform, false);
             bullet.transform.localPosition = point;
+            //bullet.transform.localRotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(0, 360));
         }
+    }
+
+    private void EmptyMagazine()
+    {
+        gameObject.transform.DestroyAll();
     }
 }

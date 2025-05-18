@@ -1,3 +1,4 @@
+using Assets.Scripts.Base;
 using Mirror;
 using TMPro;
 using UnityEngine;
@@ -304,7 +305,7 @@ public class WeaponHolder : NetworkBehaviour
     {
         currentWeaponObject = weaponObj;
 
-        if (weaponObj.TryGetComponent<Weapon>(out var weaponScript))
+        if (weaponObj.TryGetComponent(out Weapon weaponScript))
         {
             currentWeaponScript = weaponScript;
             currentWeaponScript.WeaponHandRigidbody = weaponHand;
@@ -314,11 +315,7 @@ public class WeaponHolder : NetworkBehaviour
             currentWeaponScript.PlayerState = playerState;
             currentWeaponScript.WeaponHolder = this;
 
-
-            foreach (GameObject obj in bulletUIPoint.transform)
-            {
-                Destroy(obj);
-            }
+            bulletUIPoint.transform.DestroyAll();
 
             bulletUI = Instantiate(weaponScript.BulletUI, bulletUIPoint.transform, false).GetComponent<BulletUI>();
         }
