@@ -99,7 +99,6 @@ public class Weapon : NetworkBehaviour
 
         reloadPartTimer = new Timer(reloadTime * 0.5f, () =>
         {
-            //yeni mermiler gelsin
             SetReloadPartTransform(true);
         }, true);
 
@@ -371,6 +370,8 @@ public class Weapon : NetworkBehaviour
         if (!adjust)
         {
             // Move to reloadPartTransform's local position
+            //mermiler gitsin
+            WeaponHolder.bulletUI.EmptyMagazine();
             PlayerAudioPlayer.PlayWeaponSound((int)Type, 1);
             reloadPart.transform.localPosition = reloadPartTransform.localPosition;
             reloadPart.transform.localRotation = reloadPartTransform.localRotation;
@@ -379,6 +380,8 @@ public class Weapon : NetworkBehaviour
         else
         {
             // Return to original local position
+            //yeni mermiler gelsin
+            WeaponHolder.bulletUI.ReInitBullets();
             PlayerAudioPlayer.PlayWeaponSound((int)Type, 2);
             reloadPart.transform.localPosition = initialReloadPartPosition;
             reloadPart.transform.localRotation = initialReloadPartRotation;
