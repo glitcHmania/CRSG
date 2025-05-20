@@ -6336,7 +6336,7 @@ MonoBehaviour:
   - sceneName: Game
     musicClip: {fileID: 8300000, guid: b4a57636a4cc64f6c822a6bd1aec36e9, type: 3}
     volume: 0.01
-  fadeDuration: 0.5
+  fadeDuration: 0
   volume: 0.04
 --- !u!1001 &1339553203
 PrefabInstance:
