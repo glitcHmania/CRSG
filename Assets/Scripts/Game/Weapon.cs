@@ -391,7 +391,9 @@ public class Weapon : NetworkBehaviour
         Rigidbody[] rb = droppedMag.GetComponentsInChildren<Rigidbody>();
         foreach (Rigidbody r in rb)
         {
-            r.AddForce((transform.up + transform.right * 0.6f).normalized * Random.Range(3f, 6f), ForceMode.Impulse);
+            //r.AddForce((transform.up + transform.right * 0.6f).normalized * Random.Range(3f, 6f), ForceMode.Impulse);
+
+            r.AddForce(Vector3.up * Random.Range(3f, 6f), ForceMode.Impulse);
 
         }
     }

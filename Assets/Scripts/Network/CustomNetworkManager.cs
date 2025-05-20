@@ -7,8 +7,23 @@ using UnityEngine.SceneManagement;
 public class CustomNetworkManager : NetworkManager
 {
     [SerializeField] private List<GameObject> characterPrefabs; // Indexed by characterId
-
     public List<PlayerObjectController> GamePlayers { get; } = new List<PlayerObjectController>();
+
+    private static CustomNetworkManager _instance;
+
+    public override void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Debug.LogWarning("Duplicate CustomNetworkManager found. Destroying the new one.");
+            Destroy(this.gameObject);  // Prevent duplicates
+            return;
+        }
+
+        _instance = this;
+        DontDestroyOnLoad(this.gameObject);
+    }
+
 
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {

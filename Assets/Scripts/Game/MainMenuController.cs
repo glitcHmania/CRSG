@@ -18,6 +18,8 @@ public class MainMenuUI : MonoBehaviour
 
     public void GoToCustomizationScene()
     {
-        SceneManager.LoadScene("Character");
+        BootstrapLoader.SceneToLoad = "Character";
+        SceneManager.LoadSceneAsync("LoadingScene");
+
     }
 }
