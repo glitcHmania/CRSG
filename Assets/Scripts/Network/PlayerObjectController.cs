@@ -9,6 +9,11 @@ public class PlayerObjectController : NetworkBehaviour
     [SyncVar(hook = nameof(PlayerNameUpdate))] public string PlayerName;
     [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool Ready;
 
+    [SyncVar] public int CharacterId;
+    [SyncVar] public int HatId;
+    [SyncVar] public int BeltId;
+
+
     private CustomNetworkManager manager;
     private CustomNetworkManager Manager
     {
@@ -26,7 +31,14 @@ public class PlayerObjectController : NetworkBehaviour
     private void Start()
     {
         DontDestroyOnLoad(this.gameObject);
+
+        var appearance = GetComponent<CharacterAppearanceController>();
+        if (appearance != null)
+        {
+            appearance.ApplyCosmetics(HatId, BeltId);
+        }
     }
+
 
     private void PlayerReadyUpdate(bool oldValue, bool newValue)
     {
@@ -58,10 +70,23 @@ public class PlayerObjectController : NetworkBehaviour
     public override void OnStartAuthority()
     {
         CmdSetPlayerName(SteamFriends.GetPersonaName());
+
+        var customization = CustomizationManager.LoadCustomization();
+        CmdSetCustomization(customization.characterId, customization.hatId, customization.beltId);
+
         gameObject.name = "LocalGamePlayer";
         LobbyController.Instance.FindLocalPlayer();
         LobbyController.Instance.UpdateLobbyName();
     }
+
+    [Command]
+    private void CmdSetCustomization(int characterId, int hatId, int beltId)
+    {
+        CharacterId = characterId;
+        HatId = hatId;
+        BeltId = beltId;
+    }
+
 
     public override void OnStartClient()
     {

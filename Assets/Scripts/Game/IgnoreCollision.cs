@@ -1,7 +1,6 @@
-using Mirror;
 using UnityEngine;
 
-public class IgnoreCollision : NetworkBehaviour
+public class IgnoreCollision : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Collider ThisCollider;

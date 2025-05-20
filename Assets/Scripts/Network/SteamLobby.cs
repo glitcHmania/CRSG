@@ -26,6 +26,12 @@ public class SteamLobby : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject); // <--- Add this line
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
         }
 
         manager = GetComponent<CustomNetworkManager>();
@@ -34,6 +40,7 @@ public class SteamLobby : MonoBehaviour
         joinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequested);
         lobbyEnter = Callback<LobbyEnter_t>.Create(OnLobbyEnter);
     }
+
 
     private void OnLobbyCreated(LobbyCreated_t callback)
     {
