@@ -57,7 +57,7 @@ public class HandController : MonoBehaviour
 
     void Update()
     {
-        if (!PlayerState.IsInGameScene) return;
+        if (!PlayerSpawner.IsInGameScene) return;
 
         jumpTimer.Update();
 

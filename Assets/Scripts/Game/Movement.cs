@@ -73,7 +73,7 @@ public class Movement : NetworkBehaviour
     void Update()
     {
         if (!isLocalPlayer) return;
-        if (!PlayerState.IsInGameScene) return;
+        if (!PlayerSpawner.IsInGameScene) return;
 
         //mainRigidbodyVelocity = mainRigidBody.velocity.magnitude;
 
@@ -128,6 +128,8 @@ public class Movement : NetworkBehaviour
                     jumpTimer.Reset();
                     jumpHoldTimer.Reset();
                     jumpCooldownTimer.Reset();
+
+                    playerState.CanCrouch = false;
                 }
             }
 
@@ -164,6 +166,7 @@ public class Movement : NetworkBehaviour
             {
                 playerAudioPlayer.PlayJumpEndSound();
                 completeJump = false;
+                playerState.CanCrouch = true;
 
                 jumpHoldTimer.Reset();
 
@@ -214,7 +217,7 @@ public class Movement : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         if (playerState.IsRagdoll) return;
-        if (!PlayerState.IsInGameScene) return;
+        if (!PlayerSpawner.IsInGameScene) return;
         if (hipRigidBody.isKinematic) return;
 
         float speed = playerState.MovementState == PlayerState.Movement.Running ? moveSpeed * runMultiplier : moveSpeed;
@@ -256,8 +259,8 @@ public class Movement : NetworkBehaviour
             );
 
             // Only apply input if either:
-            // - Current speed is below the max speed
-            // - OR the input is trying to slow us down
+            // Current speed is below the max speed
+            // OR the input is trying to slow us down
             bool isUnderSpeedLimit = currentHorizontalVelocity.magnitude < speed;
             bool isTryingToSlowDown = Vector3.Dot(currentHorizontalVelocity.normalized, intendedVelocityChange.normalized) < 0f;
 
@@ -274,7 +277,7 @@ public class Movement : NetworkBehaviour
             }
             else
             {
-                // Over speed and trying to speed up => ignore input
+                // if over speed and trying to speed up ignore input
                 hipRigidBody.velocity = new Vector3(
                     hipRigidBody.velocity.x,
                     hipRigidBody.velocity.y,
@@ -327,7 +330,6 @@ public class Movement : NetworkBehaviour
             rb.isKinematic = false;
         }
     }
-
 
     void OnDrawGizmosSelected()
     {

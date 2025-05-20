@@ -51,7 +51,7 @@ public class RagdollController : NetworkBehaviour
     private void Update()
     {
         if (!isLocalPlayer) return;
-        if (!PlayerState.IsInGameScene) return;
+        if (!PlayerSpawner.IsInGameScene) return;
 
         #region Input
         if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)

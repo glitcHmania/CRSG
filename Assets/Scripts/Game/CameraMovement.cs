@@ -24,7 +24,7 @@ public class CameraMovement : MonoBehaviour
 
     void LateUpdate()
     {
-        if (!PlayerState.IsInGameScene) return;
+        if (!PlayerSpawner.IsInGameScene) return;
 
         if (!locked)
         {

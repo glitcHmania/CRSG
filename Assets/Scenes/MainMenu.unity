@@ -7619,6 +7619,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1611208081540578508, guid: c238a9d7d9412264ca0ccb2f327e6c6b, type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7350473935902510, guid: c238a9d7d9412264ca0ccb2f327e6c6b, type: 3}
       propertyPath: sceneId
       value: 3735375000
@@ -8898,6 +8902,8 @@ PrefabInstance:
     - {fileID: 2074586801090863293, guid: c238a9d7d9412264ca0ccb2f327e6c6b, type: 3}
     - {fileID: 6669542978013292838, guid: c238a9d7d9412264ca0ccb2f327e6c6b, type: 3}
     - {fileID: 3894758895937460293, guid: c238a9d7d9412264ca0ccb2f327e6c6b, type: 3}
+    - {fileID: -1611208081540578508, guid: c238a9d7d9412264ca0ccb2f327e6c6b, type: 3}
+    - {fileID: -7633484518074575511, guid: c238a9d7d9412264ca0ccb2f327e6c6b, type: 3}
     m_RemovedGameObjects:
     - {fileID: 3487236882783720143, guid: c238a9d7d9412264ca0ccb2f327e6c6b, type: 3}
     - {fileID: 3863760336251806609, guid: c238a9d7d9412264ca0ccb2f327e6c6b, type: 3}

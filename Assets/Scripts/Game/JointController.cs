@@ -57,7 +57,7 @@ public class JointController : NetworkBehaviour
 
     void Update()
     {
-        if (!isLocalPlayer || !PlayerState.IsInGameScene) return;
+        if (!isLocalPlayer || !PlayerSpawner.IsInGameScene) return;
 
         RaycastHit hit;
         if (Physics.Raycast(hips.transform.position, -hips.transform.up, out hit, 10f, LayerMask.GetMask("Ground")))
@@ -169,7 +169,7 @@ public class JointController : NetworkBehaviour
     {
         var legSwing = Mathf.Sin(stepChronometer.Elapsed * currentSpeed) * (currentStepHeight + currentSlope * 2f);
 
-        if(playerState.IsCrouching)
+        if(playerState.CanCrouch && playerState.IsCrouching)
         {
             leftUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Min(legSwing, 0) - 70, 0, 0);
             rightUpLegJoint.targetRotation = Quaternion.Euler(Mathf.Min(-legSwing, 0) - 70, 0, 0);
@@ -310,7 +310,7 @@ public class JointController : NetworkBehaviour
 
     private void ResetLegs()
     {
-        if(playerState.IsCrouching)
+        if(playerState.CanCrouch && playerState.IsCrouching)
         {
             leftUpLegJoint.targetRotation = Quaternion.Euler(-70, 0, 0);
             leftLegJoint.targetRotation = Quaternion.Euler(120, 0, 0);
