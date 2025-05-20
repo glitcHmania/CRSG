@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 public class MainMenuUI : MonoBehaviour
 {
-    public Button hostButton;
+    public Button HostButton;
 
     void Start()
     {
-        hostButton.onClick.RemoveAllListeners();
-        hostButton.onClick.AddListener(() =>
+        HostButton.onClick.RemoveAllListeners();
+        HostButton.onClick.AddListener(() =>
         {
             Debug.Log("Host clicked");
             SteamLobby.Instance.HostLobby();
@@ -21,5 +21,11 @@ public class MainMenuUI : MonoBehaviour
         BootstrapLoader.SceneToLoad = "Character";
         SceneManager.LoadSceneAsync("LoadingScene");
 
+    }
+
+    public void GoToCreditsScene()
+    {
+        BootstrapLoader.SceneToLoad = "Credits";
+        SceneManager.LoadSceneAsync("LoadingScene");
     }
 }
