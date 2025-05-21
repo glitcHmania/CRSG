@@ -5,6 +5,7 @@ public class PlayerAudioPlayer : NetworkBehaviour
 {
     [SerializeField] private AudioSource vocalAudioSource;
     [SerializeField] private AudioSource weaponAudioSource;
+    [SerializeField] private AudioSource weaponAudioSource2D;
     private AudioSource audioSource;
     private PlayerState playerState;
 
@@ -60,6 +61,12 @@ public class PlayerAudioPlayer : NetworkBehaviour
 
     public void PlayWeaponSound(int weaponType, int index, float volume = 0.1f)
     {
+        if(!isOwned) return;
+
+        if (isLocalPlayer)
+        {
+            PlayWeaponSound2D(weaponType, index, volume);
+        }
         CmdPlayWeaponSound(weaponType, index, volume);
     }
 
@@ -149,14 +156,15 @@ public class PlayerAudioPlayer : NetworkBehaviour
     [ClientRpc]
     void RpcPlayWeaponSound(int weaponType, int index, float volume)
     {
+        if (isLocalPlayer) return;
         if (index == -2)
         {
-            PlayWeaponSound(pickUpSound, volume, true);
+            PlayWeaponSoundInternal(pickUpSound, volume, true);
             return;
         }
         else if (index == -1)
         {
-            PlayWeaponSound(emptyClickSound, volume, true);
+            PlayWeaponSoundInternal(emptyClickSound, volume, true);
             return;
         }
 
@@ -174,7 +182,37 @@ public class PlayerAudioPlayer : NetworkBehaviour
                 break;
         }
 
-        PlayWeaponSound(weaponSounds[index], volume, true);
+        PlayWeaponSoundInternal(weaponSounds[index], volume, true);
+    }
+
+    private void PlayWeaponSound2D(int weaponType, int index, float volume)
+    {
+        if (index == -2)
+        {
+            PlayWeaponSoundInternal2D(pickUpSound, volume, true);
+            return;
+        }
+        else if (index == -1)
+        {
+            PlayWeaponSoundInternal2D(emptyClickSound, volume, true);
+            return;
+        }
+
+        AudioClip[] weaponSounds = null;
+        switch ((Weapon.WeaponType)weaponType)
+        {
+            case Weapon.WeaponType.Pistol:
+                weaponSounds = pistolSounds;
+                break;
+            case Weapon.WeaponType.Rifle:
+                weaponSounds = rifleSounds;
+                break;
+            case Weapon.WeaponType.Shotgun:
+                weaponSounds = shotgunSounds;
+                break;
+        }
+
+        PlayWeaponSoundInternal2D(weaponSounds[index], volume, true);
     }
 
     [ClientRpc]
@@ -275,13 +313,22 @@ public class PlayerAudioPlayer : NetworkBehaviour
         audioSource.PlayOneShot(sounds[randomIndex]);
     }
 
-    private void PlayWeaponSound(AudioClip sound, float volume, bool randomizeMore)
+    private void PlayWeaponSoundInternal(AudioClip sound, float volume, bool randomizeMore)
     {
         if (sound == null) return;
         if (randomizeMore)
             weaponAudioSource.pitch = 1f + Random.Range(-0.05f, 0.05f);
         weaponAudioSource.volume = volume;
         weaponAudioSource.PlayOneShot(sound);
+    }
+
+    private void PlayWeaponSoundInternal2D(AudioClip sound, float volume, bool randomizeMore)
+    {
+        if (sound == null) return;
+        if (randomizeMore)
+            weaponAudioSource2D.pitch = 1f + Random.Range(-0.05f, 0.05f);
+        weaponAudioSource2D.volume = volume;
+        weaponAudioSource2D.PlayOneShot(sound);
     }
 
     private void PlayRandomVocalSound(AudioClip[] sounds, float volume = 0.15f)

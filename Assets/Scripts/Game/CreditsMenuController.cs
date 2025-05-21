@@ -5,7 +5,8 @@ public class CreditsMenuController : MonoBehaviour
 {
     public void GoToMainMenuScene()
     {
-        BootstrapLoader.SceneToLoad = "MainMenu";
-        SceneManager.LoadSceneAsync("LoadingScene");
+        SceneManager.LoadSceneAsync("MainMenu");
+        //BootstrapLoader.SceneToLoad = "MainMenu";
+        //SceneManager.LoadSceneAsync("LoadingScene");
     }
 }

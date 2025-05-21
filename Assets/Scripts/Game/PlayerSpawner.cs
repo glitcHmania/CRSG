@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,17 +32,16 @@ public class PlayerSpawner : NetworkBehaviour
         IsInGameScene = scene.name == "Game";
         Debug.Log($"{scene.name} scene loaded");
 
-        if ((scene.name == "Game" || scene.name == "Lobby") && NetworkClient.active && isOwned)
-        {
-            Debug.Log("Requesting spawn on scene load");
-            TryRequestSpawn();
-        }
+
+        TryRequestSpawn();
 
         HandleCameraForScene(scene.name);
     }
 
     private void HandleCameraForScene(string sceneName)
     {
+        if (!isOwned) return;  // ← Important!
+
         if (sceneName == "Game")
         {
             EnablePlayerCamera(true);
@@ -59,6 +58,7 @@ public class PlayerSpawner : NetworkBehaviour
         }
     }
 
+
     private void EnablePlayerCamera(bool enable)
     {
         if (playerCamera != null)
@@ -71,14 +71,18 @@ public class PlayerSpawner : NetworkBehaviour
 
     public override void OnStartLocalPlayer()
     {
+        base.OnStartLocalPlayer();
+
+        Debug.Log("OnStartLocalPlayer called (client has authority)");
+
         IsInGameScene = SceneManager.GetActiveScene().name == "Game";
 
-        if (SceneManager.GetActiveScene().name == "Game" || SceneManager.GetActiveScene().name == "Lobby")
-        {
-            TryRequestSpawn();
-            HandleCameraForScene(SceneManager.GetActiveScene().name);
-        }
+        HandleCameraForScene(SceneManager.GetActiveScene().name);
+
+
+        TryRequestSpawn();
     }
+
 
     private void TryRequestSpawn()
     {

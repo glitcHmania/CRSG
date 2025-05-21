@@ -5,8 +5,9 @@ public class CharacterMenuController : MonoBehaviour
 {
     public void GoToMainMenu()
     {
-        BootstrapLoader.SceneToLoad = "MainMenu";
-        SceneManager.LoadSceneAsync("LoadingScene");
+        SceneManager.LoadSceneAsync("MainMenu");
+        //BootstrapLoader.SceneToLoad = "MainMenu";
+        //SceneManager.LoadSceneAsync("LoadingScene");
 
     }
 }

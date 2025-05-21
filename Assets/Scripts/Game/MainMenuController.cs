@@ -18,14 +18,16 @@ public class MainMenuUI : MonoBehaviour
 
     public void GoToCustomizationScene()
     {
-        BootstrapLoader.SceneToLoad = "Character";
-        SceneManager.LoadSceneAsync("LoadingScene");
+        SceneManager.LoadSceneAsync("Character");
+        //BootstrapLoader.SceneToLoad = "Character";
+        //SceneManager.LoadSceneAsync("LoadingScene");
 
     }
 
     public void GoToCreditsScene()
     {
-        BootstrapLoader.SceneToLoad = "Credits";
-        SceneManager.LoadSceneAsync("LoadingScene");
+        SceneManager.LoadSceneAsync("Credits");
+        //BootstrapLoader.SceneToLoad = "Credits";
+        //SceneManager.LoadSceneAsync("LoadingScene");
     }
 }

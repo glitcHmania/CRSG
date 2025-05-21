@@ -18,9 +18,9 @@ public class LobbyMenuController : MonoBehaviour
         }
 
         SteamMatchmaking.LeaveLobby(new CSteamID(SteamLobby.Instance.CurrentLobbyID)); // optional
-
-        BootstrapLoader.SceneToLoad = "MainMenu";
-        SceneManager.LoadSceneAsync("LoadingScene");
+        SceneManager.LoadSceneAsync("MainMenu");
+        //BootstrapLoader.SceneToLoad = "MainMenu";
+        //SceneManager.LoadSceneAsync("LoadingScene");
 
     }
 

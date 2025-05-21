@@ -108,7 +108,7 @@ public class Weapon : NetworkBehaviour
     {
         BulletCount = MagazineSize;
         WeaponHolder?.UpdateBulletCountText();
-        PlayerAudioPlayer.PlayWeaponSound((int)Type, -2);
+        PlayerAudioPlayer?.PlayWeaponSound((int)Type, -2);
     }
 
     private void OnDestroy()
@@ -139,14 +139,12 @@ public class Weapon : NetworkBehaviour
 
     public void Shoot(NetworkConnectionToClient ownerConn)
     {
-        if (!isServer) return;
-
         if (!IsAvailable)
             return;
 
         if (BulletCount <= 0)
         {
-            PlayerAudioPlayer.PlayWeaponSound((int)Type, -1);
+            RpcPlayEmptClickSound();
             return;
         }
 
@@ -290,6 +288,12 @@ public class Weapon : NetworkBehaviour
         }
 
         PlayerState.Numbness += numbnessAmount;
+    }
+
+    [ClientRpc]
+    private void RpcPlayEmptClickSound()
+    {
+        PlayerAudioPlayer.PlayWeaponSound((int)Type, -1);
     }
 
     [ClientRpc]
