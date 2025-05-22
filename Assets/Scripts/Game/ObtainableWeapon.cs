@@ -58,4 +58,12 @@ public class ObtainableWeapon : NetworkBehaviour
             collision.GetComponentInParent<WeaponHolder>()?.TryPickupWeapon(this);
         }
     }
+
+    private void OnTriggerStay(Collider collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("PlayerHip") || collision.gameObject.layer == LayerMask.NameToLayer("PlayerSpine") && !collision.GetComponentInParent<PlayerState>().IsArmed)
+        {
+            collision.GetComponentInParent<WeaponHolder>()?.TryPickupWeapon(this);
+        }
+    }
 }

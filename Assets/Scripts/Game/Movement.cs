@@ -72,13 +72,15 @@ public class Movement : NetworkBehaviour
 
     void Update()
     {
+        Debug.Log(playerState.IsClimbing);
+
         if (!isLocalPlayer) return;
         if (!PlayerSpawner.IsInGameScene) return;
 
         //mainRigidbodyVelocity = mainRigidBody.velocity.magnitude;
 
         #region Input
-        if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
+        if (Application.isFocused && UIManager.Instance.IsGameFocused)
         {
             if (Input.GetKeyDown(KeyCode.M))
             {
@@ -86,7 +88,7 @@ public class Movement : NetworkBehaviour
             }
             if (Input.GetKeyDown(KeyCode.N))
             {
-                StartCoroutine(SafeRagdollMove(new Vector3(45.2f, -35.9f, -69.5f), transform.rotation));
+                StartCoroutine(SafeRagdollMove(GameObject.FindGameObjectWithTag("TestSpawn").transform.position , transform.rotation));
             }
 
             jumpTimer.Update();
@@ -97,7 +99,6 @@ public class Movement : NetworkBehaviour
                 if (Input.GetKey(KeyCode.Space) && playerState.IsGrounded)
                 {
                     jumpHoldTimer.Update();
-                    Debug.Log(jumpHoldTimer.RemainingTime);
                 }
 
                 if (Input.GetKeyUp(KeyCode.Space) && playerState.IsGrounded)
@@ -194,7 +195,7 @@ public class Movement : NetworkBehaviour
         {
             ungroundedTimer.Reset();
         }
-        else
+        else if(!playerState.IsClimbing)
         {
             ungroundedTimer.Update();
         }

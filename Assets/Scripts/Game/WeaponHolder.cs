@@ -59,7 +59,7 @@ public class WeaponHolder : NetworkBehaviour
         pickUpTimer.Update();
 
         #region Input
-        if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
+        if (Application.isFocused && UIManager.Instance != null && UIManager.Instance.IsGameFocused)
         {
             if (Input.GetKeyDown(KeyCode.H))
             {

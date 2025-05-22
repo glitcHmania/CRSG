@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class HandController : MonoBehaviour
 {
@@ -12,7 +10,7 @@ public class HandController : MonoBehaviour
     [SerializeField] private PlayerAudioPlayer playerAudioPlayer;
 
     [Header("Settings")]
-    [SerializeField] private bool isLeftHand = false; 
+    [SerializeField] private bool isLeftHand = false;
     [SerializeField] private LayerMask allowedLayers;
 
     [Header("Right hand reference for left hand only")]
@@ -21,7 +19,7 @@ public class HandController : MonoBehaviour
     private FixedJoint fixedJoint;
     private GameObject collidedObject = null;
     private bool isColliding = false;
-    private bool isCarrying = false;
+    //private bool isCarrying = false;
     private bool isHolding = false;
     private Timer jumpTimer;
     private GameObject[] fingers;
@@ -48,7 +46,7 @@ public class HandController : MonoBehaviour
             {
                 Destroy(fixedJoint);
                 fixedJoint = null;
-                isCarrying = false;
+                //isCarrying = false;
                 isHolding = false;
                 BendFingers(false);
             }
@@ -73,28 +71,35 @@ public class HandController : MonoBehaviour
 
         if (!isLeftHand && playerState.IsArmed)
         {
-            if (isHolding || isCarrying)
+            //if (isHolding || isCarrying)
+            if (isHolding)
             {
                 if (fixedJoint != null)
                 {
                     Destroy(fixedJoint);
                     fixedJoint = null;
                     isHolding = false;
-                    isCarrying = false;
+                    //isCarrying = false;
                 }
                 return;
             }
         }
-
-        if (!collisionPaused && !isHolding && !isCarrying && Input.GetKey(controlkey))
+        //if (!collisionPaused && !isHolding && !isCarrying && Input.GetKey(controlkey))
+        if (!collisionPaused && !isHolding && Input.GetKey(controlkey))
         {
             if (isColliding && collidedObject != null)
             {
                 if (collidedObject.GetComponent<Rigidbody>())
                 {
+                    //fixedJoint = foreArm.gameObject.AddComponent<FixedJoint>();
+                    //fixedJoint.connectedBody = collidedObject.GetComponent<Rigidbody>();
+                    //isCarrying = true;
+
                     fixedJoint = foreArm.gameObject.AddComponent<FixedJoint>();
                     fixedJoint.connectedBody = collidedObject.GetComponent<Rigidbody>();
-                    isCarrying = true;
+                    isHolding = true;
+                    playerState.IsClimbing = true;
+                    ragdollController.EnableBalance();
                 }
                 else
                 {
@@ -103,8 +108,8 @@ public class HandController : MonoBehaviour
                     isHolding = true;
                     playerState.IsClimbing = true;
                     ragdollController.EnableBalance();
-
                 }
+
                 BendFingers(true);
             }
         }
@@ -116,10 +121,12 @@ public class HandController : MonoBehaviour
                 Destroy(fixedJoint);
                 fixedJoint = null;
 
-                if (isCarrying)
-                    isCarrying = false;
-                else
-                    isHolding = false;
+                //if (isCarrying)
+                //    isCarrying = false;
+                //else
+                //    isHolding = false;
+
+                isHolding = false;
 
                 BendFingers(false);
             }

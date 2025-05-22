@@ -52,7 +52,7 @@ public class RagdollController : NetworkBehaviour
         if (!PlayerSpawner.IsInGameScene) return;
 
         #region Input
-        if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
+        if (Application.isFocused && UIManager.Instance.IsGameFocused)
         {
             if (Input.GetKeyDown(KeyCode.G))
             {

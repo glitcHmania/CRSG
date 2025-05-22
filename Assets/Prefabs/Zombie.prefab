@@ -299,7 +299,7 @@ MonoBehaviour:
   minYAngle: -120
   maxYAngle: 10
   collisionBuffer: 0.3
-  sphereCastRadius: 0.1
+  sphereCastRadius: 0.01
 --- !u!81 &6223364375323298652
 AudioListener:
   m_ObjectHideFlags: 0
@@ -4348,8 +4348,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.17895086
-  m_Center: {x: 0.035867326, y: 0.24422988, z: 0.11665684}
+  m_Radius: 0.23465526
+  m_Center: {x: 0.03586733, y: 0.24423057, z: 0.17236128}
 --- !u!114 &2793204585927599722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5265,8 +5265,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.18042444
-  m_Center: {x: -0.034405738, y: 0.26046288, z: 0.115605965}
+  m_Radius: 0.23597932
+  m_Center: {x: -0.034405723, y: 0.2604644, z: 0.17116132}
 --- !u!114 &3908616008693954722
 MonoBehaviour:
   m_ObjectHideFlags: 0

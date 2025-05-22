@@ -108,7 +108,7 @@ public class JointController : NetworkBehaviour
                 SwingArms();
                 ResetUpperArms();
             }
-            else if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
+            else if (Application.isFocused && UIManager.Instance.IsGameFocused)
             {
                 #region Input
                 if (Input.GetKey(KeyCode.W))

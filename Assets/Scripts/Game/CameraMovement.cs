@@ -51,10 +51,15 @@ public class CameraMovement : MonoBehaviour
             }
         }
 
-        if (!ChatBehaviour.Instance.IsInputActive)
+        if (UIManager.Instance.IsGameFocused)
         {
             mouseX = Input.GetAxis("Mouse X");
             mouseY = Input.GetAxis("Mouse Y");
+        }
+        else
+        {
+            mouseX = 0;
+            mouseY = 0;
         }
 
         currentYaw += mouseX * rotationSpeed;

@@ -46,7 +46,7 @@ public class PlayerState : NetworkBehaviour
 
     private void HandleMovementInput()
     {
-        if (Application.isFocused && !ChatBehaviour.Instance.IsInputActive)
+        if (Application.isFocused && UIManager.Instance.IsGameFocused)
         {
             if (Input.GetKey(KeyCode.Space))
             {
@@ -66,7 +66,7 @@ public class PlayerState : NetworkBehaviour
 
         bool hasInput = (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) ||
                          Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) &&
-                         Application.isFocused && !ChatBehaviour.Instance.IsInputActive;
+                         Application.isFocused && UIManager.Instance.IsGameFocused;
 
         if (hasInput)
         {

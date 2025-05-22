@@ -8,6 +8,7 @@ TagManager:
   - PlayerUI
   - MainCanvas
   - SpawnPoint
+  - TestSpawn
   layers:
   - Default
   - TransparentFX

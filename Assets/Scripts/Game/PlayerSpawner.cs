@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class PlayerSpawner : NetworkBehaviour
 {
     [SerializeField] private Camera playerCamera;
-    private static HashSet<int> usedSpawnIndices = new HashSet<int>();
+    private static List<int> usedSpawnIndices = new List<int>(); // server only
     private static GameObject[] spawnPoints;
 
     public static bool IsInGameScene { get; private set; }
@@ -33,9 +33,17 @@ public class PlayerSpawner : NetworkBehaviour
         IsInGameScene = scene.name == "Game";
         Debug.Log($"{scene.name} scene loaded");
 
-        TryRequestSpawn();
         HandleCameraForScene(scene.name);
+
+        StartCoroutine(DelayedSpawn());
     }
+
+    private IEnumerator DelayedSpawn()
+    {
+        yield return null; // wait 1 frame
+        TryRequestSpawn();
+    }
+
 
     private void HandleCameraForScene(string sceneName)
     {
@@ -85,22 +93,40 @@ public class PlayerSpawner : NetworkBehaviour
 
     private void TryRequestSpawn()
     {
-        Transform spawnPoint = GetUniqueSpawnPoint();
+        if (!isOwned) return;
 
-        // Immediate correction to avoid 1-frame flash
-        TeleportInstantly(spawnPoint);
-        StartCoroutine(SafeRagdollSpawn(spawnPoint));
+        if (isServer)
+        {
+            // Host (Server + Client)
+            AssignAndBroadcastSpawnPoint(connectionToClient);
+        }
+        else
+        {
+            CmdRequestSpawn();
+        }
     }
 
     [Command]
-    private void CmdRequestSpawn(Vector3 pos, Quaternion rot)
+    private void CmdRequestSpawn(NetworkConnectionToClient sender = null)
     {
-        TeleportInstantlyFromValues(pos, rot);
-        RpcSpawnPlayerAtPoint_Internal(pos, rot);
+        AssignAndBroadcastSpawnPoint(sender);
     }
 
-    [ClientRpc]
-    private void RpcSpawnPlayerAtPoint_Internal(Vector3 pos, Quaternion rot)
+    private void AssignAndBroadcastSpawnPoint(NetworkConnectionToClient conn)
+    {
+        Transform spawnPoint = GetUniqueSpawnPoint();
+        Vector3 pos = spawnPoint.position;
+        Quaternion rot = spawnPoint.rotation;
+
+        // Apply server-side
+        TeleportInstantlyFromValues(pos, rot);
+
+        // Inform client
+        TargetApplySpawn(conn, pos, rot);
+    }
+
+    [TargetRpc]
+    private void TargetApplySpawn(NetworkConnection conn, Vector3 pos, Quaternion rot)
     {
         TeleportInstantlyFromValues(pos, rot);
         StartCoroutine(SafeRagdollSpawnFromValues(pos, rot));
@@ -159,7 +185,6 @@ public class PlayerSpawner : NetworkBehaviour
     private Transform GetUniqueSpawnPoint()
     {
         spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
-        Debug.Log($"Found {spawnPoints.Length} spawn points in scene.");
 
         if (spawnPoints.Length == 0)
         {
@@ -167,82 +192,18 @@ public class PlayerSpawner : NetworkBehaviour
             return transform;
         }
 
-        Transform chosen = null;
-
         for (int i = 0; i < spawnPoints.Length; i++)
         {
             if (!usedSpawnIndices.Contains(i))
             {
                 usedSpawnIndices.Add(i);
-                chosen = spawnPoints[i].transform;
-                break;
+                return spawnPoints[i].transform;
             }
         }
 
-        if (chosen == null)
-        {
-            int fallback = Random.Range(0, spawnPoints.Length);
-            Debug.LogWarning("All spawn points used. Assigning random fallback.");
-            chosen = spawnPoints[fallback].transform;
-        }
-
-        return chosen;
+        // fallback if all are used
+        int fallback = Random.Range(0, spawnPoints.Length);
+        Debug.LogWarning("All spawn points used. Assigning random fallback.");
+        return spawnPoints[fallback].transform;
     }
-
-    private IEnumerator SafeRagdollSpawn(Transform spawnPoint)
-    {
-        Debug.Log($"Spawning player at {spawnPoint.name}");
-        Vector3 pos = spawnPoint.position;
-        Quaternion rot = spawnPoint.rotation;
-
-        Rigidbody[] rbs = GetComponentsInChildren<Rigidbody>();
-
-        foreach (var rb in rbs)
-        {
-            if (rb == null) continue;
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-            rb.isKinematic = true;
-        }
-
-        yield return new WaitForFixedUpdate();
-
-        Rigidbody root = GetComponent<Rigidbody>();
-        if (root != null)
-        {
-            root.position = pos;
-            root.rotation = rot;
-        }
-        else
-        {
-            transform.position = pos;
-            transform.rotation = rot;
-        }
-
-        yield return new WaitForFixedUpdate();
-
-        foreach (var rb in rbs)
-        {
-            if (rb == null) continue;
-            rb.isKinematic = false;
-        }
-    }
-    private void TeleportInstantly(Transform spawnPoint)
-    {
-        Vector3 pos = spawnPoint.position;
-        Quaternion rot = spawnPoint.rotation;
-
-        Rigidbody root = GetComponent<Rigidbody>();
-        if (root != null)
-        {
-            root.position = pos;
-            root.rotation = rot;
-        }
-        else
-        {
-            transform.position = pos;
-            transform.rotation = rot;
-        }
-    }
-
 }
