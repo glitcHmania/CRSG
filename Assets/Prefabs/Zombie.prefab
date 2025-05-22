@@ -2788,6 +2788,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3135921509060577837, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6539532043948642791}
+    - targetCorrespondingSourceObject: {fileID: 3135921509060577837, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8107188020698529242}
     - targetCorrespondingSourceObject: {fileID: -6170625038081293824, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3413155456252019654}
@@ -3027,7 +3030,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.23643637, y: 0.19895887, z: -0.09592604}
+  m_ConnectedAnchor: {x: -0.23643637, y: 0.19895901, z: -0.09592598}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -3165,7 +3168,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ThisCollider: {fileID: 7090368109502828676}
   ColliderToIgnore:
+  - {fileID: 4419815717529161684}
+  - {fileID: 5676740558075174054}
+  - {fileID: 3413155456252019654}
+  - {fileID: 3281724592065729899}
+  - {fileID: 735306419801939327}
+  - {fileID: 8373620039869076146}
+  - {fileID: 4495540064562236521}
+  - {fileID: 3258591573954481060}
   - {fileID: 6448930826572572460}
+  - {fileID: 4488327774806396281}
   - {fileID: 4090136463901648719}
   - {fileID: 6389448050643710651}
 --- !u!1 &287997504604421362 stripped
@@ -3235,7 +3247,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 1, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.00000031851232, y: 0.22159302, z: -0.000000037252903}
+  m_ConnectedAnchor: {x: -0.000000022351742, y: 0.221593, z: -0.000000067055225}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 0, z: 0}
   m_XMotion: 0
@@ -3439,7 +3451,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.00000001705654, y: 0.47569823, z: -0.029720087}
+  m_ConnectedAnchor: {x: 1.0627052e-14, y: 0.47569835, z: -0.029720258}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -3577,16 +3589,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ThisCollider: {fileID: 4488327774806396281}
   ColliderToIgnore:
+  - {fileID: 4419815717529161684}
+  - {fileID: 5676740558075174054}
+  - {fileID: 3413155456252019654}
+  - {fileID: 3281724592065729899}
+  - {fileID: 735306419801939327}
+  - {fileID: 8373620039869076146}
+  - {fileID: 4495540064562236521}
+  - {fileID: 3258591573954481060}
   - {fileID: 7090368109502828676}
   - {fileID: 6448930826572572460}
   - {fileID: 4090136463901648719}
   - {fileID: 6389448050643710651}
-  - {fileID: 5676740558075174054}
-  - {fileID: 3413155456252019654}
-  - {fileID: 735306419801939327}
-  - {fileID: 8373620039869076146}
-  - {fileID: 3281724592065729899}
-  - {fileID: 4495540064562236521}
 --- !u!82 &7438804219633394149
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3770,7 +3784,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.11569618, y: -0.08174134, z: 0.01166978}
+  m_ConnectedAnchor: {x: 0.115696095, y: -0.08174134, z: 0.011669638}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -3969,7 +3983,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.0000004058536, y: 0.34176803, z: -0.013545368}
+  m_ConnectedAnchor: {x: -0.0000004420834, y: 0.34176803, z: -0.01354558}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -4108,17 +4122,17 @@ MonoBehaviour:
   ThisCollider: {fileID: 3258591573954481060}
   ColliderToIgnore:
   - {fileID: 4419815717529161684}
-  - {fileID: 7090368109502828676}
-  - {fileID: 6448930826572572460}
-  - {fileID: 4090136463901648719}
-  - {fileID: 6389448050643710651}
-  - {fileID: 4488327774806396281}
   - {fileID: 5676740558075174054}
   - {fileID: 3413155456252019654}
-  - {fileID: 735306419801939327}
-  - {fileID: 3413155456252019654}
   - {fileID: 3281724592065729899}
+  - {fileID: 735306419801939327}
+  - {fileID: 8373620039869076146}
   - {fileID: 4495540064562236521}
+  - {fileID: 7090368109502828676}
+  - {fileID: 6448930826572572460}
+  - {fileID: 4488327774806396281}
+  - {fileID: 4090136463901648719}
+  - {fileID: 6389448050643710651}
 --- !u!1 &4311917604382387781 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -4332706925441422008, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
@@ -4186,7 +4200,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.000000027323154, y: 0.41253215, z: -0.00000022444874}
+  m_ConnectedAnchor: {x: 0.0000000023134135, y: 0.41253215, z: 0.000000004656613}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: -1}
   m_XMotion: 0
@@ -4334,8 +4348,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.1346413
-  m_Center: {x: 0.05615027, y: 0.24422866, z: 0.09263023}
+  m_Radius: 0.17895086
+  m_Center: {x: 0.035867326, y: 0.24422988, z: 0.11665684}
 --- !u!114 &2793204585927599722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4402,7 +4416,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.003327151, y: 0.53311974, z: 0.12612128}
+  m_ConnectedAnchor: {x: -0.0033271513, y: 0.5331198, z: 0.12612095}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -4628,7 +4642,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: -1, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.0000004824251, y: 0.22159263, z: -0.00000009685755}
+  m_ConnectedAnchor: {x: 0.0000000018626451, y: 0.2215927, z: -0.00000009685755}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 0, z: 0}
   m_XMotion: 0
@@ -4766,6 +4780,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ThisCollider: {fileID: 6448930826572572460}
   ColliderToIgnore:
+  - {fileID: 4419815717529161684}
+  - {fileID: 5676740558075174054}
+  - {fileID: 3413155456252019654}
+  - {fileID: 3281724592065729899}
+  - {fileID: 735306419801939327}
+  - {fileID: 8373620039869076146}
+  - {fileID: 4495540064562236521}
+  - {fileID: 3258591573954481060}
+  - {fileID: 7090368109502828676}
+  - {fileID: 4488327774806396281}
   - {fileID: 4090136463901648719}
   - {fileID: 6389448050643710651}
 --- !u!4 &5796587409759294885 stripped
@@ -4840,7 +4864,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.00000008893221, y: 0.41253304, z: 0.00000030593947}
+  m_ConnectedAnchor: {x: -6.9849193e-10, y: 0.41253304, z: -0.0000000013969839}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: -1}
   m_XMotion: 0
@@ -4944,8 +4968,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ThisCollider: {fileID: 3413155456252019654}
   ColliderToIgnore:
+  - {fileID: 4419815717529161684}
+  - {fileID: 5676740558075174054}
+  - {fileID: 3281724592065729899}
+  - {fileID: 735306419801939327}
   - {fileID: 8373620039869076146}
   - {fileID: 4495540064562236521}
+  - {fileID: 3258591573954481060}
+  - {fileID: 7090368109502828676}
+  - {fileID: 6448930826572572460}
+  - {fileID: 4488327774806396281}
+  - {fileID: 4090136463901648719}
+  - {fileID: 6389448050643710651}
 --- !u!114 &343944825698972971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5047,7 +5081,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.11569597, y: -0.081741445, z: 0.011669782}
+  m_ConnectedAnchor: {x: -0.115696, y: -0.081741445, z: 0.01166961}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -5171,6 +5205,32 @@ MonoBehaviour:
   rotationSensitivity: 0.001
   positionPrecision: 0.001
   scalePrecision: 0.01
+--- !u!114 &8107188020698529242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6020512023720708384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fa4b67e668ced24d8abfcc30f5532f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ThisCollider: {fileID: 5676740558075174054}
+  ColliderToIgnore:
+  - {fileID: 4419815717529161684}
+  - {fileID: 3413155456252019654}
+  - {fileID: 3281724592065729899}
+  - {fileID: 735306419801939327}
+  - {fileID: 8373620039869076146}
+  - {fileID: 4495540064562236521}
+  - {fileID: 3258591573954481060}
+  - {fileID: 7090368109502828676}
+  - {fileID: 6448930826572572460}
+  - {fileID: 4488327774806396281}
+  - {fileID: 4090136463901648719}
+  - {fileID: 6389448050643710651}
 --- !u!4 &6596727678643174670 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2559285840627121667, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
@@ -5205,8 +5265,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.13626698
-  m_Center: {x: -0.05651215, y: 0.2604582, z: 0.09355478}
+  m_Radius: 0.18042444
+  m_Center: {x: -0.034405738, y: 0.26046288, z: 0.115605965}
 --- !u!114 &3908616008693954722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5278,7 +5338,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.0032986482, y: 0.5331203, z: 0.12612128}
+  m_ConnectedAnchor: {x: 0.003298589, y: 0.53312016, z: 0.12612094}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -5403,8 +5463,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ThisCollider: {fileID: 3281724592065729899}
   ColliderToIgnore:
-  - {fileID: 4495540064562236521}
+  - {fileID: 4419815717529161684}
+  - {fileID: 5676740558075174054}
+  - {fileID: 3413155456252019654}
+  - {fileID: 735306419801939327}
   - {fileID: 8373620039869076146}
+  - {fileID: 4495540064562236521}
+  - {fileID: 3258591573954481060}
+  - {fileID: 7090368109502828676}
+  - {fileID: 6448930826572572460}
+  - {fileID: 4488327774806396281}
+  - {fileID: 4090136463901648719}
+  - {fileID: 6389448050643710651}
 --- !u!114 &8367820818758682425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6232,7 +6302,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.00000023841858, y: 1.0354106, z: -0.012955666}
+  m_ConnectedAnchor: {x: 0.00000013177053, y: 1.0354106, z: -0.012955334}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -6371,16 +6441,17 @@ MonoBehaviour:
   ThisCollider: {fileID: 4419815717529161684}
   ColliderToIgnore:
   - {fileID: 5676740558075174054}
+  - {fileID: 3413155456252019654}
+  - {fileID: 3281724592065729899}
   - {fileID: 735306419801939327}
+  - {fileID: 8373620039869076146}
+  - {fileID: 4495540064562236521}
+  - {fileID: 3258591573954481060}
   - {fileID: 7090368109502828676}
   - {fileID: 6448930826572572460}
+  - {fileID: 4488327774806396281}
   - {fileID: 4090136463901648719}
   - {fileID: 6389448050643710651}
-  - {fileID: 3281724592065729899}
-  - {fileID: 4495540064562236521}
-  - {fileID: 4488327774806396281}
-  - {fileID: 3413155456252019654}
-  - {fileID: 8373620039869076146}
 --- !u!1 &8797502928376955211 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -9070493210130169274, guid: 60d145219e4efdb42a0e2439a983dc78, type: 3}
@@ -6448,7 +6519,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.23643732, y: 0.19895917, z: -0.0959261}
+  m_ConnectedAnchor: {x: 0.23643726, y: 0.19895928, z: -0.09592589}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0

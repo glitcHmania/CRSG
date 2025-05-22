@@ -14,6 +14,10 @@ public class MainMenuUI : MonoBehaviour
             Debug.Log("Host clicked");
             SteamLobby.Instance.HostLobby();
         });
+
+        //enable cursor
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public void GoToCustomizationScene()

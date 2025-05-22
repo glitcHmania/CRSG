@@ -471,7 +471,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c2ea3076bcd13342b31f6cf4e6a5e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startOffset: {x: 0, y: 3, z: 0}
+  startOffset: {x: 0, y: 5, z: 0}
   descendDuration: 3.5
   shakeIntensity: 0.5
   shakeSpeed: 0.5

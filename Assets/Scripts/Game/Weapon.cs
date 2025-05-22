@@ -109,6 +109,7 @@ public class Weapon : NetworkBehaviour
         BulletCount = MagazineSize;
         WeaponHolder?.UpdateBulletCountText();
         PlayerAudioPlayer?.PlayWeaponSound((int)Type, -2);
+        GetComponentInChildren<Collider>().enabled = false;
     }
 
     private void OnDestroy()
@@ -279,11 +280,16 @@ public class Weapon : NetworkBehaviour
         {
             Movement.AddForceToPlayer(-transform.forward, power * recoilMultiplier, ForceMode.Impulse);
         }
-        else
+        else if(WeaponHandRigidbody != null)
         {
-            if (WeaponHandRigidbody != null)
+            switch(Type)
             {
-                WeaponHandRigidbody.AddForce(-transform.forward * power * recoilMultiplier, ForceMode.Impulse);
+                case WeaponType.Pistol:
+                    WeaponHandRigidbody.AddForce((transform.up - transform.forward).normalized * 0.5f * power * recoilMultiplier, ForceMode.Impulse);
+                    break;
+                case WeaponType.Rifle:
+                    WeaponHandRigidbody.AddForce((transform.up * 0.5f - transform.forward) * 1.5f * power * recoilMultiplier, ForceMode.Impulse);
+                    break;
             }
         }
 
@@ -390,7 +396,7 @@ public class Weapon : NetworkBehaviour
     [ClientRpc]
     void RpcSpawnCasing(Vector3 position)
     {
-        GameObject droppedMag = Instantiate(casing, position, Quaternion.Euler(0, 0, 0));
+        GameObject droppedMag = Instantiate(casing, position - transform.right*0.1f, Quaternion.Euler(0, 0, 0));
         //add force to all rigidbodies
         Rigidbody[] rb = droppedMag.GetComponentsInChildren<Rigidbody>();
         foreach (Rigidbody r in rb)

@@ -65,12 +65,12 @@ public class JointController : NetworkBehaviour
             currentSlope = Mathf.Min( Vector3.Angle(hips.transform.up, hit.transform.up), 40f);
         }
 
-        if (!playerState.IsRagdoll && !playerState.IsUnbalanced)
-        {
-            //rotating the head to the direction of camera
-            Quaternion localTargetRotation = Quaternion.Inverse(headJoint.transform.parent.rotation) * Quaternion.LookRotation(cam.transform.forward, Vector3.up);
-            headJoint.targetRotation = Quaternion.Inverse(localTargetRotation) * initialHeadLocalRotation;
-        }
+        //if (!playerState.IsRagdoll && !playerState.IsUnbalanced && playerState.MovementState != PlayerState.Movement.Falling && playerState.MovementState != PlayerState.Movement.Jumping)
+        //{
+        //    //rotating the head to the direction of camera
+        //    Quaternion localTargetRotation = Quaternion.Inverse(headJoint.transform.parent.rotation) * Quaternion.LookRotation(cam.transform.forward, Vector3.up);
+        //    headJoint.targetRotation = Quaternion.Inverse(localTargetRotation) * initialHeadLocalRotation;
+        //}
 
         if (playerState.MovementState == PlayerState.Movement.Running)
         {

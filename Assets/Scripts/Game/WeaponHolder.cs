@@ -45,10 +45,6 @@ public class WeaponHolder : NetworkBehaviour
 
             TryInitializeUI();
         }
-        else
-        {
-            Debug.LogWarning("UIManager instance not found. Bullet and Reload UI references will not be set.");
-        }
     }
 
     void Update()
@@ -230,7 +226,7 @@ public class WeaponHolder : NetworkBehaviour
     {
         if (currentWeaponObject == null || currentWeaponPrefab == null || currentObtainableWeaponPrefab == null) return;
 
-        GameObject drop = Instantiate(currentObtainableWeaponPrefab, transform.position, Quaternion.identity);
+        GameObject drop = Instantiate(currentObtainableWeaponPrefab, transform.position + Vector3.up, Quaternion.identity);
         //add up-forward force to the drop
         Rigidbody dropRigidbody = drop.GetComponent<Rigidbody>();
         if (dropRigidbody != null)
@@ -279,7 +275,7 @@ public class WeaponHolder : NetworkBehaviour
 
     private void OnWeaponChanged(NetworkIdentity oldWeapon, NetworkIdentity newWeapon)
     {
-        if (newWeapon != null)
+        if (!playerState.IsArmed && newWeapon != null)
         {
             EquipWeapon(newWeapon.gameObject);
         }

@@ -53,7 +53,7 @@ public class ObtainableWeapon : NetworkBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("PlayerHip") || collision.gameObject.layer == LayerMask.NameToLayer("PlayerSpine") && !collision.GetComponentInParent<PlayerState>().IsArmed)
         {
             collision.GetComponentInParent<WeaponHolder>()?.TryPickupWeapon(this);
         }

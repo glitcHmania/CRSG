@@ -36,7 +36,7 @@ public class Movement : NetworkBehaviour
     private Timer jumpHoldTimer;
     private Timer jumpCooldownTimer;
     private PlayerAudioPlayer playerAudioPlayer;
-    private bool completeJump = true;
+    private bool endJumping = true;
     //private float mainRigidbodyVelocity;
     //public float veloictyThreshold = 10.0f;
 
@@ -86,7 +86,7 @@ public class Movement : NetworkBehaviour
             }
             if (Input.GetKeyDown(KeyCode.N))
             {
-                StartCoroutine(SafeRagdollMove(new Vector3(44f, 78f, -91f), transform.rotation));
+                StartCoroutine(SafeRagdollMove(new Vector3(45.2f, -35.9f, -69.5f), transform.rotation));
             }
 
             jumpTimer.Update();
@@ -160,27 +160,26 @@ public class Movement : NetworkBehaviour
         //raycast to check if the player is grounded and take the normal of the surface
         if (Physics.Raycast(hip.transform.position, Vector3.down, out RaycastHit hit, groundCheckDistance, groundMask))
         {
-            playerState.IsGrounded = true;
-
-            if (completeJump)
+            if (endJumping)
             {
                 playerAudioPlayer.PlayJumpEndSound();
-                completeJump = false;
                 playerState.CanCrouch = true;
-
                 jumpHoldTimer.Reset();
+                endJumping = false;
+            }
 
-                if (jumpTimer.IsFinished)
+            playerState.IsGrounded = true;
+
+            if (jumpTimer.IsFinished)
+            {
+                if (!playerState.IsRagdoll)
                 {
-                    if (!playerState.IsRagdoll)
-                    {
-                        ragdollController.EnableBalance();
-                    }
+                    ragdollController.EnableBalance();
+                }
 
-                    if (playerState.MovementState != PlayerState.Movement.Falling)
-                    {
-                        playerState.IsBouncing = false;
-                    }
+                if (playerState.MovementState != PlayerState.Movement.Falling)
+                {
+                    playerState.IsBouncing = false;
                 }
             }
         }
@@ -188,7 +187,7 @@ public class Movement : NetworkBehaviour
         {
             playerState.IsGrounded = playerState.IsClimbing;
             playerState.MovementState = playerState.IsClimbing ? PlayerState.Movement.Climbing : PlayerState.Movement.Falling;
-            completeJump = true;
+            endJumping = true;
         }
 
         if (playerState.IsGrounded)

@@ -27,14 +27,13 @@ public class PlayerSpawner : NetworkBehaviour
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         IsInGameScene = scene.name == "Game";
         Debug.Log($"{scene.name} scene loaded");
 
-
         TryRequestSpawn();
-
         HandleCameraForScene(scene.name);
     }
 
@@ -90,22 +89,7 @@ public class PlayerSpawner : NetworkBehaviour
 
         // Immediate correction to avoid 1-frame flash
         TeleportInstantly(spawnPoint);
-
-        if (isServer && isClient)
-        {
-            //spawn request on host (server + client)
-            StartCoroutine(SafeRagdollSpawn(spawnPoint));
-        }
-        else if (isServer)
-        {
-            //spawn request on server (for remote client)
-            RpcSpawnPlayerAtPoint_Internal(spawnPoint.position, spawnPoint.rotation);
-        }
-        else
-        {
-            //spawn request on client
-            CmdRequestSpawn(spawnPoint.position, spawnPoint.rotation);
-        }
+        StartCoroutine(SafeRagdollSpawn(spawnPoint));
     }
 
     [Command]
