@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2245611787259204007}
   - component: {fileID: 8571575393854254005}
   - component: {fileID: 6587727326248641338}
-  - component: {fileID: 4781710706732409776}
   - component: {fileID: 2619445167199089346}
   m_Layer: 0
   m_Name: CustomNetworkManager
@@ -118,18 +117,6 @@ MonoBehaviour:
   Timeout: 25
   AllowSteamRelay: 1
   UseNextGenSteamNetworking: 1
---- !u!114 &4781710706732409776
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5534119014139136019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef4bffeda13d7a748973ff9204401c07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2619445167199089346
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -23,7 +23,22 @@ public class BootstrapLoader : MonoBehaviour
         if (!initialized)
         {
             Debug.Log("Bootstrap: Creating NetworkManager");
-            DontDestroyOnLoad(Instantiate(networkManagerPrefab));
+
+            var instance = Instantiate(networkManagerPrefab);
+            DontDestroyOnLoad(instance);
+
+            // Assign SteamLobby.Instance manually
+            var steamLobby = instance.GetComponentInChildren<SteamLobby>();
+            if (steamLobby != null)
+            {
+                Debug.Log("✅ SteamLobby found in prefab and assigned.");
+                SteamLobby.Instance = steamLobby;
+            }
+            else
+            {
+                Debug.LogError("❌ SteamLobby NOT found on the network manager prefab!");
+            }
+
             initialized = true;
         }
     }
@@ -54,11 +69,9 @@ public class BootstrapLoader : MonoBehaviour
             yield return null;
         }
 
-        // Final fill
         if (progressBar != null)
             progressBar.value = 1f;
 
-        // Optional: small delay to show 100%
         yield return new WaitForSeconds(0.3f);
 
         operation.allowSceneActivation = true;

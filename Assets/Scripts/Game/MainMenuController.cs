@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -8,17 +9,34 @@ public class MainMenuUI : MonoBehaviour
 
     void Start()
     {
+        StartCoroutine(WaitForSteamLobby());
+    }
+
+    IEnumerator WaitForSteamLobby()
+    {
+        HostButton.interactable = false;
+
+        while (SteamLobby.Instance == null)
+        {
+            Debug.Log("Waiting for SteamLobby.Instance...");
+            yield return null;
+        }
+
+        if (SteamLobby.Instance != null)
+            Debug.Log("SteamLobby.Instance is ready.");
+
+
+        HostButton.interactable = true;
+
         HostButton.onClick.RemoveAllListeners();
         HostButton.onClick.AddListener(() =>
         {
             Debug.Log("Host clicked");
             SteamLobby.Instance.HostLobby();
         });
-
-        //enable cursor
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
     }
+
+
 
     public void GoToCustomizationScene()
     {

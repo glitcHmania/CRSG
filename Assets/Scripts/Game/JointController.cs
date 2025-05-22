@@ -275,8 +275,8 @@ public class JointController : NetworkBehaviour
 
     private void RaiseArms(ConfigurableJoint leftArm, ConfigurableJoint rightArm)
     {
-        leftArm.targetRotation = Quaternion.Euler(40, 250, 25);
-        rightArm.targetRotation = Quaternion.Euler(40, -250, -25);
+        leftArm.targetRotation = Quaternion.Euler(40, 285, 25);
+        rightArm.targetRotation = Quaternion.Euler(40, -285, -25);
     }
 
     private void ResetLowerArms()
