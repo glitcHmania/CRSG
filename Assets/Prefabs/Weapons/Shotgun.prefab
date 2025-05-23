@@ -159,7 +159,6 @@ Transform:
   m_Children:
   - {fileID: 6465481474543532177}
   - {fileID: 9077244307745308885}
-  - {fileID: 1307627280794484170}
   - {fileID: 3765724729576477478}
   - {fileID: 5635306365980784092}
   m_Father: {fileID: 0}
@@ -191,8 +190,6 @@ MonoBehaviour:
   Movement: {fileID: 0}
   ReloadHandRigidbody: {fileID: 0}
   WeaponHandRigidbody: {fileID: 0}
-  BulletCount: 3
-  IsAvailable: 1
   Type: 2
   IsAutomatic: 0
   MagazineSize: 2
@@ -215,6 +212,8 @@ MonoBehaviour:
   shellEjection: {fileID: 8734458839307886250}
   stoneImpactEffect: {fileID: 19800002, guid: 57c6e11eda87e5f4989f91d59fd77ade, type: 3}
   bloodImpactEffect: {fileID: 0}
+  BulletCount: 3
+  IsAvailable: 1
 --- !u!114 &-2822595856086337125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,12 +257,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7473784515348345783}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0066, y: 0.0547, z: 0.9826}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0.7069889, y: -1.0969042e-24, z: 1.2427402e-24, w: 0.7072248}
+  m_LocalPosition: {x: 0, y: -0.004685528, z: 0.00032297533}
+  m_LocalScale: {x: 0.005587044, y: 0.0055870414, z: 0.0055870414}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3207413368977302510}
+  m_Father: {fileID: 4100333501149436873}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!120 &6122678352995562534
 LineRenderer:
@@ -591,11 +590,19 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 366373574016789279, guid: eddae56104115944cbb64cffcef16fd9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 259053303841266202}
+    - targetCorrespondingSourceObject: {fileID: 8536686255794159528, guid: eddae56104115944cbb64cffcef16fd9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1307627280794484170}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eddae56104115944cbb64cffcef16fd9, type: 3}
 --- !u!1 &210173646965451945 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5509457751106029768, guid: eddae56104115944cbb64cffcef16fd9, type: 3}
+  m_PrefabInstance: {fileID: 5665292433898120289}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4100333501149436873 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8536686255794159528, guid: eddae56104115944cbb64cffcef16fd9, type: 3}
   m_PrefabInstance: {fileID: 5665292433898120289}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &5443365000966623102 stripped

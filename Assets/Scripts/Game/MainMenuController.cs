@@ -52,4 +52,15 @@ public class MainMenuUI : MonoBehaviour
         //BootstrapLoader.SceneToLoad = "Credits";
         //SceneManager.LoadSceneAsync("LoadingScene");
     }
+
+    public void StartSinglePlayer()
+    {
+        BootstrapLoader.SceneToLoad = "Game";
+        SceneManager.LoadSceneAsync("LoadingScene");
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }

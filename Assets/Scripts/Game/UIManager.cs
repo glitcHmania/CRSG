@@ -20,6 +20,10 @@ public class UIManager : MonoBehaviour
     public bool EscMenuActive => escMenuActive;
     public bool IsGameFocused => !escMenuActive && !ChatBehaviour.Instance.IsInputActive;
 
+    //event for esc menu activation and deactivation
+    public delegate void EscMenuToggle(bool isActive);
+    public event EscMenuToggle OnEscMenuToggle;
+
     private void Awake()
     {
         if (Instance == null)
@@ -55,20 +59,23 @@ public class UIManager : MonoBehaviour
         if (EscMenu.gameObject.activeSelf)
         {
             EscMenu.gameObject.SetActive(false);
-            //cursor
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             escMenuActive = false;
+
+            OnEscMenuToggle?.Invoke(false);
         }
         else
         {
             EscMenu.gameObject.SetActive(true);
-            //cursor
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             escMenuActive = true;
+
+            OnEscMenuToggle?.Invoke(true);
         }
     }
+
 
     public void LeaveGameAndReturnToMainMenu()
     {
