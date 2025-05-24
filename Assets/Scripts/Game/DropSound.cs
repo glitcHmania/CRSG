@@ -13,24 +13,33 @@ public class DropSound : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        // Let the SERVER handle the sound logic
         if (!isServer) return;
 
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
-            RpcPlaySound(); // Broadcast to all clients
+            if (audioSource != null && clip != null)
+            {
+                audioSource.pitch = 1f + Random.Range(0f, 0.4f);
+                audioSource.PlayOneShot(clip);
+            }
 
-            // Play the sound on server (host player too)
-            audioSource.pitch = 1f + Random.Range(0f, 0.4f);
-            audioSource.PlayOneShot(clip);
+            RpcPlaySound();
         }
     }
 
     [ClientRpc]
     private void RpcPlaySound()
     {
-        // Play on remote clients
-        if (isServer) return; // Skip if we're also the server
+        if (isServer) return;
+
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+
+        if (audioSource == null || clip == null)
+        {
+            Debug.LogWarning("DropSound: AudioSource or AudioClip is not assigned.");
+            return;
+        }
 
         audioSource.pitch = 1f + Random.Range(0f, 0.4f);
         audioSource.PlayOneShot(clip);

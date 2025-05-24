@@ -26,23 +26,26 @@ public class LobbyMenuController : MonoBehaviour
 
     public void OpenSteamInviteDialog()
     {
-        if (SteamManager.Initialized)
+        if (!SteamManager.Initialized)
         {
-            var lobbyID = SteamLobby.Instance.CurrentLobbyID;
-            if (lobbyID != 0)
-            {
-                SteamFriends.ActivateGameOverlayInviteDialog(new CSteamID(lobbyID));
-            }
-            else
-            {
-                Debug.LogWarning("No valid Steam lobby ID. Are you in a lobby?");
-            }
+            Debug.LogWarning("Steam is not initialized.");
+            return;
         }
-        else
+
+        var lobbyID = SteamLobby.Instance.CurrentLobbyID;
+
+        if (lobbyID == 0)
         {
-            Debug.LogWarning("Steam is not initialized. Cannot open invite dialog.");
+            Debug.LogWarning("Lobby ID is 0. Are you in a Steam lobby?");
+            return;
         }
+
+        var steamID = new CSteamID(lobbyID);
+        Debug.Log($"Trying to open invite dialog for lobby ID: {steamID}, Valid: {steamID.IsValid()}");
+
+        SteamFriends.ActivateGameOverlayInviteDialog(steamID);
     }
+
 
 }
 

@@ -193,7 +193,7 @@ MonoBehaviour:
   Type: 2
   IsAutomatic: 0
   MagazineSize: 2
-  power: 400
+  power: 800
   range: 200
   reloadTime: 1.2
   recoilMultiplier: 0.5

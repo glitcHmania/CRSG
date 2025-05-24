@@ -72,8 +72,6 @@ public class Movement : NetworkBehaviour
 
     void Update()
     {
-        Debug.Log(playerState.IsClimbing);
-
         if (!isLocalPlayer) return;
         if (!PlayerSpawner.IsInGameScene) return;
 

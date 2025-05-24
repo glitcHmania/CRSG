@@ -10,6 +10,9 @@ public class MainMenuUI : MonoBehaviour
     void Start()
     {
         StartCoroutine(WaitForSteamLobby());
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     IEnumerator WaitForSteamLobby()

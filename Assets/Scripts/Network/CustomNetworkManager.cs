@@ -33,12 +33,18 @@ public class CustomNetworkManager : NetworkManager
     public override void OnStartServer()
     {
         base.OnStartServer();
-
+        autoCreatePlayer = false;
         NetworkServer.RegisterHandler<CustomAddPlayerMessage>(OnServerAddCustomPlayer);
     }
 
     private void OnServerAddCustomPlayer(NetworkConnectionToClient conn, CustomAddPlayerMessage msg)
     {
+        if (conn.identity != null)
+        {
+            Debug.LogError("AddPlayer attempted but player already exists for this connection.");
+            return;
+        }
+
         int characterId = Mathf.Clamp(msg.characterId, 0, characterPrefabs.Count - 1);
         GameObject prefab = characterPrefabs[characterId];
 

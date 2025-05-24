@@ -12,14 +12,13 @@ public class CameraMovement : MonoBehaviour
     [SerializeField] private float rotationSpeed = 5f;
     [SerializeField] private float minYAngle = -30f;
     [SerializeField] private float maxYAngle = 60f;
-    [SerializeField] private float collisionBuffer = 0.3f; // Distance from wall to prevent clipping
-    [SerializeField] private float sphereCastRadius = 0.5f; // Thickness of the cast
+    [SerializeField] private float collisionBuffer = 0.3f;
+    [SerializeField] private float sphereCastRadius = 0.5f;
 
     private float currentYaw = 0f;
     private float currentPitch = 20f;
     private float mouseY;
     private float mouseX;
-    private bool fovDirtyFlag = false;
     private bool locked = false;
 
     void LateUpdate()
@@ -31,24 +30,6 @@ public class CameraMovement : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             locked = true;
-        }
-
-        if (playerState.IsAiming)
-        {
-            GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, 80f, Time.deltaTime * 5f);
-            target.localPosition = Vector3.Lerp(target.localPosition, new Vector3(0.6f, target.localPosition.y, 1.3f), Time.deltaTime * 5f);
-
-            fovDirtyFlag = true;
-        }
-        else if (fovDirtyFlag)
-        {
-            GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, 90f, Time.deltaTime * 5f);
-            target.localPosition = Vector3.Lerp(target.localPosition, new Vector3(0f, target.localPosition.y, 0f), Time.deltaTime * 5f);
-
-            if (Mathf.Abs(GetComponent<Camera>().fieldOfView - 90f) < 1f)
-            {
-                fovDirtyFlag = false;
-            }
         }
 
         if (UIManager.Instance.IsGameFocused)
@@ -67,15 +48,23 @@ public class CameraMovement : MonoBehaviour
         currentPitch = Mathf.Clamp(currentPitch, minYAngle, maxYAngle);
 
         Quaternion rotation = Quaternion.Euler(currentPitch, currentYaw, 0);
-        Vector3 desiredPosition = target.position + rotation * offset;
 
+        // Update aiming position offset (no FOV)
+        if (playerState.IsAiming)
+        {
+            target.localPosition = Vector3.Lerp(target.localPosition, new Vector3(0.6f, target.localPosition.y, 1.3f), Time.deltaTime * 5f);
+        }
+        else
+        {
+            target.localPosition = Vector3.Lerp(target.localPosition, new Vector3(0f, target.localPosition.y, 0f), Time.deltaTime * 5f);
+        }
+
+        Vector3 desiredPosition = target.position + rotation * offset;
         Vector3 direction = (desiredPosition - target.position).normalized;
         float distance = Vector3.Distance(target.position, desiredPosition);
 
-        // SphereCast instead of Raycast
         if (Physics.SphereCast(target.position, sphereCastRadius, direction, out RaycastHit hit, distance, collisionMask))
         {
-            // Move camera slightly before collision
             transform.position = hit.point - direction * collisionBuffer;
         }
         else

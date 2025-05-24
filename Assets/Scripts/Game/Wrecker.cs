@@ -1,8 +1,9 @@
-using Mirror;
+﻿using Mirror;
 using UnityEngine;
 
 public class Wrecker : NetworkBehaviour
 {
+    [SerializeField] private float hitSoundVolume = 0.1f;
     private AudioSource audioSource;
     private AudioClip audioClip;
     private Timer cooldownTimer;
@@ -21,10 +22,14 @@ public class Wrecker : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (cooldownTimer.IsFinished &&
-            (other.gameObject.layer == LayerMask.NameToLayer("PlayerSpine") ||
-             other.gameObject.layer == LayerMask.NameToLayer("PlayerHip")) ||
-             other.gameObject.layer == LayerMask.NameToLayer("PlayerHead"))
+        if (!isServer) return;
+
+        int layer = other.gameObject.layer;
+        if (!cooldownTimer.IsFinished) return;
+
+        if (layer == LayerMask.NameToLayer("PlayerSpine") ||
+            layer == LayerMask.NameToLayer("PlayerHip") ||
+            layer == LayerMask.NameToLayer("PlayerHead"))
         {
             var ragdoll = other.GetComponentInParent<RagdollController>();
             if (ragdoll != null)
@@ -34,10 +39,6 @@ public class Wrecker : NetworkBehaviour
 
             cooldownTimer.Reset();
 
-            if (isServer)
-            {
-                audioSource.PlayOneShot(audioClip);
-            }
             RpcPlaySound();
         }
     }
@@ -45,6 +46,14 @@ public class Wrecker : NetworkBehaviour
     [ClientRpc]
     private void RpcPlaySound()
     {
-        audioSource.PlayOneShot(audioClip);
+        PlaySound();
+    }
+
+    private void PlaySound()
+    {
+        if (audioSource != null && audioClip != null && !audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(audioClip, hitSoundVolume);
+        }
     }
 }
