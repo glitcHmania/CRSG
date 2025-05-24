@@ -2,6 +2,7 @@
 using Steamworks;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CustomNetworkManager : NetworkManager
 {
@@ -93,4 +94,25 @@ public class CustomNetworkManager : NetworkManager
     {
         ServerChangeScene(sceneName);
     }
+
+    public override void OnClientDisconnect()
+    {
+        base.OnClientDisconnect();
+
+        Debug.Log("Client was disconnected by server. Returning to main menu...");
+
+        // Clean up
+        SteamLobby.Instance = null;
+
+        var bootstrap = GameObject.FindObjectOfType<BootstrapLoader>();
+        if (bootstrap != null)
+            Destroy(bootstrap.gameObject);
+
+        Destroy(NetworkManager.singleton.gameObject);
+
+        BootstrapLoader.ForceReset();
+        BootstrapLoader.SceneToLoad = "MainMenu";
+        SceneManager.LoadSceneAsync("LoadingScene");
+    }
+
 }

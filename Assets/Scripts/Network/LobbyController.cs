@@ -77,7 +77,7 @@ public class LobbyController : MonoBehaviour
 
         if(allReady)
         {
-            if(LocalPlayerController.PlayerIdNumer == 1)
+            if(LocalPlayerController?.PlayerIdNumer == 1)
             {
                 StartGameButton.interactable = true;
             }

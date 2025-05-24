@@ -62,8 +62,16 @@ public class SteamLobby : MonoBehaviour
             return;
         }
 
+        if (NetworkClient.active || NetworkServer.active)
+        {
+            Debug.LogWarning("Transport still active, shutting down...");
+            NetworkClient.Shutdown();
+            NetworkServer.Shutdown();
+        }
+
         SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, Manager.maxConnections);
     }
+
 
     private void OnLobbyCreated(LobbyCreated_t callback)
     {
@@ -71,6 +79,13 @@ public class SteamLobby : MonoBehaviour
         {
             Debug.LogError("Failed to create lobby");
             return;
+        }
+
+        if (NetworkClient.active || NetworkServer.active)
+        {
+            Debug.LogWarning("Mirror is still marked active — forcing cleanup before starting host.");
+            NetworkClient.Shutdown();
+            NetworkServer.Shutdown();
         }
 
         Manager.StartHost();

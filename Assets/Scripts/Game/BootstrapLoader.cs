@@ -20,14 +20,15 @@ public class BootstrapLoader : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("BOOTSTRAP AWAKE: initialized = " + initialized);
+
         if (!initialized)
         {
-            Debug.Log("Bootstrap: Creating NetworkManager");
+            Debug.Log("BOOTSTRAP: Creating NetworkManager from prefab.");
 
             var instance = Instantiate(networkManagerPrefab);
             DontDestroyOnLoad(instance);
 
-            // Assign SteamLobby.Instance manually
             var steamLobby = instance.GetComponentInChildren<SteamLobby>();
             if (steamLobby != null)
             {
@@ -42,6 +43,7 @@ public class BootstrapLoader : MonoBehaviour
             initialized = true;
         }
     }
+
 
     private void Start()
     {
@@ -75,5 +77,10 @@ public class BootstrapLoader : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         operation.allowSceneActivation = true;
+    }
+
+    public static void ForceReset()
+    {
+        initialized = false;
     }
 }

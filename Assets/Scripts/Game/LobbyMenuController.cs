@@ -7,22 +7,37 @@ public class LobbyMenuController : MonoBehaviour
 {
     public void LeaveLobbyAndReturnToMainMenu()
     {
-        if (NetworkClient.isConnected)
-            NetworkManager.singleton.StopClient();
+        if (SteamLobby.Instance != null && SteamLobby.Instance.CurrentLobbyID != 0)
+        {
+            SteamMatchmaking.LeaveLobby(new CSteamID(SteamLobby.Instance.CurrentLobbyID));
+            SteamLobby.Instance = null;
+        }
+        var transport = NetworkManager.singleton.transport;
+
+        if (transport != null)
+        {
+            transport.Shutdown();
+            Destroy(transport.gameObject); // kills static clients like FizzySteamworks.client
+        }
+
+        if (NetworkClient.isConnected || NetworkClient.active)
+            NetworkClient.Shutdown();
 
         if (NetworkServer.active)
-            NetworkManager.singleton.StopHost();
+            NetworkServer.Shutdown();
 
-        SteamMatchmaking.LeaveLobby(new CSteamID(SteamLobby.Instance.CurrentLobbyID));
+        if (NetworkManager.singleton != null)
+            Destroy(NetworkManager.singleton.gameObject);
 
-        // 💡 Reset the static BootstrapLoader.initialized flag
-        typeof(BootstrapLoader)
-            .GetField("initialized", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
-            ?.SetValue(null, false);
+        var bootstrap = GameObject.FindObjectOfType<BootstrapLoader>();
+        if (bootstrap != null)
+            Destroy(bootstrap.gameObject);
 
+        BootstrapLoader.ForceReset();
         BootstrapLoader.SceneToLoad = "MainMenu";
         SceneManager.LoadSceneAsync("LoadingScene");
     }
+
 
     public void OpenSteamInviteDialog()
     {
