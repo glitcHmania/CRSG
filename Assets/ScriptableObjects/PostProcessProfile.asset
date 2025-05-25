@@ -80,7 +80,7 @@ MonoBehaviour:
   motionBlur:
     m_Enabled: 0
     m_Settings:
-      shutterAngle: 0.00000003471232
+      shutterAngle: 189.40508
       sampleCount: 10
       frameBlending: 0
   eyeAdaptation:
@@ -309,7 +309,7 @@ MonoBehaviour:
     m_Enabled: 1
     m_Settings:
       spectralTexture: {fileID: 0}
-      intensity: 2.571283e-10
+      intensity: 0.3
   grain:
     m_Enabled: 0
     m_Settings:
@@ -323,7 +323,7 @@ MonoBehaviour:
       mode: 0
       color: {r: 0, g: 0, b: 0, a: 1}
       center: {x: 0.5, y: 0.5}
-      intensity: 1.2856415e-10
+      intensity: 0.3
       smoothness: 1
       roundness: 1
       mask: {fileID: 0}

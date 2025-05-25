@@ -72,36 +72,43 @@ public class PlayerAudioPlayer : NetworkBehaviour
 
     public void PlayBreathSound()
     {
+        if (!isOwned) return;
         CmdPlayBreathSound();
     }
 
     public void PlayHandSound()
     {
+        if (!isOwned) return;
         CmdPlayHandSound();
     }
 
     public void PlayRagdollSound()
     {
+        if (!isOwned) return;
         CmdPlayRagdollSound();
     }
 
     public void PlayLaunchSound()
     {
+        if (!isOwned) return;
         CmdPlayLaunchSound();
     }
 
     public void PlayFootStepSound()
     {
+        if (!isOwned) return;
         CmdPlayFootstep((int)playerState.AudioFieldType, (int)playerState.MovementState, playerState.IsMoving);
     }
 
     public void PlayJumpStartSound(bool playVocal)
     {
+        if (!isOwned) return;
         CmdPlayJumpStart((int)playerState.AudioFieldType, playVocal);
     }
 
     public void PlayJumpEndSound()
     {
+        if (!isOwned) return;
         CmdPlayJumpEnd((int)playerState.AudioFieldType);
     }
 

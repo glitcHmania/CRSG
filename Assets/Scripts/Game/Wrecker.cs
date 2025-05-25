@@ -22,8 +22,6 @@ public class Wrecker : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!isServer) return;
-
         int layer = other.gameObject.layer;
         if (!cooldownTimer.IsFinished) return;
 
@@ -39,8 +37,21 @@ public class Wrecker : NetworkBehaviour
 
             cooldownTimer.Reset();
 
-            RpcPlaySound();
+            // 1. Local play (no network latency)
+            PlaySound();
+
+            // 2. Tell server to play it globally
+            if (NetworkClient.active)
+            {
+                CmdPlaySoundOnAllClients();
+            }
         }
+    }
+
+    [Command(requiresAuthority = false)]
+    private void CmdPlaySoundOnAllClients()
+    {
+        RpcPlaySound();
     }
 
     [ClientRpc]

@@ -6,6 +6,11 @@ using UnityEngine.UI;
 public class MainMenuUI : MonoBehaviour
 {
     public Button HostButton;
+    public GameObject Settings;
+    public GameObject SoundSettings;
+    public GameObject GraphicsSettings;
+    public GameObject VideoSettings;
+    public GameObject GameSettings;
 
     void Start()
     {
@@ -57,9 +62,6 @@ public class MainMenuUI : MonoBehaviour
         });
     }
 
-
-
-
     public void GoToCustomizationScene()
     {
         SceneManager.LoadSceneAsync("Character");
@@ -84,5 +86,56 @@ public class MainMenuUI : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    //enable settings
+    public void OpenSettings()
+    {
+        Settings.SetActive(true);
+        SoundSettings.SetActive(true);
+        GraphicsSettings.SetActive(false);
+        VideoSettings.SetActive(false);
+        GameSettings.SetActive(false);
+    }
+
+    public void OpenSoundSettings()
+    {
+        SoundSettings.SetActive(true);
+        GraphicsSettings.SetActive(false);
+        VideoSettings.SetActive(false);
+        GameSettings.SetActive(false);
+    }
+
+    public void OpenGraphicsSettings()
+    {
+        SoundSettings.SetActive(false);
+        GraphicsSettings.SetActive(true);
+        VideoSettings.SetActive(false);
+        GameSettings.SetActive(false);
+    }
+
+    public void OpenVideoSettings()
+    {
+        SoundSettings.SetActive(false);
+        GraphicsSettings.SetActive(false);
+        VideoSettings.SetActive(true);
+        GameSettings.SetActive(false);
+    }
+
+    public void OpenGameSettings()
+    {
+        SoundSettings.SetActive(false);
+        GraphicsSettings.SetActive(false);
+        VideoSettings.SetActive(false);
+        GameSettings.SetActive(true);
+    }
+
+    public void CloseSettings()
+    {
+        Settings.SetActive(false);
+        SoundSettings.SetActive(false);
+        GraphicsSettings.SetActive(false);
+        VideoSettings.SetActive(false);
+        GameSettings.SetActive(false);
     }
 }
